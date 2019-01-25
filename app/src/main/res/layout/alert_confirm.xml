@@ -1,0 +1,113 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="wrap_content" >
+    <Button
+        android:background="@color/colorPrimaryDark"
+        android:textColor="@android:color/white"
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentTop="true"
+        android:text="Alert"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:id="@+id/title"
+        android:textAllCaps="false"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:orientation="vertical"
+        android:layout_margin="15dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal">
+            <com.eleganz.msafiri.lib.RobotoMediumTextView
+                android:layout_width="wrap_content"
+                android:textColor="#353535"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:text="You Paid "/>
+            <com.eleganz.msafiri.lib.RobotoMediumTextView
+                android:layout_width="wrap_content"
+                android:textColor="#000"
+                android:textStyle="bold"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:text="$30"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
+            <com.eleganz.msafiri.lib.RobotoMediumTextView
+                android:layout_width="wrap_content"
+                android:textColor="#353535"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:text="New Estimate "/>
+            <com.eleganz.msafiri.lib.RobotoMediumTextView
+                android:layout_width="wrap_content"
+                android:textColor="#000"
+                android:textStyle="bold"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:text="$20"/>
+
+        </LinearLayout>
+        <com.eleganz.msafiri.lib.RobotoMediumTextView
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="#000"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+            android:layout_marginTop="15dp"
+            android:text="A Difference will be added into your account in next 48 hours"
+            android:layout_height="match_parent" />
+
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+
+        android:orientation="horizontal">
+    <Button
+        android:background="#043A60"
+        android:textColor="@android:color/white"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:id="@+id/btncncl"
+        android:layout_centerInParent="true"
+        android:text="Cancel"
+        />
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#fff"></View>
+        <Button
+            android:background="#043A60"
+            android:textColor="@android:color/white"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+
+            android:layout_height="wrap_content"
+            android:id="@+id/btncnf"
+            android:layout_centerInParent="true"
+            android:text="Continue"
+            />
+    </LinearLayout>
+</LinearLayout>

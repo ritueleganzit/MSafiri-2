@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.eleganz.msafiri.TellYourDriverActivity">
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:id="@+id/toolbar"
+        app:contentInsetEnd="0dp"
+        app:contentInsetLeft="0dp"
+        app:contentInsetRight="0dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetStartWithNavigation="0dp"
+        app:contentInsetEndWithActions="0dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/colorPrimaryDark">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+            <ImageView
+                android:layout_gravity="start"
+                android:id="@+id/back"
+                android:padding="10dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <com.eleganz.msafiri.lib.RobotoMediumTextView
+                android:layout_centerInParent="true"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+
+                android:textStyle="bold"
+                android:text="Tell Your Driver"
+                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+    </android.support.v7.widget.Toolbar>
+
+    <LinearLayout
+        android:layout_margin="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@+id/toolbar">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="#dedddd"
+            android:drawableRight="@drawable/ic_musical"
+            android:drawablePadding="2dp"
+            android:ems="10"
+            android:id="@+id/musicpref"
+            android:paddingTop="3dp"
+android:paddingBottom="3dp"
+            android:paddingStart="10dp"
+            android:paddingRight="10dp"
+android:layout_gravity="center"
+            android:gravity="center|start"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:hint="Music Preference"
+            android:paddingLeft="8dp"
+            android:textColorHint="#3B3B3B" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="#dedddd"
+            android:id="@+id/medicalhistory"
+            android:drawableRight="@drawable/ic_emergency"
+            android:drawablePadding="2dp"
+            android:ems="10"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:paddingStart="10dp"
+            android:paddingRight="10dp"
+            android:layout_gravity="center"
+            android:gravity="center|start"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:hint="Medical History"
+            android:paddingLeft="8dp"
+            android:textColorHint="#3B3B3B" />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_marginTop="20dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="Submit"
+            android:id="@+id/btnsubmitpref"
+            android:elevation="5dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:textColor="@android:color/white"
+            android:background="@color/colorButton"/>
+    </LinearLayout>
+</RelativeLayout>

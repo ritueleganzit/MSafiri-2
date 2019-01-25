@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.eleganz.msafiri.SettingsActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:id="@+id/toolbar"
+        app:contentInsetEnd="0dp"
+        app:contentInsetLeft="0dp"
+        app:contentInsetRight="0dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetStartWithNavigation="0dp"
+        app:contentInsetEndWithActions="0dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/colorPrimaryDark">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+            <ImageView
+                android:layout_gravity="start"
+                android:id="@+id/back"
+                android:padding="10dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <com.eleganz.msafiri.lib.RobotoMediumTextView
+                android:layout_centerInParent="true"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+
+                android:textStyle="bold"
+                android:text="Account Settings"
+                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+    </android.support.v7.widget.Toolbar>
+
+    <LinearLayout
+        android:id="@+id/first"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#fff"
+            android:gravity="bottom"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/profile_image"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:transitionName="simple_activity_transition"
+                android:src="@drawable/male"
+                android:layout_gravity="top"
+                android:elevation="5dp"
+                app:civ_border_width="2dp"
+                app:civ_circle_background_color="@android:color/white"
+                app:civ_border_color="#ffff" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:layout_marginLeft="20dp"
+                android:orientation="vertical">
+                <com.eleganz.msafiri.lib.RobotoMediumTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="#000"
+                    android:id="@+id/fname"
+                    android:text=""
+                    android:textStyle="bold"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
+                <com.eleganz.msafiri.lib.RobotoMediumTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="#000"
+                    android:text=""
+                    android:id="@+id/phone"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"/>
+            </LinearLayout>
+
+
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#B4CCCCCC"></View>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_below="@+id/first"
+        android:background="#fff"
+        android:orientation="vertical"
+        android:layout_height="match_parent">
+        <com.eleganz.msafiri.lib.RobotoMediumTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#535353"
+            android:layout_margin="10dp"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            android:text="Favorites"/>
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/icon_home_selected"
+                    android:layout_margin="10dp"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:id="@+id/addhome"
+
+                    android:layout_marginLeft="5dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <com.eleganz.msafiri.lib.RobotoMediumTextView
+                        android:layout_width="wrap_content"
+                        android:id="@+id/htitle"
+                        android:layout_height="wrap_content"
+                        android:text="Add Home"
+                        android:textStyle="bold"
+                        android:textColor="#000"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+                    <com.eleganz.msafiri.lib.RobotoMediumTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Address"
+                        android:textColor="#919191"
+                        android:id="@+id/haddress"
+                        android:visibility="gone"
+
+                        />
+                </LinearLayout>
+                <com.eleganz.msafiri.lib.RobotoMediumTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Delete"
+                    android:visibility="gone"
+                    android:id="@+id/homedelete"
+                    android:layout_marginRight="5dp"
+                    android:textColor="#000"
+                    android:layout_gravity="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/briefcase"
+                    android:layout_margin="10dp"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_weight="1"
+                    android:id="@+id/addwork"
+
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="5dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <com.eleganz.msafiri.lib.RobotoMediumTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Add Work"
+                        android:textStyle="bold"
+                        android:id="@+id/wtitle"
+
+                        android:textColor="#000"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+                    <com.eleganz.msafiri.lib.RobotoMediumTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Address"
+                        android:textColor="#919191"
+
+                        android:id="@+id/waddress"
+
+                        android:visibility="gone"
+
+                        />
+                </LinearLayout>
+                <com.eleganz.msafiri.lib.RobotoMediumTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Delete"
+                    android:layout_marginRight="5dp"
+                    android:visibility="gone"
+                    android:textColor="#000"
+                    android:layout_gravity="center"
+                    android:id="@+id/workdelete"
+
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    />
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:focusableInTouchMode="true"
+            android:fillViewport="true"
+            android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#b4cccccc"></View>
+            <com.eleganz.msafiri.lib.RobotoMediumTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#535353"
+                android:layout_margin="10dp"
+                android:id="@+id/othersaved"
+                android:visibility="gone"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:text="Other Saved Address"/>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/fav"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+        </android.support.v7.widget.RecyclerView>
+        <Button
+            android:layout_width="match_parent"
+            android:text="+ More Saved Places"
+            android:id="@+id/add_more_place"
+            android:background="@android:color/transparent"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_alignParentBottom="true"
+            android:layout_height="wrap_content" />
+        </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
+    </LinearLayout>
+
+
+</RelativeLayout>

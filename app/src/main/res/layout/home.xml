@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFECECEC"
+    android:id="@+id/constraintLayout"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.v7.widget.CardView
+        app:layout_constraintTop_toTopOf="@+id/constraintLayout"
+        android:id="@+id/card1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        app:cardCornerRadius="5dp"
+        app:cardUseCompatPadding="true"
+      >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.eleganz.msafiri.lib.RobotoMediumTextView
+                android:id="@+id/vehicle_number"
+                android:layout_width="match_parent"
+
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/fullname"
+                android:layout_centerHorizontal="true"
+                android:drawableLeft="@mipmap/ic_location"
+                android:gravity="left|center"
+                android:text="Location Details"
+                android:textColor="#043A60"
+
+                android:textColorHint="#3B3B3B"
+                android:textStyle="bold" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:weightSum="1">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight=".4"
+                    android:gravity="start"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:id="@+id/pickuploc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="From"
+                        android:textColor="@android:color/darker_gray"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/from_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/colorPrimaryDark"
+                        android:hint="Pickup Location "
+                        android:singleLine="true"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                        android:textColor="@android:color/black"
+
+                        android:textColorHint="@android:color/darker_gray" />
+
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_weight=".2"
+                    android:padding="5dp"
+                    android:src="@drawable/transfer" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight=".4"
+                    android:gravity="left"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="To"
+                        android:textColor="@android:color/darker_gray"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/colorPrimaryDark"
+
+                        android:hint="Destination Location "
+                        android:singleLine="true"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                        android:textColor="@android:color/black"
+                        android:textColorHint="@android:color/darker_gray" />
+
+
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        app:cardUseCompatPadding="true"
+        app:cardCornerRadius="5dp"
+        android:layout_margin="5dp"
+        android:id="@+id/card2"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/card1"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
+            <com.eleganz.msafiri.lib.RobotoMediumTextView
+                android:layout_width="match_parent"
+
+                android:layout_height="wrap_content"
+                android:drawableLeft="@mipmap/ic_cal"
+                android:gravity="left|center"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/fullname"
+                android:text="Date"
+                android:textColor="#043A60"
+android:layout_weight="1"
+                android:textColorHint="#3B3B3B"
+                android:textStyle="bold" />
+
+            <com.eleganz.msafiri.lib.RobotoMediumTextView
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+android:layout_gravity="right"
+                android:layout_height="wrap_content"
+                android:drawableRight="@mipmap/ic_down_arrow"
+                android:gravity="right|center"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/fullname"
+                android:text="05th May 2017"
+                android:textColor="#043A60"
+
+                android:textColorHint="#3B3B3B"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <LinearLayout
+        android:id="@+id/card3"
+        app:layout_constraintTop_toBottomOf="@+id/card2"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="wrap_content"
+            app:cardCornerRadius="5dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            app:cardUseCompatPadding="true"
+            android:layout_height="wrap_content"
+
+            >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+                <com.eleganz.msafiri.lib.RobotoMediumTextView
+                    android:layout_width="wrap_content"
+
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@mipmap/ic_cartype"
+                    android:gravity="left|center"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@+id/fullname"
+                    android:text="Type"
+                    android:textColor="#043A60"
+                    android:textColorHint="#3B3B3B"
+                    android:textStyle="bold" />
+
+                <com.eleganz.msafiri.lib.RobotoMediumTextView
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_marginLeft="15dp"
+                    android:layout_height="wrap_content"
+                    android:drawableRight="@mipmap/ic_down_arrow"
+                    android:gravity="right|center"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@+id/fullname"
+                    android:text="A/C"
+                    android:textColor="#043A60"
+
+                    android:textColorHint="#3B3B3B"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+        <android.support.v7.widget.CardView
+            android:layout_width="wrap_content"
+            app:cardCornerRadius="5dp"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+app:cardUseCompatPadding="true"            android:layout_height="wrap_content"
+
+            >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+
+                <com.eleganz.msafiri.lib.RobotoMediumTextView
+                    android:layout_width="wrap_content"
+
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/fullname"
+                    android:layout_centerHorizontal="true"
+                    android:drawableLeft="@mipmap/ic_seats"
+                    android:gravity="left|center"
+                    android:text="Seats"
+                    android:textColor="#043A60"
+                    android:textColorHint="#3B3B3B"
+                    android:textStyle="bold" />
+
+                <com.eleganz.msafiri.lib.RobotoMediumTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/fullname"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="right"
+                    android:layout_marginLeft="15dp"
+                    android:drawableRight="@mipmap/ic_down_arrow"
+                    android:gravity="right|center"
+                    android:text="06"
+                    android:textColor="#043A60"
+
+                    android:textColorHint="#3B3B3B"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+    </LinearLayout>
+
+    <Button
+        app:layout_constraintTop_toBottomOf="@+id/card3"
+android:background="@drawable/bt_background"
+        android:text="SEARCH"
+        android:id="@+id/searchbtn"
+      android:layout_margin="5dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textColor="@android:color/white"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content" />
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="10dp"
+
+        android:layout_marginRight="5dp"
+        app:cardUseCompatPadding="true"
+        app:layout_constraintTop_toBottomOf="@+id/searchbtn"
+
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="@+id/searchbtn">
+
+            <com.eleganz.msafiri.lib.RobotoMediumTextView
+                android:layout_width="match_parent"
+
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/fullname"
+                android:layout_centerHorizontal="true"
+                android:drawableLeft="@mipmap/ic_flag"
+                android:gravity="left|center"
+                android:text="Favourites Routes"
+                android:textColor="#043A60"
+
+                android:textColorHint="#3B3B3B"
+                android:textStyle="bold" />
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </android.support.v7.widget.RecyclerView>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+</android.support.constraint.ConstraintLayout>

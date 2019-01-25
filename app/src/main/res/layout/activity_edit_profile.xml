@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#fff"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#fff"
+        tools:context="com.example.dell.newapp.Settings">
+
+
+        <android.support.v7.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:id="@+id/toolbar"
+            app:contentInsetEnd="0dp"
+            app:contentInsetLeft="0dp"
+            app:contentInsetRight="0dp"
+            app:contentInsetStart="0dp"
+            app:contentInsetStartWithNavigation="0dp"
+            app:contentInsetEndWithActions="0dp"
+            android:layout_alignParentTop="true"
+            android:background="@color/colorPrimaryDark">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
+                <ImageView
+                    android:layout_gravity="start"
+                    android:id="@+id/back"
+                    android:padding="10dp"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <com.eleganz.msafiri.lib.RobotoMediumTextView
+                    android:layout_centerInParent="true"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+
+                    android:textStyle="bold"
+                    android:text="Edit Profile"
+                    android:textColor="@android:color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+
+            </RelativeLayout>
+        </android.support.v7.widget.Toolbar>
+
+        <LinearLayout
+            android:id="@+id/header"
+            android:layout_below="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#f7f7f7"
+
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_below="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:orientation="vertical">
+
+
+                    <LinearLayout
+                        android:id="@+id/pic_layout"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:layout_margin="15dp"
+                        android:scaleType="centerInside"
+                        android:orientation="vertical" >
+
+                        <ImageView
+                            android:transitionName="simple_activity_transition"
+
+                            android:id="@+id/profile_pic"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:src="@drawable/pr" />
+
+
+
+                    </LinearLayout>
+
+
+
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#a1a1a1"></View>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/content"
+            android:layout_below="@+id/header"
+            android:focusableInTouchMode="true"
+            android:layout_margin="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#fff"
+            >
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:errorTextAppearance="@style/error_appearance"
+                        app:hintTextAppearance="@style/TextAppearance.AppCompat.Small"
+                        >
+                        <EditText
+                            android:id="@+id/fname"
+                            android:layout_width="match_parent"
+                            android:maxLines="1"
+                            android:inputType="textPersonName"
+                            android:layout_height="wrap_content"
+                            android:hint="First Name"
+                            android:textColorHint="#878787"
+                            />
+                    </android.support.design.widget.TextInputLayout>
+
+
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:errorTextAppearance="@style/error_appearance"
+                app:hintTextAppearance="@style/TextAppearance.AppCompat.Small"
+                >
+                <EditText
+                    android:id="@+id/lname"
+                    android:layout_width="match_parent"
+                    android:maxLines="1"
+                    android:inputType="textPersonName"
+
+                    android:layout_height="wrap_content"
+                    android:hint="Last Name"
+                    android:textColorHint="#878787"
+                    />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:errorTextAppearance="@style/error_appearance"
+                app:hintTextAppearance="@style/TextAppearance.AppCompat.Small"
+                >
+                <EditText
+                    android:id="@+id/email"
+                    android:layout_width="match_parent"
+                    android:maxLines="1"
+                    android:focusable="false"
+                    android:inputType="textEmailAddress"
+                    android:layout_height="wrap_content"
+                    android:hint="Email"
+                    android:textColorHint="#878787"
+                    />
+            </android.support.design.widget.TextInputLayout>
+
+
+<android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:errorTextAppearance="@style/error_appearance"
+                app:hintTextAppearance="@style/TextAppearance.AppCompat.Small"
+                >
+                <EditText
+                    android:id="@+id/ch_password"
+                    android:layout_width="match_parent"
+                    android:maxLines="1"
+                    android:inputType="textPassword"
+                    android:focusable="false"
+                    android:layout_height="wrap_content"
+                    android:text="Password"
+                    android:textColorHint="#878787"
+                    />
+            </android.support.design.widget.TextInputLayout>
+
+
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:errorTextAppearance="@style/error_appearance"
+                app:hintTextAppearance="@style/TextAppearance.AppCompat.Small"
+                >
+                <EditText
+                    android:id="@+id/phone"
+                    android:layout_width="match_parent"
+                    android:maxLines="1"
+                    android:inputType="phone"
+                    android:layout_height="wrap_content"
+                    android:hint="Phone Number"
+                    android:textColorHint="#878787"
+                    />
+            </android.support.design.widget.TextInputLayout>
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_below="@+id/content"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:layout_gravity="bottom"
+            android:id="@+id/findride"
+            android:layout_margin="35dp"
+            android:layout_marginBottom="?attr/actionBarSize"
+            android:background="@drawable/button_bg_shadow">
+
+            <com.eleganz.msafiri.lib.RobotoMediumTextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Save"
+                android:id="@+id/updateData"
+                android:padding="12dp"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textColor="#fff"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+</ScrollView>

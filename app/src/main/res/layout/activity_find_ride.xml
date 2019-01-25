@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:focusableInTouchMode="true"
+    android:layout_height="match_parent"
+    tools:context="com.eleganz.msafiri.FindRideActivity">
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:id="@+id/toolbar"
+        app:contentInsetEnd="0dp"
+        app:contentInsetLeft="0dp"
+        app:contentInsetRight="0dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetStartWithNavigation="0dp"
+        app:contentInsetEndWithActions="0dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/colorPrimaryDark">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+            <ImageView
+                android:layout_gravity="start"
+                android:id="@+id/back"
+                android:padding="10dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <com.eleganz.msafiri.lib.RobotoMediumTextView
+                android:layout_centerInParent="true"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+
+                android:textStyle="bold"
+                android:text="Select Ride"
+                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+<!--
+            <ImageView
+                android:layout_width="20dp"
+                android:visibility="gone"
+                android:id="@+id/filterimg"
+                android:scaleType="centerInside"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_gravity="center"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:src="@drawable/filter" />-->
+
+
+        </RelativeLayout>
+    </android.support.v7.widget.Toolbar>
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+app:elevation="0dp"
+        android:elevation="0dp"
+        android:id="@+id/fab1"
+        app:borderWidth="0dp"
+        android:src="@drawable/ic_filters"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        app:backgroundTint="@color/colorPrimaryDark"
+        android:layout_height="?attr/actionBarSize" />
+    <FrameLayout
+        android:layout_below="@+id/toolbar"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/shimmerLayout"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/shimmer_layout"></include>
+                    <include layout="@layout/shimmer_layout"></include>
+
+
+                </LinearLayout>
+            </com.facebook.shimmer.ShimmerFrameLayout>
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:dividerHeight="0dp"
+                android:divider="@null"
+                android:id="@+id/findridelist"></ListView>
+
+
+        </LinearLayout>
+
+
+        <TextView
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:visibility="gone"
+            android:id="@+id/txtno_data"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="No Driver Available"/>
+
+         </FrameLayout>
+</RelativeLayout>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/c1"
+
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:gravity="center"
+        android:padding="10dp"
+       >
+
+        <LinearLayout
+            android:layout_centerVertical="true"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:id="@+id/link"
+            android:layout_alignParentLeft="true"
+            android:orientation="vertical">
+
+
+
+            <com.eleganz.msafiri.lib.RobotoMediumTextView
+                android:id="@+id/fav_pickup"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:text="Pickup Location"
+                android:singleLine="true"
+
+
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="#6b6b6b"
+
+                android:textColorHint="@android:color/darker_gray" />
+
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:padding="5dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/transfer" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+
+            android:layout_alignParentRight="true"
+            android:gravity="right"
+            android:orientation="vertical">
+
+
+                <com.eleganz.msafiri.lib.RobotoMediumTextView
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPrimaryDark"
+android:id="@+id/fav_des"
+                android:text="Destination Location"
+                android:singleLine="true"
+
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="#6b6b6b"
+                android:textColorHint="@android:color/darker_gray" />
+
+
+        </LinearLayout>
+    </RelativeLayout>
+
+
+    <View
+        app:layout_constraintBottom_toBottomOf="@+id/c1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+       android:background="#cecece"
+        />
+</android.support.constraint.ConstraintLayout>

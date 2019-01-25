@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "539677876010",
+    "firebase_url": "https://msafiri-222413.firebaseio.com",
+    "project_id": "msafiri-222413",
+    "storage_bucket": "msafiri-222413.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:539677876010:android:d457f5e7a8b9f619",
+        "android_client_info": {
+          "package_name": "com.eleganz.msafiri"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "539677876010-rroirp0rq2d9tis7rpipojabq8ehbn5p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5ZfN2HnhYwKIWUSmCvoHGEilZELTfZCI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,116 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:background="#ffffff"
+    android:layout_height="wrap_content" >
+    <LinearLayout
+        android:background="@color/colorPrimaryDark"
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentTop="true"
+        android:id="@+id/title"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Filters"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            android:textColor="#fff"
+            android:layout_gravity="center"
+            android:gravity="center_vertical"
+            android:paddingLeft="20dp"
+            />
+
+    </LinearLayout>
+    <RadioGroup
+        android:layout_below="@+id/title"
+
+        android:id="@+id/rg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <RadioButton
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+        android:buttonTint="@color/colorPrimaryDark"
+        android:id="@+id/rd_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+
+        android:layoutDirection="rtl"
+        android:textAlignment="textStart"
+        android:layout_gravity="start"
+        android:drawablePadding="30dp"
+        android:textSize="20dip"
+        android:gravity="right"
+        android:text="Price" />
+        <!--<View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>-->
+
+    <RadioButton
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+        android:buttonTint="@color/colorPrimaryDark"
+
+        android:id="@+id/rd_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layoutDirection="rtl"
+        android:textAlignment="textStart"
+        android:layout_gravity="start"
+        android:drawablePadding="30dp"
+        android:textSize="20dip"
+        android:gravity="right"
+        android:text="Pick Up" />
+        <!--<View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>-->
+    <RadioButton
+        android:buttonTint="@color/colorPrimaryDark"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+
+        android:id="@+id/rd_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layoutDirection="rtl"
+        android:textAlignment="textStart"
+        android:layout_gravity="start"
+        android:drawablePadding="30dp"
+        android:textSize="20dip"
+        android:gravity="right"
+        android:text="Rating" />
+       <!-- <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>-->
+    <RadioButton
+        android:buttonTint="@color/colorPrimaryDark"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+        android:id="@+id/rd_4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layoutDirection="rtl"
+        android:textAlignment="textStart"
+        android:layout_gravity="start"
+        android:drawablePadding="30dp"
+        android:textSize="20dip"
+        android:gravity="right"
+        android:text="Travel Time" />
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/btn"
+        android:background="#043A60"
+        android:textColor="@android:color/white"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rg"
+        android:layout_centerInParent="true"
+        android:text="OK"
+        />
+</RelativeLayout>

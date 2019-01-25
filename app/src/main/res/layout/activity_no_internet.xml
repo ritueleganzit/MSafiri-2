@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.eleganz.msafiri.utils.NoInternet">
+
+
+
+    <ImageView
+        android:layout_width="64dp"
+        android:id="@+id/im"
+        android:layout_centerInParent="true"
+        android:layout_height="64dp"
+        android:src="@drawable/no_wifi"/>
+    <com.eleganz.msafiri.lib.RobotoMediumTextView
+        android:layout_width="wrap_content"
+        android:layout_below="@+id/im"
+        android:layout_marginTop="10dp"
+        android:id="@+id/cnt"
+        android:textColor="#000"
+        android:text="@string/cant_connect"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content" />
+
+    <com.eleganz.msafiri.lib.RobotoMediumTextView
+        android:layout_width="wrap_content"
+        android:layout_below="@+id/cnt"
+        android:id="@+id/cnt1"
+        android:layout_marginTop="5dp"
+        android:text="@string/no_internet"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content" />
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:id="@+id/cnt2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+android:background="@drawable/btn_border"
+        android:text="RETRY"
+        android:textColor="@color/colorPrimary"
+        android:layout_below="@+id/cnt1"
+        android:layout_height="30dp" />
+</RelativeLayout>

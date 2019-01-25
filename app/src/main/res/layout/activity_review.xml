@@ -1,0 +1,129 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/frame"
+    android:background="@color/colorPrimaryDark"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:id="@+id/toolbar"
+        app:contentInsetEnd="0dp"
+        app:contentInsetLeft="0dp"
+        app:contentInsetRight="0dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetStartWithNavigation="0dp"
+        app:contentInsetEndWithActions="0dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/colorPrimaryDark">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+            <ImageView
+                android:layout_gravity="start"
+                android:id="@+id/back"
+                android:padding="10dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <com.eleganz.msafiri.lib.RobotoMediumTextView
+                android:layout_centerInParent="true"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+
+                android:textStyle="bold"
+                android:text="Review"
+                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+    </android.support.v7.widget.Toolbar>
+    <com.google.android.gms.maps.MapView
+
+
+        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:id="@+id/map">
+
+    </com.google.android.gms.maps.MapView>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="335dp"
+        android:layout_alignParentBottom="true"
+
+        android:layout_gravity="bottom">
+
+        <LinearLayout android:id="@+id/layoutBottom"
+            android:layout_width="match_parent"
+            android:layout_height="310dp"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/backgroundwhite"
+            xmlns:android="http://schemas.android.com/apk/res/android">
+
+            <RatingBar
+                android:id="@+id/ratingBar"
+                android:theme="@style/ReviewRatingBar"
+                android:numStars="5"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="50dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|center_horizontal"></RatingBar>
+
+            <com.eleganz.msafiri.lib.RobotoMediumTextView
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="10dp"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:layout_height="wrap_content"
+                android:text="How was your ride"/>
+            <EditText
+                android:layout_marginBottom="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lines="4"
+                android:gravity="start"
+                android:hint="Comments to driver"
+                android:textAlignment="textStart"
+                android:background="@drawable/myedittext"
+                android:layout_below="@+id/ratingBar"/>
+            <Button
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/lin5"
+                android:text="Submit"
+                android:id="@+id/btnrating"
+                android:layout_alignParentBottom="true"
+                android:textColor="@android:color/white"
+                android:background="#0D3A61"/>
+
+        </LinearLayout>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/fab"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center|center_horizontal"
+            android:src="@drawable/user_image"
+            app:civ_circle_background_color="@color/colorPrimary"
+            app:elevation="6dp"
+            />
+
+
+
+    </RelativeLayout>
+
+
+
+</FrameLayout>

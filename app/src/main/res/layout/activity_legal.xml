@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.eleganz.msafiri.Legal">
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:id="@+id/toolbar"
+        app:contentInsetRight="0dp"
+        app:contentInsetLeft="0dp"
+        app:contentInsetEnd="0dp"
+        app:contentInsetStart="0dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/colorPrimaryDark">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <ImageView
+                android:layout_gravity="start"
+                android:id="@+id/back"
+                android:src="@drawable/ic_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <com.eleganz.msafiri.lib.RobotoMediumTextView
+                android:layout_centerInParent="true"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+
+                android:textStyle="bold"
+                android:text="Legal"
+                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+    </android.support.v7.widget.Toolbar>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_below="@+id/toolbar"
+        android:id="@+id/list"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:layout_height="wrap_content">
+
+
+            <ImageView
+                android:scaleType="centerInside"
+                android:layout_width="28dp"
+                android:layout_marginRight="5dp"
+                android:layout_height="28dp" />
+            <com.eleganz.msafiri.lib.RobotoMediumTextView
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:textColor="#000"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:text="Copyright"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#d2d2d2"></View>
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:layout_height="wrap_content">
+
+
+            <ImageView
+                android:scaleType="centerInside"
+                android:layout_width="28dp"
+                android:layout_marginRight="5dp"
+                android:layout_height="28dp" />
+            <com.eleganz.msafiri.lib.RobotoMediumTextView
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:textColor="#000"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:text="Terms &amp; Conditions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#d2d2d2"></View>
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:layout_height="wrap_content">
+
+
+            <ImageView
+                android:scaleType="centerInside"
+                android:layout_width="28dp"
+                android:layout_marginRight="5dp"
+                android:layout_height="28dp" />
+            <com.eleganz.msafiri.lib.RobotoMediumTextView
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:textColor="#000"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:text="Privacy Policy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#d2d2d2"></View>
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:layout_height="wrap_content">
+
+
+            <ImageView
+                android:scaleType="centerInside"
+                android:layout_width="28dp"
+                android:layout_marginRight="5dp"
+                android:layout_height="28dp" />
+            <com.eleganz.msafiri.lib.RobotoMediumTextView
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:text="Data Providers"
+                android:textColor="#000"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#d2d2d2"></View>
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:layout_height="wrap_content">
+
+
+            <ImageView
+                android:scaleType="centerInside"
+                android:layout_width="28dp"
+                android:layout_marginRight="5dp"
+                android:layout_height="28dp" />
+            <com.eleganz.msafiri.lib.RobotoMediumTextView
+                android:layout_weight="1"
+                android:textColor="#000"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:layout_gravity="center"
+                android:text="Software Licenses"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#d2d2d2"></View>
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:layout_height="wrap_content">
+
+
+            <ImageView
+                android:id="@+id/legalimg"
+                android:scaleType="centerInside"
+                android:layout_width="28dp"
+                android:layout_marginRight="5dp"
+                android:layout_height="28dp" />
+            <com.eleganz.msafiri.lib.RobotoMediumTextView
+                android:layout_weight="1"
+                android:textColor="#000"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:layout_gravity="center"
+                android:text="Location Information"
+                android:id="@+id/legaldata"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#d2d2d2"></View>
+
+    </LinearLayout>
+</RelativeLayout>

@@ -1,0 +1,384 @@
+package com.eleganz.msafiri;
+
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.AsyncTask;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.RatingBar;
+import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.eleganz.msafiri.lib.RobotoMediumTextView;
+import com.eleganz.msafiri.session.SessionManager;
+import com.eleganz.msafiri.utils.DirectionsJSONParser;
+import com.eleganz.msafiri.utils.HistoryData;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+
+public class TripActivity extends AppCompatActivity implements OnMapReadyCallback {
+    SessionManager sessionManager;
+    String user_id;
+
+    MapView mapView;
+    private String TAG="TripActivity";
+HistoryData historyData;
+CircleImageView driver_fab;
+TextView pickuploc,pickuplocaddress,destloc,destlocaddress,comment,trip_rate;
+RatingBar ratingBar;
+RobotoMediumTextView driver_txt1,vehicle_tx1,calculate_time;
+GoogleMap map;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_trip);
+        ImageView back=findViewById(R.id.back);
+        mapView= (MapView) findViewById(R.id.map);
+        sessionManager=new SessionManager(TripActivity.this);
+
+        sessionManager.checkLogin();
+
+        Log.d(TAG,"oncreate");
+
+        HashMap<String, String> userData=sessionManager.getUserDetails();
+        user_id=userData.get(SessionManager.USER_ID);
+        ratingBar=findViewById(R.id.ratingBar);
+        pickuploc=findViewById(R.id.pickuploc);
+        pickuplocaddress=findViewById(R.id.pickuplocaddress);
+        destlocaddress=findViewById(R.id.destlocaddress);
+        destloc=findViewById(R.id.destloc);
+        comment=findViewById(R.id.comment);
+        driver_fab=findViewById(R.id.driver_fab);
+        driver_txt1=findViewById(R.id.driver_txt1);
+        vehicle_tx1=findViewById(R.id.vehicle_tx1);
+        calculate_time=findViewById(R.id.calculate_time);
+
+        trip_rate=findViewById(R.id.trip_rate);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+        mapView.getMapAsync(this);
+
+        if(mapView != null)
+        {
+            mapView.onCreate(null);
+            mapView.onResume();
+            mapView.getMapAsync(this);
+        }
+
+        historyData= (HistoryData) getIntent().getSerializableExtra("historyData");
+        if (historyData.getRating().equalsIgnoreCase("")) {
+            Log.d("kkklll", "--" + historyData.getFrom_lng());
+        }
+        else {
+            ratingBar.setRating(Float.parseFloat(historyData.getRating()));
+        }
+
+     //
+              pickuploc.setText(""+historyData.getFrom_title());
+
+              pickuplocaddress.setText(""+historyData.getFrom_address());
+                     destloc.setText(""+historyData.getTo_title());
+                      destlocaddress.setText(""+historyData.getTo_address());
+                      comment.setText(""+historyData.getComments());
+        driver_txt1.setText(""+historyData.getFullname());
+        vehicle_tx1.setText(""+historyData.getVehicle_name());
+        calculate_time.setText(""+historyData.getCalculate_time());
+        if (historyData.getTrip_price().equalsIgnoreCase("")) {
+            Log.d("kkklll", "--" + historyData.getTrip_price());
+        }
+        else {
+            trip_rate.setText(""+historyData.getTrip_price());
+        }
+
+
+
+        Glide.with(TripActivity.this).load(""+historyData.getPhoto()).apply(new RequestOptions().placeholder(R.drawable.male)).into(driver_fab);
+       // trip_rate.setText(""+historyData.getTrip_price());
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        map=googleMap;
+        MapsInitializer.initialize(getApplicationContext());
+        map.getUiSettings().setAllGesturesEnabled(true);
+
+        boolean success = map.setMapStyle(
+                MapStyleOptions.loadRawResourceStyle(
+                        getApplicationContext(), R.raw.style_json));
+
+        if (!success) {
+            Log.e("MainAct", "Style parsing failed.");
+        }
+        Log.e("ddddddd", "Style parsing failed.");
+        Log.d("drawRoute", "--" + historyData.getFrom_lng());
+        map.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            @Override
+            public void onMapLoaded() {
+                drawRoute(historyData.getFrom_lat(), historyData.getFrom_lng(), historyData.getTo_lat(), historyData.getTo_lng());
+            }
+        });
+
+       /* LatLng india=new LatLng(Double.parseDouble(historyData.getFrom_lat()),Double.parseDouble(historyData.getFrom_lng()));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(india));
+
+
+        googleMap.animateCamera(CameraUpdateFactory.zoomTo(5.0f));*/
+
+
+
+    }
+    private class DownloadTask extends AsyncTask<String,String,String> {
+
+        @Override
+        protected String doInBackground(String... url) {
+
+            String data = "";
+
+            try {
+                data = downloadUrl(url[0]);
+            } catch (Exception e) {
+                Log.d("Background Task", e.toString());
+            }
+            return data;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            ParserTask parserTask = new ParserTask();
+
+
+            parserTask.execute(result);
+        }
+    }
+
+    private class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String,String>>>> {
+
+        // Parsing the data in non-ui thread
+        @Override
+        protected List<List<HashMap<String,String>>> doInBackground(String... jsonData) {
+
+            JSONObject jObject;
+            List<List<HashMap<String,String>>> routes = null;
+
+            try {
+                jObject = new JSONObject(jsonData[0]);
+                DirectionsJSONParser parser = new DirectionsJSONParser();
+
+                routes = parser.parse(jObject);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return routes;
+        }
+
+        @Override
+        protected void onPostExecute(List<List<HashMap<String,String>>> result) {
+            ArrayList points  = new ArrayList();
+            PolylineOptions lineOptions = new PolylineOptions();
+            MarkerOptions markerOptions = new MarkerOptions();
+
+            for (int i = 0; i < result.size(); i++) {
+
+
+
+                List<HashMap<String,String>> path = result.get(i);
+
+                for (int j = 0; j < path.size(); j++) {
+                    HashMap<String,String> point = path.get(j);
+
+                    double lat = Double.parseDouble(point.get("lat"));
+                    double lng = Double.parseDouble(point.get("lng"));
+                    LatLng position = new LatLng(lat, lng);
+
+                    points.add(position);
+                }
+
+                lineOptions.addAll(points);
+                lineOptions.width(10);
+                lineOptions.color(Color.parseColor("#4885ed"));
+                lineOptions.geodesic(true);
+
+            }
+
+// Drawing polyline in the Google Map for the i-th route
+            map.addPolyline(lineOptions);
+
+        }
+    }
+
+
+    private void drawRoute(String from_lat, String from_lng, String to_lat, String to_lng) {
+
+        LatLng origin = new LatLng(Double.parseDouble(from_lat), Double.parseDouble(from_lng));
+        LatLng destination = new LatLng(Double.parseDouble(to_lat), Double.parseDouble(to_lng));
+        ArrayList<Marker> mMarkerArray = new ArrayList<Marker>();
+        MarkerOptions options = new MarkerOptions();
+        // Setting the position of the marker
+        options.position(origin);
+
+        BitmapDrawable bitmapdraw=(BitmapDrawable)getResources().getDrawable(R.drawable.location_green);
+        Bitmap b=bitmapdraw.getBitmap();
+        Bitmap firstMarker = Bitmap.createScaledBitmap(b, 70   , 70, false);
+
+
+        BitmapDrawable bitmapdraw2=(BitmapDrawable)getResources().getDrawable(R.drawable.location_red);
+        Bitmap b2=bitmapdraw2.getBitmap();
+        Bitmap firstMarker2 = Bitmap.createScaledBitmap(b2, 70   , 70, false);
+
+
+
+        Marker amarker1=    map.addMarker(options.icon(BitmapDescriptorFactory.fromBitmap(firstMarker)));
+        MarkerOptions options2 = new MarkerOptions();
+
+        // Setting the position of the marker
+        options2.position(destination);
+        Marker amarker2=    map.addMarker(options2.icon(BitmapDescriptorFactory.fromBitmap(firstMarker2)));
+
+        mMarkerArray.add(amarker1);
+        mMarkerArray.add(amarker2);
+
+       LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for (Marker marker : mMarkerArray) {
+            builder.include(marker.getPosition());
+        }
+        LatLngBounds bounds = builder.build();
+        int padding = 80; // offset from edges of the map in pixels
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+        map.moveCamera(cu);
+        map.animateCamera(cu);
+        String url = getDirectionsUrl(origin, destination);
+        DownloadTask downloadTask = new DownloadTask();
+
+        // Start downloading json data from Google Directions API
+        downloadTask.execute(url);
+    }
+    private String getDirectionsUrl(LatLng origin, LatLng dest) {
+
+        // Origin of route
+        String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
+
+        // Destination of route
+        String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
+
+        // Sensor enabled
+        String sensor = "sensor=false";
+        String mode = "mode=driving";
+
+        // Building the parameters to the web service
+        String parameters = str_origin + "&" + str_dest + "&" + sensor + "&" + mode;
+
+        // Output format
+        String output = "json";
+
+        // Building the url to the web service
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters+"&key=AIzaSyAlfxVsErR9EwJwhLaEmEJnm2kZMhMrovU";
+
+        Log.d("theurl",url);
+        return url;
+    }
+
+    private String downloadUrl(String strUrl) throws IOException {
+        String data = "";
+        InputStream iStream = null;
+        HttpURLConnection urlConnection = null;
+        try {
+            URL url = new URL(strUrl);
+
+            urlConnection = (HttpURLConnection) url.openConnection();
+
+            urlConnection.connect();
+
+            iStream = urlConnection.getInputStream();
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
+
+            StringBuffer sb = new StringBuffer();
+
+            String line = "";
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+
+            data = sb.toString();
+            Log.d("Exceptiondata", data);
+
+            JSONObject jsonObject=new JSONObject(""+data);
+            JSONArray jsonArray=jsonObject.getJSONArray("routes");
+
+            for (int i=0;i<jsonArray.length();i++)
+            {
+
+                JSONObject childObject=jsonArray.getJSONObject(i);
+
+                JSONArray jsonArray1=childObject.getJSONArray("legs");
+                for (int j=0;j<jsonArray1.length();j++)
+                {
+                    JSONObject jsonObject1=jsonArray1.getJSONObject(i);
+                    Log.d("Exceptiondataaa",jsonObject1.getJSONObject("distance").getString("text"));
+
+                   // durationtxt=jsonObject1.getJSONObject("duration").getString("text");
+
+
+                }
+
+            }
+
+
+          //  Log.d("Exceptiondataaao",durationtxt);
+           /* runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    duration.setText(""+durationtxt+", away");
+                    //   CaptureMapScreen();
+                }
+            });
+*/
+            br.close();
+
+        } catch (Exception e) {
+            Log.d("Exception", e.toString());
+        } finally {
+            iStream.close();
+            urlConnection.disconnect();
+        }
+        return data;
+    }
+
+}
