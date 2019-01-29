@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +25,7 @@ import com.eleganz.msafiri.lib.ArrayAdapterWithIcon;
 import com.eleganz.msafiri.lib.RobotoMediumTextView;
 import com.eleganz.msafiri.session.SessionManager;
 import com.eleganz.msafiri.utils.ApiInterface;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,6 +56,8 @@ public class RegisterationActivity extends AppCompatActivity {
     private ImageView progress;
     LinearLayout progressBar;
     private String TAG="RegisterationActivity";
+    private String Token;
+    private String devicetoken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,13 +117,47 @@ public class RegisterationActivity extends AppCompatActivity {
 
             }
         });
+        Thread t=new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Token= FirebaseInstanceId.getInstance().getToken();
+                if (Token!=null)
+                {
+                    Log.d("mytokenn", Token);
+
+                    devicetoken=Token;
+                    StrictMode.ThreadPolicy threadPolicy = new StrictMode.ThreadPolicy.Builder().build();
+                    StrictMode.setThreadPolicy(threadPolicy);
+                    try {
+                        JSONObject jsonObject=new JSONObject(Token);
+                        Log.d("mytoken", jsonObject.getString("token"));
+                        //devicetoken=jsonObject.getString("token");
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    //getLoginBoth(Token);
+
+                }
+                else
+                {
+                    Toast.makeText(RegisterationActivity.this, "No token", Toast.LENGTH_SHORT).show();
+                }
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });t.start();
     }
 
     private void registerUser() {
+        Log.d("mytokenr", Token);
         final StringBuilder stringBuilder=new StringBuilder();
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(BASEURL).build();
         final ApiInterface apiInterface = restAdapter.create(ApiInterface.class);
-        apiInterface.registerUser(email.getText().toString(), password.getText().toString(), "android", "", new Callback<Response>() {
+        apiInterface.registerUser(email.getText().toString(), password.getText().toString(), "android", Token, new Callback<Response>() {
             @Override
             public void success(Response response, Response response2) {
 

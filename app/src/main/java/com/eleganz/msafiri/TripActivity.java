@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.eleganz.msafiri.lib.RobotoMediumTextView;
 import com.eleganz.msafiri.session.SessionManager;
+import com.eleganz.msafiri.utils.ApiInterface;
 import com.eleganz.msafiri.utils.DirectionsJSONParser;
 import com.eleganz.msafiri.utils.HistoryData;
 import com.google.android.gms.maps.CameraUpdate;
@@ -33,6 +35,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -46,6 +49,12 @@ import java.util.HashMap;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
+import static com.eleganz.msafiri.utils.Constant.BASEURL;
 
 public class TripActivity extends AppCompatActivity implements OnMapReadyCallback {
     SessionManager sessionManager;
@@ -102,7 +111,9 @@ GoogleMap map;
 
         historyData= (HistoryData) getIntent().getSerializableExtra("historyData");
         if (historyData.getRating().equalsIgnoreCase("")) {
+
             Log.d("kkklll", "--" + historyData.getFrom_lng());
+
         }
         else {
             ratingBar.setRating(Float.parseFloat(historyData.getRating()));
@@ -133,7 +144,7 @@ GoogleMap map;
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        map=googleMap;
+        map = googleMap;
         MapsInitializer.initialize(getApplicationContext());
         map.getUiSettings().setAllGesturesEnabled(true);
 
@@ -158,6 +169,18 @@ GoogleMap map;
 
 
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(5.0f));*/
+        final Handler handler1 = new Handler();
+        handler1.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                Log.d(TAG + "mmmmm", "" + System.currentTimeMillis());
+                getSingleTripData();
+                handler1.postDelayed(this,30000);
+
+            }
+        }, 30000);
+
 
 
 
@@ -314,6 +337,8 @@ GoogleMap map;
         return url;
     }
 
+
+
     private String downloadUrl(String strUrl) throws IOException {
         String data = "";
         InputStream iStream = null;
@@ -379,6 +404,58 @@ GoogleMap map;
             urlConnection.disconnect();
         }
         return data;
+    }
+
+    private void getSingleTripData() {
+        final StringBuilder stringBuilder=new StringBuilder();
+        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(BASEURL).build();
+        final ApiInterface apiInterface = restAdapter.create(ApiInterface.class);
+        apiInterface.getSingleTripData(historyData.getTrip_id(), new Callback<Response>() {
+            @Override
+            public void success(Response response, Response response2) {
+                try {
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(response.getBody().in()));
+                    String line;
+                    while ((line = bufferedReader.readLine()) != null) {
+                        stringBuilder.append(line);
+                    }
+                    Log.d(TAG,""+stringBuilder);
+                    JSONObject jsonObject=new JSONObject(""+stringBuilder);
+                    if (jsonObject.getString("message").equalsIgnoreCase("success"))
+                    {
+                        JSONArray jsonArray=jsonObject.getJSONArray("data");
+                        for (int i=0;i<jsonArray.length();i++) {
+                            JSONObject childObjct = jsonArray.getJSONObject(i);
+
+
+
+
+
+
+                        }
+
+                    }
+                    else
+                    {
+
+                    }
+
+
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+
+
     }
 
 }

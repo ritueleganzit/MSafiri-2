@@ -30,33 +30,33 @@ import retrofit.client.Response;
 import static com.eleganz.msafiri.utils.Constant.BASEURL;
 
 public class TellYourDriverActivity extends AppCompatActivity {
-    private static final String TAG ="TellYourDriverActivityLog" ;
+    private static final String TAG = "TellYourDriverActivityLog";
     SessionManager sessionManager;
-    CurrentTripSession  currentTripSession;
-    String user_id,trip_id,driver_id;
-    EditText musicpref,medicalhistory;
-    Button  btnsubmitpref;
+    CurrentTripSession currentTripSession;
+    String user_id, trip_id, driver_id;
+    EditText musicpref, medicalhistory;
+    Button btnsubmitpref;
     SpotsDialog spotsDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tell_your_driver);
-        ImageView back=findViewById(R.id.back);
-        musicpref=findViewById(R.id.musicpref);
-        medicalhistory=findViewById(R.id.medicalhistory);
-        btnsubmitpref=findViewById(R.id.btnsubmitpref);
-        sessionManager=new SessionManager(TellYourDriverActivity.this);
-        currentTripSession=new CurrentTripSession(TellYourDriverActivity.this);
+        ImageView back = findViewById(R.id.back);
+        musicpref = findViewById(R.id.musicpref);
+        medicalhistory = findViewById(R.id.medicalhistory);
+        btnsubmitpref = findViewById(R.id.btnsubmitpref);
+        sessionManager = new SessionManager(TellYourDriverActivity.this);
+        currentTripSession = new CurrentTripSession(TellYourDriverActivity.this);
         sessionManager.checkLogin();
-spotsDialog=new SpotsDialog(TellYourDriverActivity.this);
+        spotsDialog = new SpotsDialog(TellYourDriverActivity.this);
 
-        HashMap<String, String> userData=sessionManager.getUserDetails();
-        user_id=userData.get(SessionManager.USER_ID);
-        currentTripSession=new CurrentTripSession(TellYourDriverActivity.this);
-        HashMap<String, String> tripData=currentTripSession.getTripDetails();
-        trip_id=tripData.get(CurrentTripSession.TRIP_ID);
-        driver_id=tripData.get(CurrentTripSession.DRIVER_ID);
+        HashMap<String, String> userData = sessionManager.getUserDetails();
+        user_id = userData.get(SessionManager.USER_ID);
+        currentTripSession = new CurrentTripSession(TellYourDriverActivity.this);
+        HashMap<String, String> tripData = currentTripSession.getTripDetails();
+        trip_id = tripData.get(CurrentTripSession.TRIP_ID);
+        driver_id = tripData.get(CurrentTripSession.DRIVER_ID);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -67,20 +67,20 @@ spotsDialog=new SpotsDialog(TellYourDriverActivity.this);
             @Override
             public void onClick(View v) {
                 spotsDialog.show();
-addPreferences();
+                addPreferences();
             }
         });
 
     }
 
-    public void addPreferences(){
-        RestAdapter restAdapter=new RestAdapter.Builder().setEndpoint(BASEURL).build();
-        ApiInterface apiInterface=restAdapter.create(ApiInterface.class);
+    public void addPreferences() {
+        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(BASEURL).build();
+        ApiInterface apiInterface = restAdapter.create(ApiInterface.class);
         apiInterface.addPreferences(driver_id, trip_id, user_id, musicpref.getText().toString(), medicalhistory.getText().toString(), new Callback<Response>() {
             @SuppressLint("LongLogTag")
             @Override
             public void success(Response response, Response response2) {
-                final StringBuilder stringBuilder=new StringBuilder();
+                final StringBuilder stringBuilder = new StringBuilder();
 
                 try {
                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(response.getBody().in()));
@@ -89,12 +89,10 @@ addPreferences();
                         stringBuilder.append(line);
                     }
 
-                    JSONObject jsonObject=new JSONObject(""+stringBuilder);
+                    JSONObject jsonObject = new JSONObject("" + stringBuilder);
 
 
-
-
-                    Log.d(TAG,""+stringBuilder);
+                    Log.d(TAG, "" + stringBuilder);
                     finish();
                     spotsDialog.dismiss();
                 } catch (IOException e) {
