@@ -242,6 +242,7 @@ callAPiActivity.doPostWithFiles(ConfirmationActivity.this, map, URLCONFIRM, phot
         String message = result.getString("message");
 
         Log.d("messageimage", message);
+        Log.d("messageimage", photoPath);
         if (message.equalsIgnoreCase("success"))
 
         {

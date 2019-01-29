@@ -89,7 +89,8 @@ public class MainActivity extends AppCompatActivity {
     SessionManager sessionManager;
     ImageView logo;
     private static final int RC_SIGN_IN = 007;
-
+    private String Token;
+    private String device_token;
     Animation flyout1, flyout2;
     private AnimationDrawable animationDrawable;
     private ImageView progress;
@@ -362,6 +363,41 @@ ProgressDialog progressDialog;
                 Log.d(TAG,"Data"+error.toString());
             }
         });
+
+
+        Thread t=new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Token= FirebaseInstanceId.getInstance().getToken();
+                if (Token!=null)
+                {
+                    Log.d("mytokenn", Token);
+
+                    device_token=Token;
+                    StrictMode.ThreadPolicy threadPolicy = new StrictMode.ThreadPolicy.Builder().build();
+                    StrictMode.setThreadPolicy(threadPolicy);
+                    try {
+                        JSONObject jsonObject=new JSONObject(Token);
+                        Log.d("mytoken", jsonObject.getString("token"));
+                        //devicetoken=jsonObject.getString("token");
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    //getLoginBoth(Token);
+
+                }
+                else
+                {
+                    Toast.makeText(MainActivity.this, "No token", Toast.LENGTH_SHORT).show();
+                }
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });t.start();
     }
     private Bundle getFacebookData(final JSONObject object, final List<String> permissionNeeds) {
         Log.d("whereeeeeee"," innnnnnnnn getFacebookData");
@@ -497,7 +533,7 @@ ProgressDialog progressDialog;
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(BASEURL).build();
         final ApiInterface apiInterface = restAdapter.create(ApiInterface.class);
 
-        apiInterface.socialLogin(login_type, email, fname, lname, "android", "", token, new Callback<Response>() {
+        apiInterface.socialLogin(login_type, email, fname, lname, "android", Token, token, new Callback<Response>() {
             @Override
             public void success(Response response, Response response2) {
                 try {
@@ -663,7 +699,7 @@ ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permis
         loginregister = findViewById(R.id.login_register);
         loginsigninwith = findViewById(R.id.login_signinwith);
         bottom = findViewById(R.id.bottom);
-loginButton=findViewById(R.id.login_button);
+        loginButton=findViewById(R.id.login_button);
         google_btn=findViewById(R.id.google_btn);
         login_facebook=findViewById(R.id.login_facebook);
 

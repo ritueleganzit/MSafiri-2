@@ -49,6 +49,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import dmax.dialog.SpotsDialog;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -59,7 +60,7 @@ import static com.eleganz.msafiri.utils.Constant.BASEURL;
 public class TripActivity extends AppCompatActivity implements OnMapReadyCallback {
     SessionManager sessionManager;
     String user_id;
-
+SpotsDialog spotsDialog;
     MapView mapView;
     private String TAG="TripActivity";
 HistoryData historyData;
@@ -92,6 +93,7 @@ GoogleMap map;
         driver_txt1=findViewById(R.id.driver_txt1);
         vehicle_tx1=findViewById(R.id.vehicle_tx1);
         calculate_time=findViewById(R.id.calculate_time);
+        spotsDialog=new SpotsDialog(TripActivity.this);
 
         trip_rate=findViewById(R.id.trip_rate);
         back.setOnClickListener(new View.OnClickListener() {
@@ -144,6 +146,7 @@ GoogleMap map;
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        spotsDialog.show();
         map = googleMap;
         MapsInitializer.initialize(getApplicationContext());
         map.getUiSettings().setAllGesturesEnabled(true);
@@ -160,6 +163,7 @@ GoogleMap map;
         map.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
             public void onMapLoaded() {
+
                 drawRoute(historyData.getFrom_lat(), historyData.getFrom_lng(), historyData.getTo_lat(), historyData.getTo_lng());
             }
         });
