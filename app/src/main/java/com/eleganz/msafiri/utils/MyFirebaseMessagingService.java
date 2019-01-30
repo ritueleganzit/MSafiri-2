@@ -1,5 +1,6 @@
 package com.eleganz.msafiri.utils;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -14,6 +15,8 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.eleganz.msafiri.HomeActivity;
+import com.eleganz.msafiri.R;
 import com.google.firebase.messaging.RemoteMessage;
 
 
@@ -31,15 +34,15 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
 
-        //showNotification1(remoteMessage.getData().get("title"), remoteMessage.getData().get("message"));
+        showNotification1(remoteMessage.getData().get("title"), remoteMessage.getData().get("message"));
         Log.d("mssgggggggg", "" + remoteMessage.getData().toString());
 
     }
 
-    /*private void showNotification1(String title, String text) {
+    private void showNotification1(String title, String text) {
         sharedPreferences= PreferenceManager.getDefaultSharedPreferences(this);
 
-        Intent i = new Intent(this, NavigationActivity.class);
+        Intent i = new Intent(this, HomeActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         i.putExtra("from","notification");
         i.putExtra("title",title);
@@ -52,6 +55,7 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
                     .setContentTitle(title)
                     .setSmallIcon(getNotificationIcon())
                     .setContentText(text)
+                    .setContentTitle("MSafiri User")
                     .setSound(uri)
                     .setVibrate(new long[]{1000,500})
                     .setContentIntent(pendingIntent)
@@ -64,11 +68,11 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
                 NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                 String id = "id_product";
                 // The user-visible name of the channel.
-                CharSequence name = "Zahid Tractor";
+                CharSequence name = "MSafiri User";
                 // The user-visible description of the channel.
-                String description = "Zahid Tractor";
+                String description = text;
                 int importance = NotificationManager.IMPORTANCE_MAX;
-                NotificationChannel mChannel = new NotificationChannel(id, name, importance);
+                @SuppressLint("WrongConstant") NotificationChannel mChannel = new NotificationChannel(id, name, importance);
                 // Configure the notification channel.
                 mChannel.setDescription(description);
                 mChannel.enableLights(true);
@@ -82,7 +86,7 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
                         .setChannelId(id)
                         .setSound(uri)
                         .setVibrate(new long[]{1000,500})
-                        .setContentTitle(title)
+                        .setContentTitle(name)
                         .setAutoCancel(true)
                         .setNumber(1)
                         .setColor(255)
@@ -98,6 +102,6 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
     }
     private int getNotificationIcon () {
         boolean useWhiteIcon = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP);
-        return useWhiteIcon ? R.drawable.notification_icon : R.drawable.imgpsh_fullsize;
-    }*/
+        return useWhiteIcon ? R.drawable.logo : R.drawable.logo;
+    }
 }

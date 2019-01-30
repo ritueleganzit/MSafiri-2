@@ -11,10 +11,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.eleganz.msafiri.lib.RobotoMediumTextView;
 import com.eleganz.msafiri.session.SessionManager;
 import com.eleganz.msafiri.utils.ApiInterface;
@@ -61,10 +64,14 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
     SessionManager sessionManager;
     String user_id;
 SpotsDialog spotsDialog;
+    RelativeLayout dummyrel;
+    boolean isVisible=true;
+
     MapView mapView;
     private String TAG="TripActivity";
 HistoryData historyData;
 CircleImageView driver_fab;
+    RelativeLayout  cnfrel;
 TextView pickuploc,pickuplocaddress,destloc,destlocaddress,comment,trip_rate;
 RatingBar ratingBar;
 RobotoMediumTextView driver_txt1,vehicle_tx1,calculate_time;
@@ -80,7 +87,8 @@ GoogleMap map;
         sessionManager.checkLogin();
 
         Log.d(TAG,"oncreate");
-
+        cnfrel=findViewById(R.id.cnfrel);
+        dummyrel=findViewById(R.id.dummyrel);
         HashMap<String, String> userData=sessionManager.getUserDetails();
         user_id=userData.get(SessionManager.USER_ID);
         ratingBar=findViewById(R.id.ratingBar);
@@ -149,7 +157,7 @@ GoogleMap map;
         spotsDialog.show();
         map = googleMap;
         MapsInitializer.initialize(getApplicationContext());
-        map.getUiSettings().setAllGesturesEnabled(true);
+        map.getUiSettings().setAllGesturesEnabled(false);
 
         boolean success = map.setMapStyle(
                 MapStyleOptions.loadRawResourceStyle(
@@ -165,6 +173,31 @@ GoogleMap map;
             public void onMapLoaded() {
 
                 drawRoute(historyData.getFrom_lat(), historyData.getFrom_lng(), historyData.getTo_lat(), historyData.getTo_lng());
+            }
+        });
+        map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+
+                if(isVisible)
+                {
+                    isVisible=false;
+                    dummyrel.setVisibility(View.GONE);
+                    YoYo.with(Techniques.SlideOutDown).duration(500).repeat(0).playOn(cnfrel);
+
+                }
+                else
+                {
+                    isVisible=true;
+
+
+                    YoYo.with(Techniques.SlideInUp).duration(100).repeat(0).playOn(cnfrel);
+                    dummyrel.setVisibility(View.VISIBLE);
+
+                }
+                Log.d("OnMapClick","clicked");
+
+
             }
         });
 
@@ -266,7 +299,7 @@ GoogleMap map;
 
 // Drawing polyline in the Google Map for the i-th route
             map.addPolyline(lineOptions);
-
+            spotsDialog.dismiss();
         }
     }
 
@@ -414,7 +447,7 @@ GoogleMap map;
         final StringBuilder stringBuilder=new StringBuilder();
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(BASEURL).build();
         final ApiInterface apiInterface = restAdapter.create(ApiInterface.class);
-        apiInterface.getSingleTripData(historyData.getTrip_id(), new Callback<Response>() {
+        apiInterface.getSingleTripData(historyData.getTrip_id(),user_id, new Callback<Response>() {
             @Override
             public void success(Response response, Response response2) {
                 try {
@@ -427,6 +460,7 @@ GoogleMap map;
                     JSONObject jsonObject=new JSONObject(""+stringBuilder);
                     if (jsonObject.getString("message").equalsIgnoreCase("success"))
                     {
+
                         JSONArray jsonArray=jsonObject.getJSONArray("data");
                         for (int i=0;i<jsonArray.length();i++) {
                             JSONObject childObjct = jsonArray.getJSONObject(i);

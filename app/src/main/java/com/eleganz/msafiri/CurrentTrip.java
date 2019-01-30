@@ -188,7 +188,7 @@ public class CurrentTrip extends AppCompatActivity implements OnMapReadyCallback
         final StringBuilder stringBuilder=new StringBuilder();
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(BASEURL).build();
         final ApiInterface apiInterface = restAdapter.create(ApiInterface.class);
-        apiInterface.getSingleTripData(id, new Callback<Response>() {
+        apiInterface.getSingleTripData(id,user_id, new Callback<Response>() {
             @Override
             public void success(Response response, Response response2) {
                 try {
@@ -204,6 +204,26 @@ public class CurrentTrip extends AppCompatActivity implements OnMapReadyCallback
                         JSONArray jsonArray=jsonObject.getJSONArray("data");
                         for (int i=0;i<jsonArray.length();i++) {
                             JSONObject childObjct = jsonArray.getJSONObject(i);
+
+
+                            if (childObjct.getString("user_trip_status").equalsIgnoreCase("onboard"))
+                            {
+                                cancelride.setText("Ongoing");
+                                cancelride.setEnabled(false);
+                                cancelride.setClickable(false);
+                                tellbtn.setClickable(false);
+                                tellbtn.setEnabled(false);
+
+                            }
+                            else {
+                                cancelride.setText("Cancel");
+                                cancelride.setEnabled(true);
+                                cancelride.setClickable(true);
+                                cancelride.setVisibility(View.VISIBLE);
+                                tellbtn.setText("Tell Your Driver");
+                            }
+
+
                             cr_vehicle_name.setText(""+childObjct.getString("vehicle_name")+" "+childObjct.getString("vehicle_number"));
                          //   cr_pickup.setText(""+childObjct.getString("from_title"));
                             cr_pickupaddress.setText(""+childObjct.getString("from_address"));

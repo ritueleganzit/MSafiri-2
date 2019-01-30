@@ -80,6 +80,7 @@ public class HomeActivity extends AppCompatActivity
     SharedPreferences.Editor imagePreference;
     CurrentTripSession currentTripSession;
     private GoogleApiClient mGoogleApiClient;
+    private String user_trip_status;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,8 +108,9 @@ public class HomeActivity extends AppCompatActivity
 
 
         if (currentTripSession.hasTrip()) {
-            startActivity(new Intent(this, CurrentTrip.class));
-            finish();
+
+            Toast.makeText(this, "dfgdg", Toast.LENGTH_SHORT).show();
+           getSingleTripData();
         }
 
 /*
@@ -352,4 +354,72 @@ public class HomeActivity extends AppCompatActivity
         });
 
     }
+
+
+    private void getSingleTripData() {
+        final StringBuilder stringBuilder=new StringBuilder();
+        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(BASEURL).build();
+        final ApiInterface apiInterface = restAdapter.create(ApiInterface.class);
+        HashMap<String,String> hashMap=currentTripSession.getTripDetails();
+        apiInterface.getSingleTripData(hashMap.get(CurrentTripSession.TRIP_ID),user_id, new Callback<Response>() {
+            @Override
+            public void success(Response response, Response response2) {
+                try {
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(response.getBody().in()));
+                    String line;
+                    while ((line = bufferedReader.readLine()) != null) {
+                        stringBuilder.append(line);
+                    }
+                    Log.d(TAG,""+stringBuilder);
+                    JSONObject jsonObject=new JSONObject(""+stringBuilder);
+                    if (jsonObject.getString("message").equalsIgnoreCase("success"))
+                    {
+                        JSONArray jsonArray=jsonObject.getJSONArray("data");
+                        for (int i=0;i<jsonArray.length();i++) {
+                            JSONObject childObjct = jsonArray.getJSONObject(i);
+                            user_trip_status=""+childObjct.getString("user_trip_status");
+
+                            Log.d("jyity8u",""+user_trip_status);
+
+                            if (user_trip_status.equalsIgnoreCase("onboard")) {
+
+    Log.d("jyity8u",""+user_trip_status);
+
+    startActivity(new Intent(HomeActivity.this, CurrentTrip.class));
+}
+    if (user_trip_status.equalsIgnoreCase("booked")) {
+
+    Log.d("jyity8u",""+user_trip_status);
+
+    startActivity(new Intent(HomeActivity.this, CurrentTrip.class));
+}
+
+
+
+                        }
+
+                    }
+                    else
+                    {
+
+                    }
+
+
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Toast.makeText(HomeActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+    }
+
 }

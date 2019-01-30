@@ -313,7 +313,7 @@ callAPiActivity.doPostWithFiles(ConfirmationActivity.this, map, URLCONFIRM, phot
         final StringBuilder stringBuilder=new StringBuilder();
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(BASEURL).build();
         final ApiInterface apiInterface = restAdapter.create(ApiInterface.class);
-apiInterface.getSingleTripData(id, new Callback<Response>() {
+apiInterface.getSingleTripData(id,user_id, new Callback<Response>() {
     @Override
     public void success(Response response, Response response2) {
         try {
@@ -677,32 +677,9 @@ Log.d("theurl",url);
                 // TODO Auto-generated method stub
                 bitmap = snapshot;
                 try {
-                  //  Bitmap resizedbitmap1=Bitmap.createBitmap(bitmap, 0,140,500, 300);
 
                     print2(bitmap);
-                    /*File defaultFile = new File(Environment.getExternalStorageDirectory().toString()+"/MSafiriUserMap");
-                    if (!defaultFile.exists())
-                        defaultFile.mkdirs();
 
-                    String filename = System.currentTimeMillis()+".jpg";
-                    File file = new File(defaultFile,filename);
-                    if (file.exists()) {
-                        file.delete();
-                        file = new File(defaultFile,filename);
-                    }
-
-
-                  *//*  Log.d(TAG,photoPath);
-                    Log.d(TAG,""+file);*//*
-                    FileOutputStream output = new FileOutputStream(file);
-
-
-                    // above "/mnt ..... png" => is a storage path (where image will be stored) + name of image you can customize as per your Requirement
-               Bitmap bitmap1=    rotateBitmap(bitmap,ExifInterface.ORIENTATION_ROTATE_90);
-                    bitmap1.compress(Bitmap.CompressFormat.PNG, 90, output);
-                    output.flush();
-                    output.close();*/
-                   // rotateBitmap(bitmap,2);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -714,9 +691,7 @@ Log.d("theurl",url);
 
         map.snapshot(callback);
 
-        // myMap is object of GoogleMap +> GoogleMap myMap;
-        // which is initialized in onCreate() =>
-        // myMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_pass_home_call)).getMap();
+
     }
 
     private void print2(Bitmap bitmapp){

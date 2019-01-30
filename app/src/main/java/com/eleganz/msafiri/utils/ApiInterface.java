@@ -128,7 +128,8 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("/singleTrip")
     void getSingleTripData(
-            @Field("id") String user_id,
+            @Field("id") String id,
+            @Field("user_id") String user_id,
 
 
             Callback<Response> callback
