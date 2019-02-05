@@ -393,6 +393,12 @@ public class HomeActivity extends AppCompatActivity
 
     startActivity(new Intent(HomeActivity.this, CurrentTrip.class));
 }
+if (user_trip_status.equalsIgnoreCase("completed")) {
+
+    Log.d("jyity8u",""+user_trip_status);
+
+    startActivity(new Intent(HomeActivity.this, ReviewActivity.class));
+}
 
 
 

@@ -539,6 +539,8 @@ apiInterface.getSingleTripData(id,user_id, new Callback<Response>() {
         protected void onPostExecute(List<List<HashMap<String,String>>> result) {
             ArrayList points  = new ArrayList();
             PolylineOptions lineOptions = new PolylineOptions();
+
+            Log.d("mylatlon",""+result);
             MarkerOptions markerOptions = new MarkerOptions();
 
             for (int i = 0; i < result.size(); i++) {

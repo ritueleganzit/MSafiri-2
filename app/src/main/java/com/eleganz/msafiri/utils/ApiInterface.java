@@ -80,6 +80,17 @@ public interface ApiInterface {
             Callback<Response> callback
     );
 
+
+    @FormUrlEncoded
+    @POST("/getPreferences")
+    public void getPreferences(
+            @Field("trip_id") String trip_id,
+            @Field("user_id") String user_id,
+            Callback<Response> callback
+
+
+    );
+
     @FormUrlEncoded
     @POST("/getmyAddress")
     void getmyAddress(

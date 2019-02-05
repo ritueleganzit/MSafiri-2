@@ -1,10 +1,12 @@
 package com.eleganz.msafiri;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,6 +38,7 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -271,6 +274,15 @@ GoogleMap map;
         @Override
         protected void onPostExecute(List<List<HashMap<String,String>>> result) {
             ArrayList points  = new ArrayList();
+            SharedPreferences db= PreferenceManager.getDefaultSharedPreferences(TripActivity.this);
+
+            SharedPreferences.Editor collection = db.edit();
+            Gson gson = new Gson();
+            String arrayList1 = gson.toJson(result);
+
+            collection.putString("mylatlon", arrayList1);
+            collection.commit();
+            Log.d("mylatlon",""+result.size());
             PolylineOptions lineOptions = new PolylineOptions();
             MarkerOptions markerOptions = new MarkerOptions();
 

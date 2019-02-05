@@ -13,6 +13,7 @@ import com.eleganz.msafiri.session.CurrentTripSession;
 import com.eleganz.msafiri.session.SessionManager;
 import com.eleganz.msafiri.utils.ApiInterface;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,7 +31,7 @@ import retrofit.client.Response;
 import static com.eleganz.msafiri.utils.Constant.BASEURL;
 
 public class TellYourDriverActivity extends AppCompatActivity {
-    private static final String TAG = "TellYourDriverActivityLog";
+    private static final String TAG = "TellYourDriverActivity";
     SessionManager sessionManager;
     CurrentTripSession currentTripSession;
     String user_id, trip_id, driver_id;
@@ -70,6 +71,66 @@ public class TellYourDriverActivity extends AppCompatActivity {
                 addPreferences();
             }
         });
+        getPreferencesData();
+
+    }
+
+    private void getPreferencesData() {
+        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(BASEURL).build();
+        ApiInterface apiInterface = restAdapter.create(ApiInterface.class);
+        apiInterface.getPreferences(trip_id, user_id, new Callback<Response>() {
+            @Override
+            public void success(Response response, Response response2) {
+                final StringBuilder stringBuilder = new StringBuilder();
+                try {
+                    BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(response.getBody().in()));
+                    String line;
+                    while ((line = bufferedReader.readLine()) != null) {
+                        stringBuilder.append(line);
+                    }
+
+                    JSONObject jsonObject = new JSONObject("" + stringBuilder);
+                    if (jsonObject!=null)
+                    {
+                        if (jsonObject.getString("status").equalsIgnoreCase("1"))
+                        {
+                            JSONArray jsonArray=jsonObject.getJSONArray("data");
+                            for (int i=0;i<jsonArray.length();i++)
+                            {
+                                JSONObject childObject=jsonArray.getJSONObject(i);
+                                musicpref.setText(""+childObject.getString("music"));
+                                medicalhistory.setText(""+childObject.getString("medical"));
+                            }
+                        }
+                    }
+
+
+
+
+                    Log.d(TAG, "" + stringBuilder);
+
+
+
+
+
+
+
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+
+
 
     }
 

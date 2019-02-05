@@ -67,7 +67,7 @@ android:layout_gravity="center"
             android:layout_marginRight="40dp"
             android:hint="Music Preference"
             android:paddingLeft="8dp"
-            android:textColorHint="#3B3B3B" />
+            android:textColorHint="#a63b3b3b" />
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -87,7 +87,7 @@ android:layout_gravity="center"
             android:layout_marginRight="40dp"
             android:hint="Medical History"
             android:paddingLeft="8dp"
-            android:textColorHint="#3B3B3B" />
+            android:textColorHint="#a63b3b3b" />
         <Button
             android:layout_width="match_parent"
             android:layout_marginTop="20dp"
