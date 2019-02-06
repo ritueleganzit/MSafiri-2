@@ -26,7 +26,8 @@
                 android:id="@+id/back"
                 android:padding="10dp"
                 android:layout_centerVertical="true"
-                android:src="@drawable/ic_back"
+                android:src="@mipmap/ic_home"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <com.eleganz.msafiri.lib.RobotoMediumTextView

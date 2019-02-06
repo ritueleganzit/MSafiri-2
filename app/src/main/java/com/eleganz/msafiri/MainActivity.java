@@ -602,7 +602,7 @@ ProgressDialog progressDialog;
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(BASEURL).build();
         final ApiInterface apiInterface = restAdapter.create(ApiInterface.class);
 
-        apiInterface.loginUser(email.getText().toString(), password.getText().toString(), new Callback<Response>() {
+        apiInterface.loginUser(email.getText().toString(), password.getText().toString(),Token, new Callback<Response>() {
             @Override
             public void success(Response response, Response response2) {
 

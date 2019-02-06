@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.eleganz.msafiri.session.CurrentTripSession;
 import com.eleganz.msafiri.session.SessionManager;
@@ -68,7 +69,20 @@ public class TellYourDriverActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 spotsDialog.show();
-                addPreferences();
+                if (musicpref.getText().toString().equalsIgnoreCase("")){
+                    Toast.makeText(TellYourDriverActivity.this, "Enter Your Music Preference", Toast.LENGTH_SHORT).show();
+
+                }
+                else if (medicalhistory.getText().toString().equalsIgnoreCase(""))
+                {
+                    Toast.makeText(TellYourDriverActivity.this, "Enter Your Music Preference", Toast.LENGTH_SHORT).show();
+
+                }
+                else
+                {
+                    addPreferences();
+                }
+
             }
         });
         getPreferencesData();

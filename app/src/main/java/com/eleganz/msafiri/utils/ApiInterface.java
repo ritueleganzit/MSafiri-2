@@ -31,6 +31,7 @@ public interface ApiInterface {
     public void loginUser(
             @Field("user_email") String user_email,
             @Field("password") String password,
+            @Field("device_token") String device_token,
             Callback<Response> callback
     );
 

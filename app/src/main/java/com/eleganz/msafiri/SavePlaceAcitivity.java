@@ -69,7 +69,7 @@ public class SavePlaceAcitivity extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               startActivity(new Intent(SavePlaceAcitivity.this,SettingsActivity.class));
+               onBackPressed();
             }
         });
 
@@ -131,6 +131,16 @@ public class SavePlaceAcitivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(SavePlaceAcitivity.this,SettingsActivity.class));
+
+        overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+
+        finish();
     }
 
     private void saveData() {

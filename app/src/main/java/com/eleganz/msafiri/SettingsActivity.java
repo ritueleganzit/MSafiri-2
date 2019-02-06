@@ -648,7 +648,7 @@ apiInterface.saveAddresss(user_id, htitle.getText().toString(), lat, lng, haddre
 
                     else
                     {
-
+                        dialog.dismiss();
                     }
                     Log.d(TAG,""+stringBuilder +arrayList.size());
                 } catch (IOException e) {
@@ -662,7 +662,9 @@ apiInterface.saveAddresss(user_id, htitle.getText().toString(), lat, lng, haddre
             @Override
             public void failure(RetrofitError error) {
                 Log.d(TAG,""+error.getMessage());
+                dialog.dismiss();
 
+                finish();
             }
         });
 
@@ -672,6 +674,8 @@ apiInterface.saveAddresss(user_id, htitle.getText().toString(), lat, lng, haddre
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        startActivity(new Intent(SettingsActivity.this,HomeActivity.class));
+
         overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
 
         finish();

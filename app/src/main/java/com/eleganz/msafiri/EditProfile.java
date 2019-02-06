@@ -47,6 +47,7 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import dmax.dialog.SpotsDialog;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -70,7 +71,7 @@ public class EditProfile extends AppCompatActivity {
     SharedPreferences.Editor imagePreference;
     String URLCHANGEPASSWORD = " http://itechgaints.com/M-safiri-API/userChangepassword";
     private String TAG = "EditProfile";
-
+    SpotsDialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,6 +104,10 @@ public class EditProfile extends AppCompatActivity {
             Glide.with(getApplicationContext()).load(sh_imagePreference.getString("photo", "")).apply(RequestOptions.circleCropTransform()).into(profile_pic);
 
         }
+        dialog = new SpotsDialog(EditProfile.this);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
         getUserData();
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -369,6 +374,7 @@ public class EditProfile extends AppCompatActivity {
                     JSONObject jsonObject = new JSONObject("" + stringBuilder);
                     if (jsonObject.getString("message").equalsIgnoreCase("success")) {
 
+                        dialog.dismiss();
                         JSONArray jsonArray = jsonObject.getJSONArray("data");
                         for (int i = 0; i < jsonArray.length(); i++) {
 
