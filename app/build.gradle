@@ -14,7 +14,7 @@ android {
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
-        project.ext.set("archivesBaseName", "MSafiriUser-5-2-2019" + defaultConfig.versionName);
+        project.ext.set("archivesBaseName", "MSafiriUser-8-2-2019" + defaultConfig.versionName);
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -67,6 +67,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:9.2.0'
     implementation 'com.google.firebase:firebase-messaging:9.2.0'
     implementation project(':library')
+    implementation 'com.chaos.view:pinview:1.4.2'
+    implementation 'com.github.GoodieBag:Pinview:v1.3'
 
 }
 apply plugin: 'com.google.gms.google-services'

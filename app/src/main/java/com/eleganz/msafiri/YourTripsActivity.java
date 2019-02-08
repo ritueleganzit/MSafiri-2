@@ -15,6 +15,7 @@ import android.widget.ListView;
 
 import com.eleganz.msafiri.adapter.MyTripAdapter;
 import com.eleganz.msafiri.fragment.MySampleFabFragment;
+import com.eleganz.msafiri.lib.RobotoMediumTextView;
 import com.eleganz.msafiri.model.TripData;
 import com.eleganz.msafiri.session.SessionManager;
 import com.eleganz.msafiri.utils.ApiInterface;
@@ -54,6 +55,7 @@ public class YourTripsActivity extends AppCompatActivity  {
     SessionManager sessionManager;
     String user_id;
     SpotsDialog dialog;
+    RobotoMediumTextView tv_no_data;
     RecyclerView list;
 
     ArrayList<HistoryData> arrayList=new ArrayList<>();
@@ -79,8 +81,9 @@ public class YourTripsActivity extends AppCompatActivity  {
             }
         });
         list=findViewById(R.id.list);
+        tv_no_data=findViewById(R.id.tv_no_data);
         dialog = new SpotsDialog(YourTripsActivity.this);
-        dialog.show();
+
         RecyclerView.LayoutManager layoutManager=new LinearLayoutManager(YourTripsActivity.this,LinearLayoutManager.VERTICAL,false);
         list.setLayoutManager(layoutManager);
 
@@ -89,6 +92,7 @@ public class YourTripsActivity extends AppCompatActivity  {
     }
 
     private void userTrips() {
+        dialog.show();
         final StringBuilder stringBuilder=new StringBuilder();
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint("http://itechgaints.com/M-safiri-API/").build();
         final ApiInterface apiInterface = restAdapter.create(ApiInterface.class);
@@ -150,6 +154,11 @@ public class YourTripsActivity extends AppCompatActivity  {
                         MyTripAdapter myTripAdapter=new MyTripAdapter(arrayList,YourTripsActivity.this);
                         list.setAdapter(myTripAdapter);
 
+                        tv_no_data.setVisibility(View.GONE);
+                    }
+                    else {
+                        dialog.dismiss();
+                        tv_no_data.setVisibility(View.VISIBLE);
                     }
 
                     Log.d("your",""+stringBuilder);
@@ -164,7 +173,8 @@ public class YourTripsActivity extends AppCompatActivity  {
 
             @Override
             public void failure(RetrofitError error) {
-
+dialog.dismiss();
+                tv_no_data.setVisibility(View.GONE);
             }
         });
 

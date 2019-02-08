@@ -25,6 +25,7 @@
             <ImageView
                 android:layout_gravity="start"
                 android:id="@+id/back"
+                android:padding="10dp"
                 android:layout_centerVertical="true"
                 android:src="@mipmap/ic_home"
                 android:layout_width="wrap_content"
@@ -245,6 +246,7 @@
             android:fillViewport="true"
             android:layout_height="match_parent">
         <LinearLayout
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -269,6 +271,7 @@
 
         </android.support.v7.widget.RecyclerView>
         <Button
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:text="+ More Saved Places"
             android:id="@+id/add_more_place"

@@ -3,12 +3,15 @@ package com.eleganz.msafiri.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Handler;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -59,6 +62,14 @@ public class MyTripAdapter extends RecyclerView.Adapter<MyTripAdapter.MyViewHold
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
         final HistoryData historyData=arrayList.get(position);
+        if (historyData.getUser_trip_status().equalsIgnoreCase("booked")){
+            holder.tvongoing.setVisibility(View.VISIBLE);
+            blink(holder.tvongoing);
+        }
+
+        else {
+            holder.tvongoing.setVisibility(View.GONE);
+        }
 
         holder.desloc.setText(""+historyData.getTo_title());
         holder.pickuploc.setText(""+historyData.getFrom_title());
@@ -91,7 +102,28 @@ holder.trip_price.setText(""+historyData.getTrip_price());
         });
 
     }
+    public void blink(final View v) {
+        final Handler handler = new Handler();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int timeToBlink = 600;    //in milissegunds
+                try{Thread.sleep(timeToBlink);}catch (Exception e) {}
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
 
+                        if(v.getVisibility() == View.VISIBLE){
+                            v.setVisibility(View.INVISIBLE);
+                        }else{
+                            v.setVisibility(View.VISIBLE);
+                        }
+                        blink(v);
+                    }
+                });
+            }
+        }).start();
+    }
     public String parseDateToddMMyyyy2(String time)   {
         String inputPattern = "yyyy-MM-dd HH:mm:ss";
         String outputPattern = "dd/MM/yy 'at' hh:mm a";
@@ -120,13 +152,14 @@ holder.trip_price.setText(""+historyData.getTrip_price());
 
         CardView main_card;
         TextView pickuploc,desloc,to_date,from_date;
-
+TextView tvongoing;
         RobotoMediumTextView trip_price,fullname,vehicle_name;
 SquareImageView squareImageView;
         public MyViewHolder(View itemView) {
             super(itemView);
 
             main_card=itemView.findViewById(R.id.main_card);
+            tvongoing=itemView.findViewById(R.id.tvongoing);
             squareImageView=itemView.findViewById(R.id.squareImageView);
             pickuploc=itemView.findViewById(R.id.pickuploc);
             desloc=itemView.findViewById(R.id.desloc);

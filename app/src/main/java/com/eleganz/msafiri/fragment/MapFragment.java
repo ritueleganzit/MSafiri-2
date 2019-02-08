@@ -32,8 +32,10 @@ import com.eleganz.msafiri.FindRideActivity;
 import com.eleganz.msafiri.R;
 import com.eleganz.msafiri.adapter.FavRoutesAdapter;
 import com.eleganz.msafiri.lib.RobotoMediumTextView;
+import com.eleganz.msafiri.model.ContactModel;
 import com.eleganz.msafiri.session.SessionManager;
 import com.eleganz.msafiri.utils.ApiInterface;
+import com.eleganz.msafiri.utils.ContactSearchDialogCompat;
 import com.eleganz.msafiri.utils.SampleSearchModel;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -93,8 +95,9 @@ Button searchbtn;
     //MapView mapView;
     SearchBox pickup,destination;
     ArrayList<String> arrayList;;
-    ArrayList<SampleSearchModel> sampleSearchModels;;
-    ArrayList<SampleSearchModel> arrayList_des;;
+    ArrayList<ContactModel> sampleSearchModels;;
+    ArrayList<ContactModel> arrayList_desaddress;;
+    ArrayList<ContactModel> arrayList_des;;
 
 
     Calendar myCalendar = Calendar.getInstance();
@@ -238,13 +241,13 @@ date_selected.setText(""+getCurrentTimeStamp());
 
 
                 if (sampleSearchModels.size()>0) {
-                    SimpleSearchDialogCompat dialog = new SimpleSearchDialogCompat(getActivity(), "Search...",
+                    ContactSearchDialogCompat dialog = new ContactSearchDialogCompat(getActivity(), "Search...",
                             "Select Pickup Location", null, sampleSearchModels,
-                            new SearchResultListener<SampleSearchModel>() {
+                            new SearchResultListener<ContactModel>() {
                                 @Override
                                 public void onSelected(
                                         BaseSearchDialogCompat dialog,
-                                        SampleSearchModel item, int position
+                                        ContactModel item, int position
                                 ) {
 
                                     from_pickup.setText(item.getTitle());
@@ -256,7 +259,7 @@ date_selected.setText(""+getCurrentTimeStamp());
                             }
                     );
                     dialog.show();
-                    dialog.getSearchBox().setTypeface(Typeface.SERIF);
+                  //  dialog.getSearchBox().setTypeface(Typeface.SERIF);
 
                 }
                 }
@@ -269,13 +272,13 @@ date_selected.setText(""+getCurrentTimeStamp());
 
                 if (arrayList_des!=null) {
                     if (arrayList_des.size() > 0) {
-                        SimpleSearchDialogCompat dialog = new SimpleSearchDialogCompat(getActivity(), "Search...",
+                        ContactSearchDialogCompat dialog = new ContactSearchDialogCompat(getActivity(), "Search...",
                                 "Select Destination Location", null, arrayList_des,
-                                new SearchResultListener<SampleSearchModel>() {
+                                new SearchResultListener<ContactModel>() {
                                     @Override
                                     public void onSelected(
                                             BaseSearchDialogCompat dialog,
-                                            SampleSearchModel item, int position
+                                            ContactModel item, int position
                                     ) {
 
                                         from_destination.setText(item.getTitle());
@@ -284,7 +287,7 @@ date_selected.setText(""+getCurrentTimeStamp());
                                 }
                         );
                         dialog.show();
-                        dialog.getSearchBox().setTypeface(Typeface.SERIF);
+                       // dialog.getSearchBox().setTypeface(Typeface.SERIF);
 
                     }
                 }
@@ -522,6 +525,7 @@ destination.toggleSearch();
     private void getAddress() {
         //arrayList=new ArrayList<>();
         sampleSearchModels=new ArrayList<>();
+        arrayList_desaddress=new ArrayList<>();
         final StringBuilder stringBuilder = new StringBuilder();
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(BASEURL).build();
         final ApiInterface apiInterface = restAdapter.create(ApiInterface.class);
@@ -549,9 +553,18 @@ destination.toggleSearch();
 
                                 JSONObject childObject = jsonArray.getJSONObject(i);
 
+                                if (childObject.getString("title").equalsIgnoreCase("Home")) {
 
-                                SampleSearchModel searchModel=new SampleSearchModel(childObject.getString("address"));
-                                sampleSearchModels.add(searchModel);
+
+                                    ContactModel searchModel = new ContactModel(childObject.getString("address"), R.drawable.home);
+                                    sampleSearchModels.add(searchModel);
+                                    arrayList_desaddress.add(searchModel);
+                                }
+                                else {
+                                    ContactModel searchModel = new ContactModel(childObject.getString("address"), R.drawable.briefcase);
+                                    sampleSearchModels.add(searchModel);
+                                    arrayList_desaddress.add(searchModel);
+                                }
 
                             }
                             getPickup();
@@ -580,11 +593,16 @@ destination.toggleSearch();
 
 
     }
+
+
+
+
     public String getCurrentTimeStamp() {
         return new SimpleDateFormat("yyyy-MM-dd").format(new Date());
     }
     private void getToList(String result) {
         arrayList_des=new ArrayList<>();
+        arrayList_des=arrayList_desaddress;
         final StringBuilder stringBuilder=new StringBuilder();
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(BASEURL).build();
         final ApiInterface apiInterface = restAdapter.create(ApiInterface.class);
@@ -620,7 +638,7 @@ destination.toggleSearch();
 
                             JSONObject childObject=jsonArray.getJSONObject(i);
 
-                            SampleSearchModel searchModel=new SampleSearchModel(childObject.getString("to_title"));
+                            ContactModel searchModel=new ContactModel(childObject.getString("to_title"),0);
 
                             arrayList_des.add(searchModel);
 
@@ -632,7 +650,7 @@ destination.toggleSearch();
                     }
                     else {
                         destination_progress.setVisibility(View.GONE);
-                        from_destination.setHint("No Data");
+                       // from_destination.setHint("No Data");
                         Toast.makeText(getActivity(), ""+jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                     }
 
@@ -666,7 +684,7 @@ destination.toggleSearch();
                     while ((line = bufferedReader.readLine()) != null) {
                         stringBuilder.append(line);
                     }
-
+                    Log.d(" getPickup()fs",""+stringBuilder);
                     JSONObject jsonObject=new JSONObject(""+stringBuilder);
                   //  Toast.makeText(getActivity(), ""+stringBuilder, Toast.LENGTH_SHORT).show();
                     for(int j=0;j<sampleSearchModels.size();j++) {
@@ -691,7 +709,7 @@ destination.toggleSearch();
                            else {
 
 
-                               SampleSearchModel searchModel = new SampleSearchModel(childObject.getString("from_title"));
+                               ContactModel searchModel = new ContactModel(childObject.getString("from_title"),0);
                                sampleSearchModels.add(searchModel);
                            }
 
@@ -766,9 +784,9 @@ destination.toggleSearch();
 
 
     }
-    boolean contains(List<SampleSearchModel> modelList,String title){
+    boolean contains(List<ContactModel> modelList,String title){
 
-        for (SampleSearchModel searchModel:modelList)
+        for (ContactModel searchModel:modelList)
         {
             if (searchModel.getTitle().equalsIgnoreCase(title))
             {

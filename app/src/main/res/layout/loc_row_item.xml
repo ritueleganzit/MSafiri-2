@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:clickable="true"
+    app:contentPadding="3dp"
+    android:layout_marginTop="1dp"
+    app:cardElevation="2dp">
+
+
+    <TextView
+        android:layout_gravity="start|center_vertical"
+        android:gravity="center"
+        android:paddingLeft="10dp"
+        android:id="@+id/location_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+
+
+</android.support.v7.widget.CardView>

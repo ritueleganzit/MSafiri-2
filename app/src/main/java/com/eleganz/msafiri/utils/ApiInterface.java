@@ -102,6 +102,34 @@ public interface ApiInterface {
     );
 
     @FormUrlEncoded
+    @POST("/userSentcode")
+    void userSentcode(
+            @Field("user_email") String user_email,
+            @Field("sentcode") String sentcode,
+
+            Callback<Response> callback
+
+    );
+
+    @FormUrlEncoded
+    @POST("/userResetpassword")
+    void userResetpassword(
+            @Field("user_id") String user_id,
+            @Field("password") String password,
+
+            Callback<Response> callback
+
+    );
+@FormUrlEncoded
+    @POST("/Triplocations")
+    void getTriplocations(
+        @Field("user_id") String user_id,
+
+            Callback<Response> callback
+
+    );
+
+    @FormUrlEncoded
     @POST("/getdriverTrips")
     void getdriverTrips(
             @Field("user_id") String user_id,

@@ -5,8 +5,11 @@
     <string name="registerhere">Don\'t have account? <b>Register Here</b></string>
     <string name="agree">I agree the terms of use</string>
     <string name="hintemail"><font size="15">Email Address</font></string>
+    <string name="hintnewpassword"><font size="15">New Password</font></string>
+    <string name="hintverification"><font size="15">Verification Code</font></string>
     <string name="hintpassword"><font size="15">Password</font></string>
     <string name="hintcnfpassword"><font size="15">Confirm Password</font></string>
+    <string name="hintcnfnewpassword"><font size="15">Confirm New Password</font></string>
     <string name="title_activity_main2">Main2Activity</string>
     <string name="facebook_app_id">321014721844485</string>
     <string name="fb_login_protocol_scheme">fb321014721844485</string>

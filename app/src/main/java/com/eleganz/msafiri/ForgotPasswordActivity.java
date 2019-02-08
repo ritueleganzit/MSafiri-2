@@ -87,6 +87,8 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 }
                 else
                 {
+                    startActivity(new Intent(ForgotPasswordActivity.this,VerficationCodeActivity.class).putExtra("user_email",forgotpwdedemail.getText().toString()));
+                    finish();
 
                 }
             }

@@ -37,6 +37,7 @@ import android.widget.Toast;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.eleganz.msafiri.lib.RobotoMediumTextView;
+import com.eleganz.msafiri.session.CurrentTripSession;
 import com.eleganz.msafiri.session.SessionManager;
 import com.eleganz.msafiri.utils.ApiInterface;
 import com.eleganz.msafiri.utils.KeyBoardEvent;
@@ -68,6 +69,7 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -88,9 +90,12 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout bottom;
     SessionManager sessionManager;
     ImageView logo;
+    private String user_trip_status;
+
     private static final int RC_SIGN_IN = 007;
     private String Token;
     private String device_token;
+    CurrentTripSession currentTripSession;
     Animation flyout1, flyout2;
     private AnimationDrawable animationDrawable;
     private ImageView progress;
@@ -99,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
     private String TAG = "MainActivityLog";
     String str_accessToken="",devicetoken="";
 ProgressDialog progressDialog;
+String user_id;
     public GoogleApiClient googleApiClient;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +127,7 @@ ProgressDialog progressDialog;
         final Animation flyin5 = AnimationUtils.loadAnimation(MainActivity.this, R.anim.flyin5);
         final Animation flyin6 = AnimationUtils.loadAnimation(MainActivity.this, R.anim.flyin6);
         final Animation flyin7 = AnimationUtils.loadAnimation(MainActivity.this, R.anim.flyin7);
+        currentTripSession = new CurrentTripSession(MainActivity.this);
 
         flyout1 = AnimationUtils.loadAnimation(MainActivity.this, R.anim.flyout1);
         flyout2 = AnimationUtils.loadAnimation(MainActivity.this, R.anim.flyout2);
@@ -135,8 +142,18 @@ ProgressDialog progressDialog;
 
             Log.d(TAG, "isLoggedIn ");
 
-            startActivity(new Intent(MainActivity.this, HomeActivity.class));
-            finish();
+            HashMap<String, String> userData = sessionManager.getUserDetails();
+            user_id = userData.get(SessionManager.USER_ID);
+            /*if (currentTripSession.hasTrip()) {
+
+                Toast.makeText(this, "dfgdg", Toast.LENGTH_SHORT).show();
+                getSingleTripData();
+            }
+            else {*/
+                startActivity(new Intent(MainActivity.this, HomeActivity.class));
+                finish();
+           // }
+
         }
         initViews();
 
@@ -453,6 +470,78 @@ ProgressDialog progressDialog;
     public void onfbClick(View v) {
 
         loginButton.performClick();
+
+    }
+
+    private void getSingleTripData() {
+        final StringBuilder stringBuilder=new StringBuilder();
+        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(BASEURL).build();
+        final ApiInterface apiInterface = restAdapter.create(ApiInterface.class);
+        HashMap<String,String> hashMap=currentTripSession.getTripDetails();
+        apiInterface.getSingleTripData(hashMap.get(CurrentTripSession.TRIP_ID),user_id, new Callback<Response>() {
+            @Override
+            public void success(Response response, Response response2) {
+                try {
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(response.getBody().in()));
+                    String line;
+                    while ((line = bufferedReader.readLine()) != null) {
+                        stringBuilder.append(line);
+                    }
+                    Log.d(TAG,""+stringBuilder);
+                    JSONObject jsonObject=new JSONObject(""+stringBuilder);
+                    if (jsonObject.getString("message").equalsIgnoreCase("success"))
+                    {
+                        JSONArray jsonArray=jsonObject.getJSONArray("data");
+                        for (int i=0;i<jsonArray.length();i++) {
+                            JSONObject childObjct = jsonArray.getJSONObject(i);
+                            user_trip_status=""+childObjct.getString("user_trip_status");
+
+                            Log.d("jyity8u",""+user_trip_status);
+
+                            if (user_trip_status.equalsIgnoreCase("onboard")) {
+
+                                Log.d("jyity8u",""+user_trip_status);
+
+                                startActivity(new Intent(MainActivity.this, CurrentTrip.class));
+                            }
+                            if (user_trip_status.equalsIgnoreCase("booked")) {
+
+                                Log.d("jyity8u",""+user_trip_status);
+
+                                startActivity(new Intent(MainActivity.this, CurrentTrip.class));
+                            }
+                            if (user_trip_status.equalsIgnoreCase("completed")) {
+
+                                Log.d("jyity8u",""+user_trip_status);
+
+                                startActivity(new Intent(MainActivity.this, ReviewActivity.class));
+                            }
+
+
+
+                        }
+
+                    }
+                    else
+                    {
+
+                    }
+
+
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Toast.makeText(MainActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
 
     }
 

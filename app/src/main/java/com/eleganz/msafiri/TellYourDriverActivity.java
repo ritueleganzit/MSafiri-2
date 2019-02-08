@@ -68,7 +68,7 @@ public class TellYourDriverActivity extends AppCompatActivity {
         btnsubmitpref.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                spotsDialog.show();
+
                 if (musicpref.getText().toString().equalsIgnoreCase("")){
                     Toast.makeText(TellYourDriverActivity.this, "Enter Your Music Preference", Toast.LENGTH_SHORT).show();
 
@@ -80,6 +80,7 @@ public class TellYourDriverActivity extends AppCompatActivity {
                 }
                 else
                 {
+                    spotsDialog.show();
                     addPreferences();
                 }
 
@@ -179,7 +180,8 @@ public class TellYourDriverActivity extends AppCompatActivity {
 
             @Override
             public void failure(RetrofitError error) {
-
+                finish();
+                spotsDialog.dismiss();
             }
         });
 

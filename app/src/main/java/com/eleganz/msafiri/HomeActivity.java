@@ -107,11 +107,11 @@ public class HomeActivity extends AppCompatActivity
         user = userData.get(SessionManager.USERNAME);
 
 
-        if (currentTripSession.hasTrip()) {
+       /* if (currentTripSession.hasTrip()) {
 
             Toast.makeText(this, "dfgdg", Toast.LENGTH_SHORT).show();
            getSingleTripData();
-        }
+        }*/
 
 /*
         toolbar.bringToFront();

@@ -135,7 +135,21 @@ public class CurrentTrip extends AppCompatActivity implements OnMapReadyCallback
     public void onBackPressed() {
         if (currentTripSession.hasTrip())
         {
-            ActivityCompat.finishAffinity(this);
+            new AlertDialog.Builder(CurrentTrip.this).setMessage("Are you sure you want to exit?")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ActivityCompat.finishAffinity(CurrentTrip.this);
+
+
+
+                        }
+                    }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            }).show();
         }
 
         else {

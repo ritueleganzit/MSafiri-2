@@ -32,26 +32,39 @@
             android:layout_marginBottom="30dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Enter your Email Address below to reset your Password."
+            android:text="Enter the otp that you received through email"
             android:gravity="center"
-            android:id="@+id/forgotpwdtext"
+            android:id="@+id/verificationcode"
             android:textStyle="bold"
             android:textColor="#0D3A61"
             android:layout_gravity="center"
             />
-        <EditText
-            android:layout_width="match_parent"
+
+        <com.chaos.view.PinView
+            android:id="@+id/firstPinView"
+            style="@style/PinWidget.PinView"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/edittext_shadow"
-            android:drawableLeft="@drawable/envelope"
-            android:drawablePadding="2dp"
-            android:ems="10"
-            android:id="@+id/forgotpwdedemail"
-            android:hint="@string/hintemail"
-            android:padding="8dp"
-            android:inputType="textEmailAddress"
-            android:paddingLeft="8dp"
-            android:textColorHint="#3B3B3B" />
+            android:cursorVisible="true"
+android:layout_gravity="center_horizontal"
+            android:hint="0"
+            android:inputType="number"
+            android:itemBackground="#ffffff"
+            android:padding="5dp"
+            android:textColor="#000"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:cursorColor="@color/colorButton"
+            app:cursorWidth="2dp"
+            app:hideLineWhenFilled="true"
+            app:itemCount="4"
+            app:itemHeight="48dp"
+            app:itemRadius="4dp"
+            app:itemSpacing="4dp"
+            app:itemWidth="48dp"
+            app:lineColor="@color/colorButton"
+            app:lineWidth="2dp"
+            app:viewType="rectangle"  />
 
 
 
@@ -62,20 +75,10 @@
             android:layout_marginTop="10dp"
             android:background="#0D3A61"
             android:text="Submit"
-            android:id="@+id/forgotpwdbtn"
+            android:id="@+id/submit_verification"
             android:textColor="@android:color/white" />
 
 
-            <com.eleganz.msafiri.lib.RobotoMediumTextView
-                android:layout_marginTop="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/alreadymember"
-                android:gravity="center"
-                android:id="@+id/signtxt"
-                android:textColor="#0D3A61"
-                android:layout_gravity="center"
-                />
 
     </LinearLayout>
 

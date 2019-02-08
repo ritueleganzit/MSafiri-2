@@ -46,5 +46,17 @@
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_below="@+id/toolbar"
-        android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+        android:layout_height="wrap_content">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <com.eleganz.msafiri.lib.RobotoMediumTextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
+android:gravity="center"
+        android:id="@+id/tv_no_data"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
+        android:text="No History"/>
 </RelativeLayout>

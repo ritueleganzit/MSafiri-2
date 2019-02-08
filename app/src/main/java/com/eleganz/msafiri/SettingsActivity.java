@@ -1,5 +1,6 @@
 package com.eleganz.msafiri;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -58,7 +59,7 @@ import static com.eleganz.msafiri.utils.Constant.BASEURL;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    private static final String TAG ="SettingsActivityLog" ;
+    private static final String TAG ="SettingsActivity" ;
     ImageView back;
     LinearLayout head;
     Button add_more_place;
@@ -141,9 +142,7 @@ RobotoMediumTextView othersaved;
 
       //
          dialog = new SpotsDialog(SettingsActivity.this);
-        dialog.show();
-        getUserData();
-        getAddress();
+
 
         add_more_place.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -157,7 +156,9 @@ finish();
             @Override
             public void onClick(View v) {
                 addwork.setEnabled(false);
-                Intent intent = null;
+                Intent i = new Intent(SettingsActivity.this, SearchActivity.class);
+                startActivityForResult(i, 2);
+              /*  Intent intent = null;
                 try {
                     intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
                             .build(SettingsActivity.this);
@@ -166,14 +167,14 @@ finish();
                 } catch (GooglePlayServicesNotAvailableException e) {
                     e.printStackTrace();
                 }
-                startActivityForResult(intent, PLACE_PICKER_REQUEST2);
+                startActivityForResult(intent, PLACE_PICKER_REQUEST2);*/
             }
         });
         addhome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addhome.setEnabled(false);
-                Intent intent = null;
+                /*Intent intent = null;
                 try {
                     intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
                             .build(SettingsActivity.this);
@@ -182,7 +183,10 @@ finish();
                 } catch (GooglePlayServicesNotAvailableException e) {
                     e.printStackTrace();
                 }
-                startActivityForResult(intent, PLACE_PICKER_REQUEST);
+                startActivityForResult(intent, PLACE_PICKER_REQUEST)*/;
+
+                Intent i = new Intent(SettingsActivity.this, SearchActivity.class);
+                startActivityForResult(i, 1);
             }
         });
 
@@ -278,6 +282,8 @@ finish();
                 });
             }
         });
+        getUserData();
+        getAddress();
 
     }
     @Override
@@ -292,10 +298,48 @@ finish();
             Glide.with(getApplicationContext()).load(sh_imagePreference.getString("photo","")).apply(RequestOptions.circleCropTransform()).into(profile_image);
 
         }
+        addhome.setEnabled(true);
+        addwork.setEnabled(true);
+
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PLACE_PICKER_REQUEST) {
+
+        if (requestCode == 1) {
+            if(resultCode == Activity.RESULT_OK){
+                String result=data.getStringExtra("result");
+                lat=data.getStringExtra("resultlat");
+                lng=data.getStringExtra("resultlng");
+                addhome.setEnabled(true);
+                haddress.setVisibility(View.VISIBLE);
+                htitle.setText("Home");
+                haddress.setText(result);
+
+                saveAddress();
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }  if (requestCode == 2) {
+            Toast.makeText(this, "kkk", Toast.LENGTH_SHORT).show();
+            if(resultCode == Activity.RESULT_OK){
+                String result=data.getStringExtra("result");
+                lat=data.getStringExtra("resultlat");
+                lng=data.getStringExtra("resultlng");
+                addwork.setEnabled(true);
+                waddress.setVisibility(View.VISIBLE);
+                wtitle.setText("Work");
+                waddress.setText(result);
+                saveworkAddress();
+
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }
+
+
+        /*if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
                 addhome.setEnabled(true);
                 Place place = PlacePicker.getPlace(data, this);
@@ -319,8 +363,8 @@ finish();
                     saveAddress();
                 }
 
-               /* Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
-                //  List<Integer> list=place.getPlaceTypes();*/
+               *//* Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+                //  List<Integer> list=place.getPlaceTypes();*//*
 
             }
             else {
@@ -348,15 +392,15 @@ finish();
                     saveworkAddress();
                 }
 
-               /* Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
-                //  List<Integer> list=place.getPlaceTypes();*/
+               *//* Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+                //  List<Integer> list=place.getPlaceTypes();*//*
 
             }
             else {
                 addwork.setEnabled(true);
                 Toast.makeText(this, "Close", Toast.LENGTH_SHORT).show();
             }
-        }
+        }*/
     }
 
     private void saveworkAddress() {
@@ -386,12 +430,13 @@ finish();
                         getAddress();
                         workdelete.setVisibility(View.VISIBLE);
                     }
-                    if (jsonObject.getString("message").equalsIgnoreCase("Data already exist"))
+                    if (jsonObject.getString("status").equalsIgnoreCase("0"))
 
 
                     {
+                        Toast.makeText(SettingsActivity.this, "called", Toast.LENGTH_SHORT).show();
                         //call update
-                        updatemyeorkAddress(sharedPreferences.getString("work",""));
+                        updatemyworkAddress(sharedPreferences.getString("work",""));
 
                     }
 
@@ -416,7 +461,7 @@ finish();
     }
 
     private void getUserData() {
-
+dialog.show();
 
         final StringBuilder stringBuilder=new StringBuilder();
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(BASEURL).build();
@@ -435,6 +480,7 @@ finish();
                     JSONObject jsonObject=new JSONObject(""+stringBuilder);
                     if (jsonObject.getString("message").equalsIgnoreCase("success"))
                     {
+                        dialog.dismiss();
 
                         JSONArray jsonArray=jsonObject.getJSONArray("data");
                         for (int i=0;i<jsonArray.length();i++) {
@@ -466,7 +512,7 @@ finish();
 
             @Override
             public void failure(RetrofitError error) {
-
+dialog.dismiss();
             }
         });
     }
@@ -533,9 +579,9 @@ apiInterface.saveAddresss(user_id, htitle.getText().toString(), lat, lng, haddre
                     {
                         stringBuilder.append(line);
                     }
+                    getAddress();
 
-
-                    Log.d(TAG,"home-->"+stringBuilder);
+                    Log.d(TAG,"update-->"+stringBuilder);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -550,10 +596,10 @@ apiInterface.saveAddresss(user_id, htitle.getText().toString(), lat, lng, haddre
 
     }
 
-    private void updatemyeorkAddress(String id) {final StringBuilder stringBuilder=new StringBuilder();
+    private void updatemyworkAddress(String id) {final StringBuilder stringBuilder=new StringBuilder();
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(BASEURL).build();
         final ApiInterface apiInterface = restAdapter.create(ApiInterface.class);
-        apiInterface.updatemyAddress(id, user_id, wtitle.getText().toString(), lat, lng, haddress.getText().toString(), new Callback<Response>() {
+        apiInterface.updatemyAddress(id, user_id, wtitle.getText().toString(), lat, lng, waddress.getText().toString(), new Callback<Response>() {
             @Override
             public void success(Response response, Response response2) {
                 try {
@@ -564,8 +610,9 @@ apiInterface.saveAddresss(user_id, htitle.getText().toString(), lat, lng, haddre
                         stringBuilder.append(line);
                     }
 
+                    getAddress();
 
-                    Log.d(TAG,""+stringBuilder);
+                    Log.d(TAG+"update",""+stringBuilder);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -584,6 +631,7 @@ apiInterface.saveAddresss(user_id, htitle.getText().toString(), lat, lng, haddre
 
     private void getAddress()
     {
+        dialog.show();
         final ArrayList<Addressdata> arrayList=new ArrayList<>();
 
         final StringBuilder stringBuilder=new StringBuilder();
@@ -604,6 +652,7 @@ apiInterface.saveAddresss(user_id, htitle.getText().toString(), lat, lng, haddre
                     JSONObject jsonObject=new JSONObject(""+stringBuilder);
                     if (jsonObject.getString("message").equalsIgnoreCase("success"))
                     {
+
                         dialog.dismiss();
                         JSONArray jsonArray=jsonObject.getJSONArray("data");
                         for (int i=0;i<jsonArray.length();i++)
@@ -637,20 +686,20 @@ apiInterface.saveAddresss(user_id, htitle.getText().toString(), lat, lng, haddre
 
 
                         }
-                        if (arrayList.size()>0) {
+                        /*if (arrayList.size()>0) {
                             fav.setAdapter(new FavoritesAdapter(fav,arrayList, SettingsActivity.this));
                             othersaved.setVisibility(View.VISIBLE);
                         }
                         else {
                             othersaved.setVisibility(View.GONE);
-                        }
+                        }*/
                     }
 
                     else
                     {
                         dialog.dismiss();
                     }
-                    Log.d(TAG,""+stringBuilder +arrayList.size());
+                    Log.d(TAG+"rrr",""+stringBuilder +arrayList.size());
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
