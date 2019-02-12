@@ -110,6 +110,14 @@ public interface ApiInterface {
             Callback<Response> callback
 
     );
+    @FormUrlEncoded
+    @POST("/tripFavoritelist")
+    void tripFavoritelist(
+            @Field("user_id") String user_id,
+
+            Callback<Response> callback
+
+    );
 
     @FormUrlEncoded
     @POST("/userResetpassword")

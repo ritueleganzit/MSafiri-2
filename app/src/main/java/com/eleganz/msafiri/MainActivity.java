@@ -106,6 +106,9 @@ public class MainActivity extends AppCompatActivity {
 ProgressDialog progressDialog;
 String user_id;
     public GoogleApiClient googleApiClient;
+    private String social_name,social_profile_pic,social_email;
+    private String social_lname;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -344,7 +347,7 @@ String user_id;
         callbackManager = CallbackManager.Factory.create();
         final List< String > permissionNeeds = Arrays.asList("user_photos", "email", "public_profile");
 
-        loginButton.setReadPermissions(Arrays.asList("email", "public_profile"));
+        loginButton.setReadPermissions("email", "public_profile", "user_friends");
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -436,28 +439,32 @@ String user_id;
 
             bundle.putString("idFacebook", id);
             if (object.has("first_name")) {
+                social_name=object.getString("first_name");
                 Log.d("profile_data", "has " + object.getString("first_name") + "");
                 bundle.putString("first_name", object.getString("first_name"));
             }
             if (object.has("last_name")) {
+                social_lname=object.getString("last_name");
                 Log.d("profile_data", "has " + object.getString("last_name") + "");
                 bundle.putString("last_name", object.getString("last_name"));
             }
 
             if (object.has("profile_pic")) {
                 Log.d("profile_data", "has " + profile_pic.toString() + "");
+                social_profile_pic=profile_pic.toString();
                 bundle.putString("profile_pic", profile_pic.toString());
             }
             if (object.has("gender")) {
                 bundle.putString("gender", object.getString("gender"));
             }
             if (object.has("email")) {
+                social_email=object.getString("email");
                 Log.d("profile_data", "has " + object.getString("email") + "");
                 bundle.putString("email", object.getString("email"));
                 Log.d("profile_data", "a token "+str_accessToken);
 
 
-                socialLogin("fblogin",object.getString("email"),object.getString("first_name"),object.getString("last_name"),str_accessToken);
+                socialLogin("fblogin",social_email,social_name,social_lname,str_accessToken);
             }
 
             return bundle;
@@ -561,20 +568,20 @@ String user_id;
                 GoogleSignInAccount googleSignInAccount = result.getSignInAccount();
 
                 Log.d("tokenid",""+googleSignInAccount.getId()+" "+googleSignInAccount.getDisplayName()+" "+googleSignInAccount.getFamilyName()+" "+googleSignInAccount.getGivenName());
-                final String str_email = googleSignInAccount.getEmail();
+                social_email = googleSignInAccount.getEmail();
                 //str_password=googleSignInAccount.getId();
                 final String idtoken=googleSignInAccount.getId();
 
 
-                final String fname=googleSignInAccount.getGivenName();
-                final String lname=googleSignInAccount.getFamilyName();
-                String profile_pic=googleSignInAccount.getPhotoUrl().toString();
+                social_name=googleSignInAccount.getGivenName();
+                social_lname=googleSignInAccount.getFamilyName();
+                 social_profile_pic=googleSignInAccount.getPhotoUrl().toString();
 
 
               //  editor.putString("profile_pic",profile_pic);
                 //tid=googleSignInAccount.getId();
 
-                Log.d("dataaaaaa: "," "+str_email+" "+profile_pic+" ");
+                Log.d("dataaaaaa: "," "+social_name+" "+social_lname+" "+social_profile_pic);
                 //FirebaseMessaging.getInstance().subscribeToTopic("test");
                 //FirebaseInstanceId.getInstance().getToken();
                 Thread t=new Thread(new Runnable() {
@@ -589,7 +596,7 @@ String user_id;
                             StrictMode.ThreadPolicy threadPolicy = new StrictMode.ThreadPolicy.Builder().build();
                             StrictMode.setThreadPolicy(threadPolicy);
                            // getGoogleLogin(str_email,fname,lname,idtoken);
-                            socialLogin("glogin",str_email,fname,lname,idtoken);
+                            socialLogin("glogin",social_email,social_name,social_lname,idtoken);
 
                         }
                         else
@@ -621,6 +628,9 @@ String user_id;
         final StringBuilder stringBuilder=new StringBuilder();
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(BASEURL).build();
         final ApiInterface apiInterface = restAdapter.create(ApiInterface.class);
+        Log.d(TAG, "" + social_lname);
+        Log.d(TAG, "" + social_email);
+        Log.d(TAG, "" + social_profile_pic);
 
         apiInterface.socialLogin(login_type, email, fname, lname, "android", Token, token, new Callback<Response>() {
             @Override
@@ -637,14 +647,14 @@ String user_id;
                         JSONObject jsonObject = new JSONObject("" + stringBuilder);
                         String status = jsonObject.getString("status");
                         if (status.equalsIgnoreCase("1")) {
-                            progressDialog.dismiss();
+
 
                             JSONArray jsonArray=jsonObject.getJSONArray("data");
                             for (int i=0;i<jsonArray.length();i++)
 
                             {
                                 JSONObject childJson=jsonArray.getJSONObject(i);
-                                sessionManager.createLoginSession(childJson.getString("user_id"), childJson.getString("fname"), "", childJson.getString("photo"));
+                                sessionManager.createLoginSession("social",social_email,social_lname,childJson.getString("user_id"), social_name, "", social_profile_pic);
                                 logo.startAnimation(flyout1);
 
 
@@ -653,6 +663,7 @@ String user_id;
 
                                 Log.d(TAG, "" + childJson.getString("photo"));
                                 Log.d(TAG, "" + childJson.getString("fname"));
+                                progressDialog.dismiss();
                                 Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                                 startActivity(intent);
                                 finish();
@@ -710,7 +721,7 @@ String user_id;
                             for (int i = 0; i < jsonArray.length(); i++) {
 
                                 JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                                sessionManager.createLoginSession(jsonObject1.getString("user_id"), jsonObject1.getString("fname"), password.getText().toString(), jsonObject1.getString("photo"));
+                                sessionManager.createLoginSession("manual",email.getText().toString(),jsonObject1.getString("lname"),jsonObject1.getString("user_id"), jsonObject1.getString("fname"), password.getText().toString(), jsonObject1.getString("photo"));
                                 logo.startAnimation(flyout1);
 
 

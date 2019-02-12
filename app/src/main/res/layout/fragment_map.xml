@@ -358,9 +358,9 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-android:visibility="gone"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:id="@+id/lin_fav"
                 app:layout_constraintBottom_toBottomOf="@+id/searchbtn">
 
                 <com.eleganz.msafiri.lib.RobotoMediumTextView
@@ -391,7 +391,7 @@ android:visibility="gone"
 
     </android.support.v4.widget.NestedScrollView>
     <!-- TODO: Update blank fragment layout -->
-    <FrameLayout
+    <!--<FrameLayout
         android:layout_below="@+id/toolbar"
         android:layout_width="match_parent"
         android:background="#FFECECEC"
@@ -464,9 +464,9 @@ android:visibility="gone"
 
 
 
-    </FrameLayout>
+    </FrameLayout>-->
 
-    <RelativeLayout
+    <!--<RelativeLayout
         android:layout_width="match_parent"
         android:layout_marginBottom="?attr/actionBarSize"
 
@@ -496,5 +496,5 @@ android:visibility="gone"
                 android:textColor="#fff"/>
 
         </LinearLayout>
-    </RelativeLayout>
+    </RelativeLayout>-->
 </LinearLayout>

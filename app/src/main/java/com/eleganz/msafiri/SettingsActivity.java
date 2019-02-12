@@ -65,7 +65,7 @@ public class SettingsActivity extends AppCompatActivity {
     Button add_more_place;
     RobotoMediumTextView fname,phone,htitle,haddress,homedelete,wtitle,waddress,workdelete;
     SessionManager sessionManager;
-    String user_id;
+    String user_id,image;
     private static final int PLACE_PICKER_REQUEST = 1000;
     private static final int PLACE_PICKER_REQUEST2 = 1001;
     SharedPreferences sh_imagePreference;
@@ -74,7 +74,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     Home home;
     Work work;
-    String lat, lng;
+    String lat, lng,login_type,user;
     CircleImageView profile_image;
     RecyclerView fav;
     LinearLayout addhome,addwork;
@@ -94,12 +94,13 @@ RobotoMediumTextView othersaved;
         sessionManager=new SessionManager(SettingsActivity.this);
 
         sessionManager.checkLogin();
-        sh_imagePreference=getSharedPreferences("imagepref",MODE_PRIVATE);
-        imagePreference=sh_imagePreference.edit();
 
         HashMap<String,String> hashMap=sessionManager.getUserDetails();
 
         user_id=hashMap.get(SessionManager.USER_ID);
+        image=hashMap.get(SessionManager.PHOTO);
+        login_type=hashMap.get(SessionManager.LOGIN_TYPE);
+        user = hashMap.get(SessionManager.USERNAME);
         ImageView back=findViewById(R.id.back);
         fav=findViewById(R.id.fav);
         fname=findViewById(R.id.fname);
@@ -289,13 +290,9 @@ finish();
     @Override
     protected void onResume() {
         super.onResume();
-        if (sh_imagePreference.getString("photo","").equalsIgnoreCase(""))
+        if (image != null && !image.isEmpty())
         {
-
-        }
-        else
-        {
-            Glide.with(getApplicationContext()).load(sh_imagePreference.getString("photo","")).apply(RequestOptions.circleCropTransform()).into(profile_image);
+            Glide.with(getApplicationContext()).load(image).apply(RequestOptions.circleCropTransform()).into(profile_image);
 
         }
         addhome.setEnabled(true);
@@ -486,9 +483,24 @@ dialog.show();
                         for (int i=0;i<jsonArray.length();i++) {
 
                             JSONObject jsonObject1=jsonArray.getJSONObject(i);
-                            fname.setText(jsonObject1.getString("fname"));
-                            phone.setText(jsonObject1.getString("mobile_number"));
-                            Glide.with(SettingsActivity.this).load(jsonObject1.getString("photo")).apply(RequestOptions.circleCropTransform()).into(profile_image);
+
+                            if (login_type.equalsIgnoreCase("social"))
+                            {
+                                Glide.with(SettingsActivity.this).load(image).apply(RequestOptions.circleCropTransform()).into(profile_image);
+
+                            }
+                            if ((jsonObject1.getString("fname")) != null && !(jsonObject1.getString("fname")).isEmpty()) {
+
+                                {
+                                    fname.setText(jsonObject1.getString("fname"));
+                                    phone.setText(jsonObject1.getString("mobile_number"));
+
+                                }
+                            }else
+                            {
+                                fname.setText(user);
+
+                            }
 
 
                         }

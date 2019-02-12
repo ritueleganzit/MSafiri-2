@@ -36,6 +36,11 @@ public class SessionManager {
     public static final String PHOTO = "photo";
     public static final String USERNAME= "username";
     public static final String PASSWORD= "password";
+    public static final String EMAIL= "email";
+    public static final String LNAME= "lname";
+
+
+    public static final String LOGIN_TYPE="login_type";
 
     public SessionManager(Context context){
         this._context = context;
@@ -44,7 +49,7 @@ public class SessionManager {
     }
 
 
-    public void createLoginSession(String user_id,String username,String password,String photo){
+    public void createLoginSession(String login_type,String email,String lname,String user_id,String username,String password,String photo){
         // Storing login value as TRUE
         editor.putBoolean(IS_LOGIN, true);
 
@@ -53,6 +58,9 @@ public class SessionManager {
         editor.putString(PHOTO, photo);
         editor.putString(USERNAME, username);
         editor.putString(PASSWORD, password);
+        editor.putString(LOGIN_TYPE, login_type);
+        editor.putString(EMAIL, email);
+        editor.putString(LNAME, lname);
 
 
 
@@ -102,6 +110,10 @@ public class SessionManager {
         user.put(USERNAME, pref.getString(USERNAME, null));
         user.put(PASSWORD, pref.getString(PASSWORD, null));
         user.put(PHOTO, pref.getString(PHOTO, null));
+        user.put(LOGIN_TYPE, pref.getString(LOGIN_TYPE, null));
+        user.put(EMAIL, pref.getString(EMAIL, null));
+        user.put(LNAME, pref.getString(LNAME, null));
+
 
 
         // return user

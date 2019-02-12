@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -79,6 +80,8 @@ TextView pickuploc,pickuplocaddress,destloc,destlocaddress,comment,trip_rate;
 RatingBar ratingBar;
 RobotoMediumTextView driver_txt1,vehicle_tx1,calculate_time;
 GoogleMap map;
+    Runnable runnable;
+    Handler handler1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,6 +108,7 @@ GoogleMap map;
         vehicle_tx1=findViewById(R.id.vehicle_tx1);
         calculate_time=findViewById(R.id.calculate_time);
         spotsDialog=new SpotsDialog(TripActivity.this);
+         handler1 = new Handler();
 
         trip_rate=findViewById(R.id.trip_rate);
         back.setOnClickListener(new View.OnClickListener() {
@@ -131,6 +135,31 @@ GoogleMap map;
         else {
             ratingBar.setRating(Float.parseFloat(historyData.getRating()));
         }
+
+
+
+
+            Toast.makeText(this, "called", Toast.LENGTH_SHORT).show();
+             runnable=new Runnable() {
+                @Override
+                public void run() {
+                    if (historyData.getUser_trip_status().equalsIgnoreCase("booked"))
+
+                    {
+                        getSingleTripData();
+                        handler1.postDelayed(this, 3000);
+                    } else {
+                        handler1.removeCallbacks(this);
+                        Log.d(TAG + "mmmmm", "" + System.currentTimeMillis());
+
+
+                    }
+                }
+            };
+             handler1.postDelayed(runnable,3000);
+
+
+
 
      //
               pickuploc.setText(""+historyData.getFrom_title());
@@ -209,17 +238,7 @@ GoogleMap map;
 
 
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(5.0f));*/
-        final Handler handler1 = new Handler();
-        handler1.postDelayed(new Runnable() {
-            @Override
-            public void run() {
 
-                Log.d(TAG + "mmmmm", "" + System.currentTimeMillis());
-                getSingleTripData();
-                handler1.postDelayed(this,30000);
-
-            }
-        }, 30000);
 
 
 

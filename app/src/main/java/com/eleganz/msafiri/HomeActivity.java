@@ -74,13 +74,13 @@ public class HomeActivity extends AppCompatActivity
     private static final String TAG = "HomeActivityLog";
     CircleImageView profile_image;
     SessionManager sessionManager;
-    String user_id, photo, user;
+    String user_id, photo, user,lname;
     RobotoMediumTextView user_name;
     SharedPreferences sh_imagePreference;
     SharedPreferences.Editor imagePreference;
     CurrentTripSession currentTripSession;
     private GoogleApiClient mGoogleApiClient;
-    private String user_trip_status;
+    private String user_trip_status,login_type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +105,8 @@ public class HomeActivity extends AppCompatActivity
         user_id = userData.get(SessionManager.USER_ID);
         photo = userData.get(SessionManager.PHOTO);
         user = userData.get(SessionManager.USERNAME);
+        lname = userData.get(SessionManager.LNAME);
+        login_type = userData.get(SessionManager.LOGIN_TYPE);
 
 
        /* if (currentTripSession.hasTrip()) {
@@ -158,6 +160,7 @@ public class HomeActivity extends AppCompatActivity
         user_name = headerview.findViewById(R.id.user_name);
         Log.d(TAG, "" + photo);
         Log.d(TAG, "m" + user);
+        user_name.setText(user);
        /* navigationView.setVerticalFadingEdgeEnabled(true);
         for (int i = 0; i < navigationView.getChildCount(); i++) {
             navigationView.getChildAt(i).setOverScrollMode(View.OVER_SCROLL_NEVER);
@@ -185,10 +188,18 @@ public class HomeActivity extends AppCompatActivity
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right);
         ft.replace(R.id.container, map_one);
         ft.commit();
-        if (sh_imagePreference.getString("photo", "").equalsIgnoreCase("")) {
 
-        } else {
-            Glide.with(getApplicationContext()).load(sh_imagePreference.getString("photo", "")).apply(RequestOptions.circleCropTransform()).into(profile_image);
+        Log.d(TAG, "---" + photo);
+      //  Glide.with(getApplicationContext()).load(photo).apply(RequestOptions.circleCropTransform()).into(profile_image);
+
+
+        if (photo != null && !photo.isEmpty()) {
+            // doSomething
+            Glide.with(getApplicationContext()).load(photo).apply(RequestOptions.circleCropTransform()).into(profile_image);
+
+        }
+        else
+        {
 
         }
         getUserData();
@@ -322,11 +333,14 @@ public class HomeActivity extends AppCompatActivity
                                 JSONObject jsonObject1 = jsonArray.getJSONObject(i);
 
 
-                                user_name.setText(jsonObject1.getString("fname"));
+                               // user_name.setText(jsonObject1.getString("fname"));
                                 imagePreference.putString("photo", jsonObject1.getString("photo"));
                                 imagePreference.commit();
+                                if (login_type.equalsIgnoreCase("manual")) {
 
-                                Glide.with(HomeActivity.this).load(jsonObject1.getString("photo")).apply(RequestOptions.circleCropTransform()).into(profile_image);
+                                    Glide.with(HomeActivity.this).load(jsonObject1.getString("photo")).apply(RequestOptions.circleCropTransform()).into(profile_image);
+
+                                }
                             }
 
                             Log.d(TAG, "Success " + stringBuilder + "");

@@ -178,7 +178,7 @@ public class RegisterationActivity extends AppCompatActivity {
                         {
 
                             JSONObject jsonObject1=jsonArray.getJSONObject(i);
-                            sessionManager.createLoginSession(jsonObject1.getString("user_id"),"",password.getText().toString(),"");
+                            sessionManager.createLoginSession("manual",email.getText().toString(),jsonObject1.getString("lname"),jsonObject1.getString("user_id"),"",password.getText().toString(),"");
                         }
 
 

@@ -57,7 +57,7 @@ import static com.eleganz.msafiri.utils.Constant.BASEURL;
 
 public class EditProfile extends AppCompatActivity {
     SessionManager sessionManager;
-    String user_id, password, user;
+    String user_id, password, image ,name,login_type,emailtxt,lnametxt;
     EditText email, fname, lname, phone;
     String mediapath = "";
     CallAPiActivity callAPiActivity;
@@ -85,7 +85,11 @@ public class EditProfile extends AppCompatActivity {
         sessionManager.checkLogin();
         HashMap<String, String> hashMap = sessionManager.getUserDetails();
         password = hashMap.get(SessionManager.PASSWORD);
-
+image=hashMap.get(SessionManager.PHOTO);
+name=hashMap.get(SessionManager.USERNAME);
+emailtxt=hashMap.get(SessionManager.EMAIL);
+        lnametxt=hashMap.get(SessionManager.LNAME);
+        login_type=hashMap.get(SessionManager.LOGIN_TYPE);
         user_id = hashMap.get(SessionManager.USER_ID);
         callAPiActivity = new CallAPiActivity(this);
         email = findViewById(R.id.email);
@@ -96,12 +100,21 @@ public class EditProfile extends AppCompatActivity {
         phone = findViewById(R.id.phone);
         updateData = findViewById(R.id.updateData);
         ImageView back = findViewById(R.id.back);
-        ch_password.setText(password);
 
-        if (sh_imagePreference.getString("photo", "").equalsIgnoreCase("")) {
+        if (login_type.equalsIgnoreCase("social")) {
+            ch_password.setVisibility(View.GONE);
+            email.setText(emailtxt);
+            lname.setText(lnametxt);
 
-        } else {
-            Glide.with(getApplicationContext()).load(sh_imagePreference.getString("photo", "")).apply(RequestOptions.circleCropTransform()).into(profile_pic);
+        }
+        else {
+            ch_password.setVisibility(View.VISIBLE);
+            ch_password.setText(password);
+        }
+
+        if (image != null && !image.isEmpty())
+        {
+            Glide.with(getApplicationContext()).load(image).apply(RequestOptions.circleCropTransform()).into(profile_pic);
 
         }
         dialog = new SpotsDialog(EditProfile.this);
@@ -326,21 +339,40 @@ public class EditProfile extends AppCompatActivity {
             public void onSuccessResult(JSONObject result) throws JSONException {
                 String message = result.getString("message");
 
-                Log.d("messageimage", message);
+                Log.d("messageimage", ""+result);
                 if (message.equalsIgnoreCase("success")) {
                     JSONArray jsonArray = result.getJSONArray("data");
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        sessionManager.updateImage(jsonObject.getString("photo"));
+                        Log.d("mobile_number", ""+jsonObject.getString("mobile_number"));
 
-                        imagePreference.putString("photo", jsonObject.getString("photo"));
-                        imagePreference.commit();
-                        Glide.with(getApplicationContext())
-                                .load(sh_imagePreference.getString("photo", ""))
+                        if (jsonObject.getString("mobile_number").equalsIgnoreCase("")){
 
-                                .apply(RequestOptions.circleCropTransform())
+                        }
+                        else {
+                            phone.setText(jsonObject.getString("mobile_number"));
+                        }
 
-                                .into(profile_pic);
+                        if (mediapath!=null) {
+                            sessionManager.updateImage(jsonObject.getString("photo"));
+                            HashMap<String, String> hashMap = sessionManager.getUserDetails();
+                            image = hashMap.get(SessionManager.PHOTO);
+
+                            Glide.with(getApplicationContext())
+                                    .load(image)
+
+                                    .apply(RequestOptions.circleCropTransform())
+
+                                    .into(profile_pic);
+                        }
+                        else {
+                            Glide.with(getApplicationContext())
+                                    .load(image)
+
+                                    .apply(RequestOptions.circleCropTransform())
+
+                                    .into(profile_pic);
+                        }
                     }
                 }
 
@@ -379,11 +411,36 @@ public class EditProfile extends AppCompatActivity {
                         for (int i = 0; i < jsonArray.length(); i++) {
 
                             JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                            email.setText(jsonObject1.getString("user_email"));
-                            fname.setText(jsonObject1.getString("fname"));
-                            lname.setText(jsonObject1.getString("lname"));
-                            phone.setText(jsonObject1.getString("mobile_number"));
-                            Glide.with(getApplicationContext()).load(jsonObject1.getString("photo")).apply(RequestOptions.circleCropTransform()).into(profile_pic);
+
+
+
+                            if (login_type.equalsIgnoreCase("manual")) {
+                                Glide.with(getApplicationContext()).load(jsonObject1.getString("photo")).apply(RequestOptions.circleCropTransform()).into(profile_pic);
+                                email.setText(jsonObject1.getString("user_email"));
+                                fname.setText(jsonObject1.getString("fname"));
+                                lname.setText(jsonObject1.getString("lname"));
+                                phone.setText(jsonObject1.getString("mobile_number"));
+
+                            }
+
+                            else {
+                                if (jsonObject1.getString("mobile_number").equalsIgnoreCase(""))
+                                {
+
+                                }
+                                else
+                                {
+                                    phone.setText(jsonObject1.getString("mobile_number"));
+                                }if (jsonObject1.getString("lname").equalsIgnoreCase(""))
+                                {
+
+                                }
+                                else
+                                {
+                                    lname.setText(jsonObject1.getString("lname"));
+                                }
+                                fname.setText(name);
+                            }
                         }
 
                         Log.d(TAG, "Success " + stringBuilder + "");

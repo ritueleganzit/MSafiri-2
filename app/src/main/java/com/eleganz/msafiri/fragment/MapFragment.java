@@ -3,9 +3,9 @@ package com.eleganz.msafiri.fragment;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
@@ -30,17 +30,14 @@ import android.widget.Toast;
 
 import com.eleganz.msafiri.FindRideActivity;
 import com.eleganz.msafiri.R;
-import com.eleganz.msafiri.adapter.FavRoutesAdapter;
 import com.eleganz.msafiri.lib.RobotoMediumTextView;
 import com.eleganz.msafiri.model.ContactModel;
+import com.eleganz.msafiri.model.FavouritesData;
 import com.eleganz.msafiri.session.SessionManager;
 import com.eleganz.msafiri.utils.ApiInterface;
 import com.eleganz.msafiri.utils.ContactSearchDialogCompat;
-import com.eleganz.msafiri.utils.SampleSearchModel;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.quinny898.library.persistentsearch.SearchBox;
-import com.quinny898.library.persistentsearch.SearchResult;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -55,9 +52,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
-import ir.mirrajabi.searchdialog.SimpleSearchDialogCompat;
 import ir.mirrajabi.searchdialog.core.BaseSearchDialogCompat;
 import ir.mirrajabi.searchdialog.core.SearchResultListener;
 import retrofit.Callback;
@@ -77,6 +72,7 @@ public class MapFragment extends Fragment {
     SessionManager sessionManager;
     String user_id;
     GoogleMap mGooglemap;
+    LinearLayout lin_fav;
     LinearLayout findride;
     ProgressBar pickup_progress,destination_progress;
     LinearLayout top;
@@ -93,8 +89,8 @@ Button searchbtn;
     EditText from_pickup,from_destination;
     //LinearLayout fab,fab2,fab3;
     //MapView mapView;
-    SearchBox pickup,destination;
-    ArrayList<String> arrayList;;
+
+    ArrayList<FavouritesData> arrayList=new ArrayList<>();;
     ArrayList<ContactModel> sampleSearchModels;;
     ArrayList<ContactModel> arrayList_desaddress;;
     ArrayList<ContactModel> arrayList_des;;
@@ -121,6 +117,7 @@ CardView cardseat;
        fab2= v.findViewById(R.id.fab2);
        fab3= v.findViewById(R.id.fab3);*/
         top= v.findViewById(R.id.top);
+        lin_fav=v.findViewById(R.id.lin_fav);
         findride= v.findViewById(R.id.findride);
         from_pickup= v.findViewById(R.id.from_pickup);
         from_destination= v.findViewById(R.id.from_destination);
@@ -294,15 +291,9 @@ date_selected.setText(""+getCurrentTimeStamp());
 
                 }
         });
-        pickup= (SearchBox) v.findViewById(R.id.pickup);
-        destination= (SearchBox) v.findViewById(R.id.destination);
-        pickup.enableVoiceRecognition(this);
-        destination.enableVoiceRecognition(this);
 
-
-        roboto=  v.findViewById(R.id.roboto);
-        top.startAnimation(pop_anim);
-        findride.startAnimation(pop_anim);
+//        top.startAnimation(pop_anim);
+//        findride.startAnimation(pop_anim);
 
        /* pickup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -351,18 +342,12 @@ date_selected.setText(""+getCurrentTimeStamp());
                 }
             }
         });
-       pickup.setHint("Pickup Location");
-       destination.setHint("Destination Location");
-   TextView textView=pickup.findViewById(R.id.logo);
-        textView.setHint("Pickup Location");
-        TextView textView2=destination.findViewById(R.id.logo);
-        textView2.setHint("Destination Location");
-        pickup.showLoading(true);
+
+
         pickup_progress.setVisibility(View.VISIBLE);
         getAddress();
         RecyclerView.LayoutManager layoutManager=new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false);
         fav_rec.setLayoutManager(layoutManager);
-        fav_rec.setAdapter(new FavRoutesAdapter(arrayList, getActivity()));
 
 
 
@@ -392,111 +377,7 @@ date_selected.setText(""+getCurrentTimeStamp());
 
 
 
-        pickup.setSearchListener(new SearchBox.SearchListener(){
 
-            @Override
-            public void onSearchOpened() {
-                //Use this to tint the screen
-            }
-
-            @Override
-            public void onSearchClosed() {
-                //Use this to un-tint the screen
-
-            }
-
-            @Override
-            public void onSearchTermChanged(String term) {
-                //React to the search term changing
-                //Called after it has updated results
-            }
-
-            @Override
-            public void onSearch(String searchTerm) {
-                //Toast.makeText(getActivity(), searchTerm +" Searched", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onResultClick(SearchResult result) {
-
-               // Toast.makeText(getActivity(), ""+result, Toast.LENGTH_SHORT).show();
-destination.toggleSearch();
-                    if (toarrayList.size()>0) {
-                        //destination.toggleSearch();
-
-
-
-                        destination.setSearchString("");
-                        //destination.setLogoTextInt("");
-
-                       /* toarrayList.clear();
-
-                        destination.clearResults();*/
-                        //destination.clearSearchable();
-
-
-                        getToList("" + result);
-                      //  Toast.makeText(getActivity(), "if", Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        destination.showLoading(true);
-                        //destination.setLogoText("No Destination");
-                        //Toast.makeText(getActivity(), "else", Toast.LENGTH_SHORT).show();
-                        getToList("" + result);
-
-                    }
-
-
-
-
-                //React to a result being clicked
-            }
-
-            @Override
-            public void onSearchCleared() {
-                Log.d("mmmmmm","clear");
-                Toast.makeText(getActivity(), "Menu closed", Toast.LENGTH_LONG).show();
-
-                //Called when the clear button is clicked
-            }
-
-        });
-        destination.setSearchListener(new SearchBox.SearchListener(){
-
-            @Override
-            public void onSearchOpened() {
-                //Use this to tint the screen
-            }
-
-            @Override
-            public void onSearchClosed() {
-                //Use this to un-tint the screen
-
-            }
-
-            @Override
-            public void onSearchTermChanged(String term) {
-                //React to the search term changing
-                //Called after it has updated results
-            }
-
-            @Override
-            public void onSearch(String searchTerm) {
-               // Toast.makeText(getActivity(), searchTerm +" Searched", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onResultClick(SearchResult result) {
-                //React to a result being clicked
-            }
-
-            @Override
-            public void onSearchCleared() {
-                Log.d("mmmmmm","clear");
-                //Called when the clear button is clicked
-            }
-
-        });
 
        /* Animation anim = AnimationUtils.loadAnimation(getActivity(), R.anim.flyin1);
         fab.startAnimation(anim);
@@ -506,22 +387,10 @@ destination.toggleSearch();
         ///mapView.getMapAsync(this);
 
 
-
+        tripFavoritelist();
         return v;
     }
-    private ArrayList<SampleSearchModel> createSampleData(){
-        ArrayList<SampleSearchModel> items = new ArrayList<>();
-        items.add(new SampleSearchModel("First item"));
-        items.add(new SampleSearchModel("Second item"));
-        items.add(new SampleSearchModel("Third item"));
-        items.add(new SampleSearchModel("The ultimate item"));
-        items.add(new SampleSearchModel("Last item"));
-        items.add(new SampleSearchModel("Lorem ipsum"));
-        items.add(new SampleSearchModel("Dolor sit"));
-        items.add(new SampleSearchModel("Some random word"));
-        items.add(new SampleSearchModel("guess who's back"));
-        return items;
-    }
+
     private void getAddress() {
         //arrayList=new ArrayList<>();
         sampleSearchModels=new ArrayList<>();
@@ -677,7 +546,7 @@ destination.toggleSearch();
         apiInterface.getAllTripData("",new Callback<Response>() {
             @Override
             public void success(Response response, Response response2) {
-                pickup.showLoading(false);
+
                 try {
                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(response.getBody().in()));
                     String line;
@@ -773,7 +642,7 @@ destination.toggleSearch();
         if (requestCode == 1234 && resultCode == RESULT_OK) {
             ArrayList<String> matches = data
                     .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-            pickup.populateEditText(matches.get(0));
+
 
 
         }
@@ -797,48 +666,131 @@ destination.toggleSearch();
         return false;
     }
 
-//    @Override
-//    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-//        super.onActivityCreated(savedInstanceState);
-//        if(mapView != null)
-//        {
-//            mapView.onCreate(null);
-//            mapView.onResume();
-//            mapView.getMapAsync(this);
-//        }
-//    }
-//
-//    @Override
-//    public void onMapReady(GoogleMap googleMap) {
-//
-//            // Customise the styling of the base map using a JSON object defined
-//            // in a raw resource file.
-//
-//            MapsInitializer.initialize(getActivity());
-//
-//
-//        boolean success = googleMap.setMapStyle(
-//                MapStyleOptions.loadRawResourceStyle(
-//                        getActivity(), R.raw.style_json));
-//
-//        if (!success) {
-//            Log.e(TAG, "Style parsing failed.");
-//        }
-//        Log.e("ddddddd", "Style parsing failed.");
-//
-//            LatLng india=new LatLng(20.5937,78.9629);
-//            googleMap.addMarker(new MarkerOptions().position(india).title("INDIA").snippet("MY INDIA").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_marker)));
-//            googleMap.moveCamera(CameraUpdateFactory.newLatLng(india));
-//            googleMap.animateCamera(CameraUpdateFactory.zoomTo(12.0f));
-//
-//
-//
-//
-//        /*
-//        CameraPosition lib=CameraPosition.builder().target(new LatLng(20.5937,78.9629)).zoom(16).bearing(0).tilt(45).build();
-//        googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(lib));*/
-//
-//
-//
-//}
+
+    public void tripFavoritelist()
+    {
+
+        final StringBuilder stringBuilder=new StringBuilder();
+        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(BASEURL).build();
+
+        ApiInterface apiInterface=restAdapter.create(ApiInterface.class);
+        apiInterface.tripFavoritelist(user_id, new Callback<Response>() {
+            @Override
+            public void success(Response response, Response response2) {
+
+                try {
+                    BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(response.getBody().in()));
+                    String line;
+                    while ((line=bufferedReader.readLine())!=null)
+                    {
+                        stringBuilder.append(line);
+                    }
+                    JSONObject  jsonObject=new JSONObject(""+stringBuilder);
+                    if (jsonObject.getString("status").equalsIgnoreCase("1"))
+
+                    {
+                        lin_fav.setVisibility(View.VISIBLE);
+
+                        JSONArray jsonArray=jsonObject.getJSONArray("data");
+                        for (int i=0;i<jsonArray.length();i++)
+                        {
+
+                            JSONObject childObject=jsonArray.getJSONObject(i);
+                            String from_title=childObject.getString("from_title");
+                            String to_title=childObject.getString("to_title");
+                            String trip_id=childObject.getString("trip_id");
+
+                            FavouritesData favouritesData=new FavouritesData(trip_id,from_title,to_title);
+                            arrayList.add(favouritesData);
+
+
+
+
+
+
+
+                        }
+                        fav_rec.setAdapter(new FavRoutesAdapter(arrayList,getActivity()));
+
+
+
+                    }
+                    else {
+                        lin_fav.setVisibility(View.GONE);
+                    }
+
+
+
+
+
+
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+    }
+
+    public class FavRoutesAdapter extends RecyclerView.Adapter<FavRoutesAdapter.FavRoutesViewHolder>{
+        ArrayList<FavouritesData> arrayList;
+        Context context;
+
+        public FavRoutesAdapter(ArrayList<FavouritesData> arrayList, Context context) {
+            this.arrayList = arrayList;
+            this.context = context;
+        }
+
+        @Override
+        public FavRoutesAdapter.FavRoutesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View v= LayoutInflater.from(parent.getContext()).inflate(R.layout.favrouterow,parent,false);
+           FavRoutesAdapter.FavRoutesViewHolder myViewHolder=new FavRoutesAdapter.FavRoutesViewHolder(v);
+
+            return myViewHolder;
+        }
+
+        @Override
+        public void onBindViewHolder(FavRoutesAdapter.FavRoutesViewHolder holder, int position) {
+            final FavouritesData favouritesData=arrayList.get(position);
+            holder.fav_des.setText(favouritesData.getTo_title());
+            holder.fav_pickup.setText(favouritesData.getFrom_title());
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+from_pickup.setText(favouritesData.getFrom_title());
+                    from_destination.setText(favouritesData.getTo_title());
+
+                }
+            });
+
+
+
+
+
+
+
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return arrayList.size();
+        }
+
+        public class FavRoutesViewHolder extends RecyclerView.ViewHolder {
+            RobotoMediumTextView fav_des,fav_pickup;
+            public FavRoutesViewHolder(View itemView) {
+                super(itemView);
+                fav_des=itemView.findViewById(R.id.fav_des);
+                fav_pickup=itemView.findViewById(R.id.fav_pickup);
+            }
+        }
+    }
 }
