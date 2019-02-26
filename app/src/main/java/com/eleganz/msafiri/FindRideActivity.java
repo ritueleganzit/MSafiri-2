@@ -65,11 +65,12 @@ import spencerstudios.com.bungeelib.Bungee;
 
 import static com.eleganz.msafiri.utils.Constant.BASEURL;
 
-public class FindRideActivity extends AppCompatActivity implements AAH_FabulousFragment.Callbacks {
+public class FindRideActivity extends AppCompatActivity implements AAH_FabulousFragment.Callbacks,MySampleFabFragment.OnCompleteListener {
     ImageView filterimg;
     int img[]={R.drawable.kriti,R.drawable.kriti,R.drawable.kriti,R.drawable.kriti,R.drawable.kriti,R.drawable.kriti,R.drawable.kriti,R.drawable.kriti,R.drawable.kriti};
     ListView findridelist;
     FloatingActionButton fab;
+    String price,rating;
     TextView txtno_data;
     private ShimmerFrameLayout shimmerFrameLayout;
     SpotsDialog dialog;
@@ -142,6 +143,90 @@ get_date=getIntent().getStringExtra("get_date");
     protected void onPause() {
         shimmerFrameLayout.stopShimmer();
         super.onPause();
+    }
+    public void getSortPriceTrip(){
+        final StringBuilder stringBuilder=new StringBuilder();
+        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint("http://itechgaints.com/M-safiri-API/").build();
+        final ApiInterface apiInterface = restAdapter.create(ApiInterface.class);
+
+
+apiInterface.getSortByPriceTrip(user_id,from_title, to_title,get_date,seats,price, new Callback<Response>() {
+    @Override
+    public void success(Response response, Response response2) {
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(response.getBody().in()));
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                stringBuilder.append(line);
+            }
+
+
+            JSONObject jsonObject=new JSONObject(""+stringBuilder);
+
+            Log.d("mydata",""+stringBuilder);
+            Log.d("mydata",""+user_id+""+from_title+""+get_date+seats+" "+price);
+            if (jsonObject.getString("message").equalsIgnoreCase("success"))
+            {
+                shimmerFrameLayout.stopShimmer();
+                shimmerFrameLayout.setVisibility(View.GONE);
+
+                JSONArray jsonArray=jsonObject.getJSONArray("data");
+                for (int i=0;i<jsonArray.length();i++)
+                {
+                    JSONObject childObjct=jsonArray.getJSONObject(i);
+                    DriverData driverData=new DriverData(
+                            childObjct.getString("id"),
+                            childObjct.getString("driver_id"),
+
+                            childObjct.getString("photo")
+                            ,childObjct.getString("vehicle_name")+" "+childObjct.getString("vehicle_number")
+                            ,childObjct.getString("from_title")
+                            ,childObjct.getString("to_title")
+                            ,childObjct.getString("datetime")
+                            ,childObjct.getString("ratting")
+                            ,childObjct.getString("trip_price"));
+                    arrayList.add(driverData);
+                }
+                MyAdapter myAdapter=new MyAdapter(arrayList,FindRideActivity.this);
+
+                findridelist.setAdapter(myAdapter);
+                dialog.dismiss();
+            }
+
+            if (jsonObject.getString("status").equalsIgnoreCase("0"))
+
+            {
+                dialog.dismiss();
+                shimmerFrameLayout.stopShimmer();
+                shimmerFrameLayout.setVisibility(View.GONE);
+                txtno_data.setVisibility(View.VISIBLE);
+            }
+            else {
+                dialog.dismiss();
+                shimmerFrameLayout.stopShimmer();
+                shimmerFrameLayout.setVisibility(View.GONE);
+                txtno_data.setVisibility(View.GONE);
+            }
+            Log.d("mydataaa",""+stringBuilder);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    @Override
+    public void failure(RetrofitError error) {
+        shimmerFrameLayout.stopShimmer();
+        dialog.dismiss();
+        shimmerFrameLayout.setVisibility(View.GONE);
+        txtno_data.setVisibility(View.VISIBLE);
+    }
+});
+
+
     }
     private void getdriverTrips() {
 
@@ -229,6 +314,131 @@ else {
 
     }
 
+    @Override
+    public void onComplete(String time) {
+        Toast.makeText(this, "answer"+time, Toast.LENGTH_SHORT).show();
+
+        Log.d("answer",""+time);
+
+
+        if (time.equalsIgnoreCase("high"))
+        {
+         price="high";
+         rating="";
+         if (arrayList.size()>0)
+         {
+             arrayList.clear();
+         }
+         getSortPriceTrip();
+        }  if (time.equalsIgnoreCase("low"))
+        {
+         price="low";
+         rating="";
+         if (arrayList.size()>0)
+         {
+             arrayList.clear();
+         }
+            getSortPriceTrip();        }
+
+        if (time.equalsIgnoreCase("rating"))
+        {
+            rating="yes";
+            price="";
+            if (arrayList.size()>0)
+            {
+                arrayList.clear();
+            }
+            getSortRatingTrip();
+        }
+    }
+
+    private void getSortRatingTrip() {
+
+
+        final StringBuilder stringBuilder=new StringBuilder();
+        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint("http://itechgaints.com/M-safiri-API/").build();
+        final ApiInterface apiInterface = restAdapter.create(ApiInterface.class);
+
+
+        apiInterface.getSortByRatingTrip(user_id,from_title, to_title,get_date,seats,rating, new Callback<Response>() {
+            @Override
+            public void success(Response response, Response response2) {
+                try {
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(response.getBody().in()));
+                    String line;
+                    while ((line = bufferedReader.readLine()) != null) {
+                        stringBuilder.append(line);
+                    }
+
+
+                    JSONObject jsonObject=new JSONObject(""+stringBuilder);
+
+                    Log.d("mydata",""+stringBuilder);
+                    Log.d("mydata",""+user_id+""+from_title+""+get_date+seats);
+                    if (jsonObject.getString("message").equalsIgnoreCase("success"))
+                    {
+                        shimmerFrameLayout.stopShimmer();
+                        shimmerFrameLayout.setVisibility(View.GONE);
+
+                        JSONArray jsonArray=jsonObject.getJSONArray("data");
+                        for (int i=0;i<jsonArray.length();i++)
+                        {
+                            JSONObject childObjct=jsonArray.getJSONObject(i);
+                            DriverData driverData=new DriverData(
+                                    childObjct.getString("id"),
+                                    childObjct.getString("driver_id"),
+
+                                    childObjct.getString("photo")
+                                    ,childObjct.getString("vehicle_name")+" "+childObjct.getString("vehicle_number")
+                                    ,childObjct.getString("from_title")
+                                    ,childObjct.getString("to_title")
+                                    ,childObjct.getString("datetime")
+                                    ,childObjct.getString("ratting")
+                                    ,childObjct.getString("trip_price"));
+                            arrayList.add(driverData);
+                        }
+                        MyAdapter myAdapter=new MyAdapter(arrayList,FindRideActivity.this);
+
+                        findridelist.setAdapter(myAdapter);
+                        dialog.dismiss();
+                    }
+
+                    if (jsonObject.getString("status").equalsIgnoreCase("0"))
+
+                    {
+                        dialog.dismiss();
+                        shimmerFrameLayout.stopShimmer();
+                        shimmerFrameLayout.setVisibility(View.GONE);
+                        txtno_data.setVisibility(View.VISIBLE);
+                    }
+                    else {
+                        dialog.dismiss();
+                        shimmerFrameLayout.stopShimmer();
+                        shimmerFrameLayout.setVisibility(View.GONE);
+                        txtno_data.setVisibility(View.GONE);
+                    }
+                    Log.d("mydataaa",""+stringBuilder);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                shimmerFrameLayout.stopShimmer();
+                dialog.dismiss();
+                shimmerFrameLayout.setVisibility(View.GONE);
+                txtno_data.setVisibility(View.VISIBLE);
+            }
+        });
+
+
+    }
+
     public class MyAdapter extends BaseAdapter
     {
 
@@ -283,6 +493,7 @@ else {
                 {
 
                 }else {
+                    Log.d("ratinggg",""+driverData.getRating());
                     rating.setRating(Float.parseFloat(driverData.getRating()));
                 }
 

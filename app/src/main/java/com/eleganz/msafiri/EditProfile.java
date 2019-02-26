@@ -100,7 +100,6 @@ emailtxt=hashMap.get(SessionManager.EMAIL);
         phone = findViewById(R.id.phone);
         updateData = findViewById(R.id.updateData);
         ImageView back = findViewById(R.id.back);
-
         if (login_type.equalsIgnoreCase("social")) {
             ch_password.setVisibility(View.GONE);
             email.setText(emailtxt);
@@ -138,6 +137,7 @@ emailtxt=hashMap.get(SessionManager.EMAIL);
 
             }
         });
+        Log.d("imagecheck",""+image);
 
         ch_password.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -354,6 +354,9 @@ emailtxt=hashMap.get(SessionManager.EMAIL);
                         }
 
                         if (mediapath!=null) {
+
+                            Log.d("messageimage", ""+jsonObject.getString("photo"));
+
                             sessionManager.updateImage(jsonObject.getString("photo"));
                             HashMap<String, String> hashMap = sessionManager.getUserDetails();
                             image = hashMap.get(SessionManager.PHOTO);
@@ -415,6 +418,8 @@ emailtxt=hashMap.get(SessionManager.EMAIL);
 
 
                             if (login_type.equalsIgnoreCase("manual")) {
+                                sessionManager.updateImage(jsonObject1.getString("photo"));
+
                                 Glide.with(getApplicationContext()).load(jsonObject1.getString("photo")).apply(RequestOptions.circleCropTransform()).into(profile_pic);
                                 email.setText(jsonObject1.getString("user_email"));
                                 fname.setText(jsonObject1.getString("fname"));

@@ -1,5 +1,8 @@
 package com.eleganz.msafiri;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -26,6 +29,7 @@ import com.eleganz.msafiri.session.SessionManager;
 import com.eleganz.msafiri.utils.ApiInterface;
 import com.eleganz.msafiri.utils.DirectionsJSONParser;
 import com.eleganz.msafiri.utils.HistoryData;
+import com.eleganz.msafiri.utils.SensorService;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -54,6 +58,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import dmax.dialog.SpotsDialog;
@@ -70,7 +76,9 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
 SpotsDialog spotsDialog;
     RelativeLayout dummyrel;
     boolean isVisible=true;
-
+    TimerTask mTimerTask;
+    final Handler handler = new Handler();
+    Timer t = new Timer();
     MapView mapView;
     private String TAG="TripActivity";
 HistoryData historyData;
@@ -81,7 +89,7 @@ RatingBar ratingBar;
 RobotoMediumTextView driver_txt1,vehicle_tx1,calculate_time;
 GoogleMap map;
     Runnable runnable;
-    Handler handler1;
+    private int nCounter = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,7 +116,6 @@ GoogleMap map;
         vehicle_tx1=findViewById(R.id.vehicle_tx1);
         calculate_time=findViewById(R.id.calculate_time);
         spotsDialog=new SpotsDialog(TripActivity.this);
-         handler1 = new Handler();
 
         trip_rate=findViewById(R.id.trip_rate);
         back.setOnClickListener(new View.OnClickListener() {
@@ -136,36 +143,54 @@ GoogleMap map;
             ratingBar.setRating(Float.parseFloat(historyData.getRating()));
         }
 
+        if (historyData.getUser_trip_status().equalsIgnoreCase("booked"))
+        {
+
+            Toast.makeText(this, ""+historyData.getUser_trip_status(), Toast.LENGTH_SHORT).show();
+           // doTimerTask();
+            startService(new Intent(this, SensorService.class));
+        }
+
+        else {
+            Toast.makeText(this, ""+historyData.getUser_trip_status(), Toast.LENGTH_SHORT).show();
+            stopService(new Intent(this, SensorService.class));
+            //stopTask();
+        }
 
 
-
-            Toast.makeText(this, "called", Toast.LENGTH_SHORT).show();
+            /*Toast.makeText(this, "called", Toast.LENGTH_SHORT).show();
              runnable=new Runnable() {
                 @Override
                 public void run() {
                     if (historyData.getUser_trip_status().equalsIgnoreCase("booked"))
 
                     {
+                        Log.d(TAG + "mmmmm", "if" + System.currentTimeMillis());
+
                         getSingleTripData();
                         handler1.postDelayed(this, 3000);
                     } else {
                         handler1.removeCallbacks(this);
+                        handler1.removeCallbacks(runnable);
+
+                        handler1.removeCallbacksAndMessages(runnable);
+                        handler1.removeMessages(0);
                         Log.d(TAG + "mmmmm", "" + System.currentTimeMillis());
 
 
                     }
                 }
             };
-             handler1.postDelayed(runnable,3000);
+             handler1.postDelayed(runnable,3000);*/
 
 
 
 
      //
-              pickuploc.setText(""+historyData.getFrom_title());
+             // pickuploc.setText(""+historyData.getFrom_title());
 
               pickuplocaddress.setText(""+historyData.getFrom_address());
-                     destloc.setText(""+historyData.getTo_title());
+                     //destloc.setText(""+historyData.getTo_title());
                       destlocaddress.setText(""+historyData.getTo_address());
                       comment.setText(""+historyData.getComments());
         driver_txt1.setText(""+historyData.getFullname());
@@ -183,6 +208,28 @@ GoogleMap map;
         Glide.with(TripActivity.this).load(""+historyData.getPhoto()).apply(new RequestOptions().placeholder(R.drawable.male)).into(driver_fab);
        // trip_rate.setText(""+historyData.getTrip_price());
     }
+
+
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+
+        @Override
+
+        public void onReceive(Context context, Intent intent) {
+
+            String action = intent.getAction();
+
+
+            Double currentLatitude = intent.getDoubleExtra("latitude", 0);
+
+            Double currentLongitude = intent.getDoubleExtra("longitude", 0);
+
+            //  ... react to local broadcast message
+
+        }
+
+    };
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -232,13 +279,6 @@ GoogleMap map;
 
             }
         });
-
-       /* LatLng india=new LatLng(Double.parseDouble(historyData.getFrom_lat()),Double.parseDouble(historyData.getFrom_lng()));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(india));
-
-
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(5.0f));*/
-
 
 
 
@@ -454,16 +494,7 @@ GoogleMap map;
             }
 
 
-          //  Log.d("Exceptiondataaao",durationtxt);
-           /* runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    duration.setText(""+durationtxt+", away");
-                    //   CaptureMapScreen();
-                }
-            });
-*/
-            br.close();
+        br.close();
 
         } catch (Exception e) {
             Log.d("Exception", e.toString());

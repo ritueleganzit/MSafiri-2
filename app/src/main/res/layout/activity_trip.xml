@@ -186,7 +186,7 @@ android:layout_above="@+id/dummyrel"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
                         android:gravity="center"
                         android:layout_width="match_parent"                       android:layout_height="wrap_content"
-                        android:text="Pickup Location" />
+                        android:text="Pickup" />
                     <TextView
                         android:id="@+id/pickuplocaddress"
                         android:gravity="center"
@@ -194,7 +194,7 @@ android:layout_above="@+id/dummyrel"
                         android:ellipsize="end"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
-                        android:text="@string/address" />
+                        android:text="" />
                 </LinearLayout>
                 <LinearLayout
                     android:layout_weight="1"
@@ -230,7 +230,7 @@ android:id="@+id/destloc"
                         android:gravity="center"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Pickup Location" />
+                        android:text="Destination" />
                     <TextView
                         android:id="@+id/destlocaddress"
                         android:gravity="center"
@@ -238,7 +238,7 @@ android:id="@+id/destloc"
                         android:ellipsize="end"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
-                        android:text="@string/address"  />
+                         />
                 </LinearLayout>
 
             </LinearLayout>

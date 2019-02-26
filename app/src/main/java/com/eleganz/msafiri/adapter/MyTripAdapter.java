@@ -87,16 +87,20 @@ holder.trip_price.setText(""+historyData.getTrip_price());
             @Override
 
             public void onClick(View view) {
-                Activity activity=(Activity) context;
-                context.startActivity(new Intent(context, TripActivity.class)
-                        .putExtra("historyData",historyData)
+                Activity activity = (Activity) context;
+
+                if (historyData.getUser_trip_status().equalsIgnoreCase("booked")) {
+
+                    context.startActivity(new Intent(context, TripActivity.class)
+                            .putExtra("historyData", historyData));
+                } else {
+                    context.startActivity(new Intent(context, TripActivity.class)
+                            .putExtra("historyData", historyData));
+
+                }
 
 
 
-
-
-
-                );
 
             }
         });

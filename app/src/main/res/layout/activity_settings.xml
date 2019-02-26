@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:facebook="http://schemas.android.com/apk/res-auto"
     tools:context="com.eleganz.msafiri.SettingsActivity">
 
     <android.support.v7.widget.Toolbar
@@ -60,16 +61,21 @@
             android:paddingRight="@dimen/activity_horizontal_margin"
             android:paddingTop="@dimen/activity_vertical_margin"
             android:theme="@style/ThemeOverlay.AppCompat.Dark">
-
+           <!-- <com.facebook.login.widget.ProfilePictureView
+                android:id="@+id/friendProfilePicture"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                />-->
             <de.hdodenhof.circleimageview.CircleImageView
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/profile_image"
                 android:layout_width="65dp"
                 android:layout_height="65dp"
                 android:transitionName="simple_activity_transition"
-                android:src="@drawable/male"
+                android:src="@drawable/pr"
                 android:layout_gravity="top"
-                android:elevation="5dp"
+                android:elevation="1dp"
                 app:civ_border_width="2dp"
                 app:civ_circle_background_color="@android:color/white"
                 app:civ_border_color="#ffff" />

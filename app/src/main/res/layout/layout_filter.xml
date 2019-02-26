@@ -2,13 +2,13 @@
 <com.allattentionhere.fabulousfilter.AAH_FilterView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/rl_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="#ffffff"
         android:visibility="invisible"
@@ -28,7 +28,7 @@ android:background="#ffffff"
             <RadioButton
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
                 android:buttonTint="@color/colorPrimaryDark"
-                android:id="@+id/rd_1"
+                android:id="@+id/rd_pricehigh"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
@@ -38,7 +38,23 @@ android:background="#ffffff"
                 android:layout_gravity="start|center_vertical"
                 android:drawablePadding="30dp"
                 android:gravity="right|center_vertical"
-                android:text="Price" />
+                android:text="Price: High to Low" />
+
+
+            <RadioButton
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                android:buttonTint="@color/colorPrimaryDark"
+                android:id="@+id/rd_pricelow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+
+                android:layoutDirection="rtl"
+                android:textAlignment="textStart"
+                android:layout_gravity="start|center_vertical"
+                android:drawablePadding="30dp"
+                android:gravity="right|center_vertical"
+                android:text="Price: Low to High" />
             <!--<View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -67,7 +83,7 @@ android:background="#ffffff"
                 android:buttonTint="@color/colorPrimaryDark"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
 
-                android:id="@+id/rd_3"
+                android:id="@+id/rd_rating"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"

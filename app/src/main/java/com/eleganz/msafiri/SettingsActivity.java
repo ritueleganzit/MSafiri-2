@@ -28,6 +28,8 @@ import com.eleganz.msafiri.model.Home;
 import com.eleganz.msafiri.model.Work;
 import com.eleganz.msafiri.session.SessionManager;
 import com.eleganz.msafiri.utils.ApiInterface;
+import com.facebook.Profile;
+import com.facebook.login.widget.ProfilePictureView;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
@@ -94,7 +96,11 @@ RobotoMediumTextView othersaved;
         sessionManager=new SessionManager(SettingsActivity.this);
 
         sessionManager.checkLogin();
+      /*  ProfilePictureView profilePictureView;
 
+        profilePictureView = (ProfilePictureView) findViewById(R.id.friendProfilePicture);
+
+        profilePictureView.setProfileId(Profile.getCurrentProfile().getId());*/
         HashMap<String,String> hashMap=sessionManager.getUserDetails();
 
         user_id=hashMap.get(SessionManager.USER_ID);
@@ -283,6 +289,8 @@ finish();
                 });
             }
         });
+        Log.d("sdsd",""+image);
+
         getUserData();
         getAddress();
 
@@ -318,7 +326,6 @@ finish();
                 //Write your code if there's no result
             }
         }  if (requestCode == 2) {
-            Toast.makeText(this, "kkk", Toast.LENGTH_SHORT).show();
             if(resultCode == Activity.RESULT_OK){
                 String result=data.getStringExtra("result");
                 lat=data.getStringExtra("resultlat");

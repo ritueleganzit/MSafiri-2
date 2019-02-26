@@ -1,6 +1,7 @@
 package com.eleganz.msafiri;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
@@ -49,6 +50,7 @@ public class RegisterationActivity extends AppCompatActivity {
     CheckBox terms_cb;
     Button signup;
     SessionManager sessionManager;
+    ProgressDialog progressDialog;
 
     EditText email,password,cpassword;
     ImageView logo;
@@ -77,7 +79,9 @@ public class RegisterationActivity extends AppCompatActivity {
         cpassword = findViewById(R.id.cpassword);
         signup = findViewById(R.id.signup);
         terms_cb = findViewById(R.id.terms_cb);
-
+        progressDialog=new ProgressDialog(RegisterationActivity.this);
+        progressDialog.setCancelable(false);
+        progressDialog.setCanceledOnTouchOutside(false);
         signtxt=findViewById(R.id.signtxt);
 
         signup.setOnClickListener(new View.OnClickListener() {
@@ -153,6 +157,7 @@ public class RegisterationActivity extends AppCompatActivity {
     }
 
     private void registerUser() {
+        progressDialog.show();
         Log.d("mytokenr", Token);
         final StringBuilder stringBuilder=new StringBuilder();
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(BASEURL).build();
@@ -161,7 +166,7 @@ public class RegisterationActivity extends AppCompatActivity {
             @Override
             public void success(Response response, Response response2) {
 
-
+progressDialog.dismiss();
                 try {
                     BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(response.getBody().in()));
                     String line;
@@ -169,16 +174,17 @@ public class RegisterationActivity extends AppCompatActivity {
                     {
                         stringBuilder.append(line);
                     }
+                    Log.d(TAG,"Success "+stringBuilder);
 
                     JSONObject jsonObject=new JSONObject(""+stringBuilder);
-                    if (jsonObject.getString("message").equalsIgnoreCase("success"))
+                    if (jsonObject.getString("status").equalsIgnoreCase("1"))
                     {
                         JSONArray jsonArray=jsonObject.getJSONArray("data");
                         for (int i=0;i<jsonArray.length();i++)
                         {
 
                             JSONObject jsonObject1=jsonArray.getJSONObject(i);
-                            sessionManager.createLoginSession("manual",email.getText().toString(),jsonObject1.getString("lname"),jsonObject1.getString("user_id"),"",password.getText().toString(),"");
+                            sessionManager.createLoginSession("manual",email.getText().toString(),"",jsonObject1.getString("user_id"),"",password.getText().toString(),"");
                         }
 
 
@@ -194,7 +200,6 @@ public class RegisterationActivity extends AppCompatActivity {
                         Toast.makeText(RegisterationActivity.this, ""+jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                     }
 
-                    Log.d(TAG,"Success "+stringBuilder);
 
 
 
@@ -210,7 +215,7 @@ public class RegisterationActivity extends AppCompatActivity {
             public void failure(RetrofitError error) {
                 Log.d(TAG,"Error "+error.getMessage());
 
-
+                progressDialog.dismiss();
 
                 Intent intent = getIntent();
                 overridePendingTransition(0, 0);

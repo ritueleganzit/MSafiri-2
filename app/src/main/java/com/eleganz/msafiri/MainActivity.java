@@ -429,8 +429,10 @@ String user_id;
 
             try {
                 profile_pic = new URL("https://graph.facebook.com/" + id + "/picture?width=200&height=150");
+
                 Log.d("profile_picccccc", profile_pic + "");
                 bundle.putString("profile_pic", profile_pic.toString());
+                social_profile_pic= profile_pic.toString();
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -450,8 +452,7 @@ String user_id;
             }
 
             if (object.has("profile_pic")) {
-                Log.d("profile_data", "has " + profile_pic.toString() + "");
-                social_profile_pic=profile_pic.toString();
+                Log.d("cchas", "has " + profile_pic.toString() + "");
                 bundle.putString("profile_pic", profile_pic.toString());
             }
             if (object.has("gender")) {
@@ -630,7 +631,7 @@ String user_id;
         final ApiInterface apiInterface = restAdapter.create(ApiInterface.class);
         Log.d(TAG, "" + social_lname);
         Log.d(TAG, "" + social_email);
-        Log.d(TAG, "" + social_profile_pic);
+        Log.d(TAG, "--" + social_profile_pic);
 
         apiInterface.socialLogin(login_type, email, fname, lname, "android", Token, token, new Callback<Response>() {
             @Override

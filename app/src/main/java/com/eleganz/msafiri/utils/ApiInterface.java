@@ -152,6 +152,34 @@ public interface ApiInterface {
     );
 
     @FormUrlEncoded
+    @POST("/getdriverTrips")
+    void getSortByPriceTrip(
+            @Field("user_id") String user_id,
+            @Field("from_title") String from_title,
+            @Field("to_title") String to_title,
+            @Field("get_date") String get_date,
+            @Field("seats") String seats,
+            @Field("price") String price,
+
+            Callback<Response> callback
+
+    );
+
+    @FormUrlEncoded
+    @POST("/getdriverTrips")
+    void getSortByRatingTrip(
+            @Field("user_id") String user_id,
+            @Field("from_title") String from_title,
+            @Field("to_title") String to_title,
+            @Field("get_date") String get_date,
+            @Field("seats") String seats,
+            @Field("rating") String rating,
+
+            Callback<Response> callback
+
+    );
+
+    @FormUrlEncoded
     @POST("/addReview")
     void addReview(
             @Field("user_id") String user_id,
