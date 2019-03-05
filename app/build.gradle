@@ -14,7 +14,7 @@ android {
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
-        project.ext.set("archivesBaseName", "MSafiriUser-12-2-2019" + defaultConfig.versionName);
+        project.ext.set("archivesBaseName", "MSafiriUser-26-2-2019" + defaultConfig.versionName);
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
