@@ -59,14 +59,18 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
+             <ImageView
+                 android:layout_width="30dp"
+                 android:layout_height="30dp"
+                 android:src="@drawable/ic_car"/>
                 <com.eleganz.msafiri.lib.RobotoMediumTextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:id="@+id/vehicle_name"
-
+                    android:focusable="false"
+                    android:scrollHorizontally="true"
                     android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ic_car"
-                    android:drawablePadding="2dp"
                     android:singleLine="true"
                     android:inputType="textCapWords"
                     android:ellipsize="marquee"
@@ -92,37 +96,57 @@
 
             </LinearLayout>
 
-
-            <com.eleganz.msafiri.lib.RobotoMediumTextView
+            <LinearLayout
                 android:layout_width="match_parent"
+                android:gravity="center_vertical"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_location"
-                android:drawablePadding="2dp"
-                android:singleLine="true"
-                android:inputType="textCapWords"
-                android:id="@+id/pickup_destination"
-                android:ellipsize="marquee"
-                android:marqueeRepeatLimit="marquee_forever"
-                android:gravity="left|center"
-                android:paddingLeft="8dp"
-                android:text=""
-                android:textColor="#3B3B3B"
-                android:textColorHint="#3B3B3B"
-                android:textStyle="bold" />
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_location"/>
+                <com.eleganz.msafiri.lib.RobotoMediumTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:inputType="textCapWords"
+                    android:id="@+id/pickup_destination"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:gravity="left|center"
+                    android:paddingLeft="8dp"
+                    android:text=""
+                    android:textColor="#3B3B3B"
+                    android:textColorHint="#3B3B3B"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
-            <com.eleganz.msafiri.lib.RobotoMediumTextView
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_time"
-                android:drawablePadding="2dp"
-                android:gravity="left|center"
-                android:paddingLeft="8dp"
-                android:text=""
-                android:inputType="textCapWords"
-android:id="@+id/datetime"
-                android:textColor="#043A60"
-                android:textColorHint="#3B3B3B"
-                android:textStyle="bold" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+
+
+                    android:src="@drawable/ic_time"/>
+                <com.eleganz.msafiri.lib.RobotoMediumTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="left|center"
+                    android:paddingLeft="8dp"
+                    android:text=""
+                    android:inputType="textCapWords"
+                    android:id="@+id/datetime"
+                    android:textColor="#043A60"
+                    android:textColorHint="#3B3B3B"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
 
         </LinearLayout>
         <LinearLayout

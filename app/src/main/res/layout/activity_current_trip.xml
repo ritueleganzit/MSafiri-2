@@ -60,6 +60,7 @@ android:id="@+id/temp"
 
 
     <RelativeLayout
+        android:id="@+id/cnfrel"
         android:layout_width="match_parent"
         android:layout_height="275dp"
 android:layout_above="@+id/lin5"

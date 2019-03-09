@@ -487,6 +487,9 @@ else {
             pickup_destination.setText(driverData.getPickup()+"-"+driverData.getDestination());
             vehicle_name.setText(driverData.getVehiclename());
             trip_price.setText("$ "+driverData.getPrice());
+
+
+            vehicle_name.setSelected(true);
             if ((driverData.getRating()!=null))
             {
                 if ((driverData.getRating().equalsIgnoreCase("null")))

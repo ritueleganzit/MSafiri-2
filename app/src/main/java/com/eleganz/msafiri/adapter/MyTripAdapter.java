@@ -64,7 +64,7 @@ public class MyTripAdapter extends RecyclerView.Adapter<MyTripAdapter.MyViewHold
         final HistoryData historyData=arrayList.get(position);
         if (historyData.getUser_trip_status().equalsIgnoreCase("booked")){
             holder.tvongoing.setVisibility(View.VISIBLE);
-            blink(holder.tvongoing);
+           // blink(holder.tvongoing);
         }
 
         else {

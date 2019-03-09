@@ -10,10 +10,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.eleganz.msafiri.lib.RobotoMediumTextView;
 import com.eleganz.msafiri.session.CurrentTripSession;
 import com.eleganz.msafiri.session.SessionManager;
@@ -55,6 +58,8 @@ public class CurrentTrip extends AppCompatActivity implements OnMapReadyCallback
     ImageView back;
     CircleImageView fab;
     SpotsDialog spotsDialog;
+    boolean isVisible=true;
+    RelativeLayout dummyrel,cnfrel;
 
     RobotoMediumTextView cr_vehicle_name,cr_trip_price,cr_pickup,cr_pickupaddress,cr_dest,cr_destaddress,fullname,cr_calculate_time;
     CurrentTripSession currentTripSession;
@@ -68,7 +73,7 @@ public class CurrentTrip extends AppCompatActivity implements OnMapReadyCallback
         sessionManager = new SessionManager(CurrentTrip.this);
 
         sessionManager.checkLogin();
-
+        dummyrel=findViewById(R.id.dummyrel);
         currentTripSession=new CurrentTripSession(CurrentTrip.this);
         spotsDialog = new SpotsDialog(CurrentTrip.this);
 
@@ -131,9 +136,10 @@ public class CurrentTrip extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
-    @Override
+   /* @Override
     public void onBackPressed() {
-        if (currentTripSession.hasTrip())
+
+        *//*if (currentTripSession.hasTrip())
         {
             new AlertDialog.Builder(CurrentTrip.this).setMessage("Are you sure you want to exit?")
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -154,9 +160,9 @@ public class CurrentTrip extends AppCompatActivity implements OnMapReadyCallback
 
         else {
 
-        }
+        }*//*
     }
-
+*/
     public void initView(){
         mapView = (MapView) findViewById(R.id.map);
         //btn= (Button) findViewById(R.id.btn);
@@ -172,7 +178,7 @@ public class CurrentTrip extends AppCompatActivity implements OnMapReadyCallback
         fullname=findViewById(R.id.fullname);
         cr_calculate_time=findViewById(R.id.cr_calculate_time);
         cr_trip_price=findViewById(R.id.cr_trip_price);
-
+        cnfrel=findViewById(R.id.cnfrel);
     }
 
     @Override
@@ -193,7 +199,31 @@ public class CurrentTrip extends AppCompatActivity implements OnMapReadyCallback
 
         map.getUiSettings().setAllGesturesEnabled(true);
         map.getUiSettings().setMapToolbarEnabled(true);
+        map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
 
+                if(isVisible)
+                {
+                    isVisible=false;
+                    dummyrel.setVisibility(View.GONE);
+                    YoYo.with(Techniques.SlideOutDown).duration(500).repeat(0).playOn(cnfrel);
+
+                }
+                else
+                {
+                    isVisible=true;
+
+
+                    YoYo.with(Techniques.SlideInUp).duration(100).repeat(0).playOn(cnfrel);
+                    dummyrel.setVisibility(View.VISIBLE);
+
+                }
+                Log.d("OnMapClick","clicked");
+
+
+            }
+        });
         getSingleTripData();
     }
 
@@ -341,4 +371,10 @@ public class CurrentTrip extends AppCompatActivity implements OnMapReadyCallback
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(CurrentTrip.this, HomeActivity.class));
+        finish();
+    }
 }
