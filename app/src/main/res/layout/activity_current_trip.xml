@@ -51,10 +51,11 @@ android:layout_above="@+id/temp"
 
     </com.google.android.gms.maps.MapView>
     <RelativeLayout
+        android:id="@+id/temp"
         android:layout_alignParentBottom="true"
-android:id="@+id/temp"
         android:layout_width="match_parent"
-        android:layout_height="270dp">
+        android:layout_height="250dp"
+        >
 
     </RelativeLayout>
 
@@ -81,7 +82,9 @@ android:layout_above="@+id/lin5"
                 android:layout_marginTop="50dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|center_horizontal"></RatingBar>
+                android:layout_gravity="center_vertical|center_horizontal">
+
+            </RatingBar>
 
             <com.eleganz.msafiri.lib.RobotoMediumTextView
                 android:layout_width="wrap_content"
@@ -317,6 +320,7 @@ android:singleLine="true"
             android:background="@color/colorPrimary"
             android:layout_weight="1"
             android:text="Tell Your Driver"
+            android:fontFamily="@font/roboto_regular"
             android:layout_below="@+id/lin4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
@@ -327,6 +331,7 @@ android:singleLine="true"
             android:text="Cancel Ride"
             android:id="@+id/cancelride"
             android:textAllCaps="false"
+            android:fontFamily="@font/roboto_regular"
             android:textColor="@android:color/white"
             android:background="#0D3A61"/>
     </LinearLayout>

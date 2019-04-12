@@ -7,6 +7,11 @@
             android:id="@+id/nav_trips"
             android:icon="@drawable/ic_car"
             android:title="Your Trips" />
+
+    <item
+            android:id="@+id/nav_cr_trips"
+            android:icon="@drawable/ic_current_trip"
+            android:title="Current Trip" />
         <item
             android:id="@+id/nav_help"
             android:icon="@drawable/ic_help"

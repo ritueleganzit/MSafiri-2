@@ -32,7 +32,7 @@ android:background="#ffffff"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-
+android:checked="true"
                 android:layoutDirection="rtl"
                 android:textAlignment="textStart"
                 android:layout_gravity="start|center_vertical"

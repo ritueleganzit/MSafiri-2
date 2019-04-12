@@ -171,11 +171,14 @@
                     android:orientation="vertical">
 
                     <TextView
+
+                        android:fontFamily="@font/roboto_regular"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
                         android:gravity="center"
                         android:layout_width="match_parent"                       android:layout_height="wrap_content"
                         android:text="Pickup Location" />
                     <TextView
+                        android:fontFamily="@font/roboto_regular"
                         android:gravity="center"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -190,6 +193,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:fontFamily="@font/roboto_regular"
                         android:layout_gravity="center"
                         android:gravity="center"
                         android:textColor="@color/colorPrimary"
@@ -208,12 +212,13 @@
 
                     <TextView
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-
+                        android:fontFamily="@font/roboto_regular"
                         android:gravity="center"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Pickup Location" />
                     <TextView
+                        android:fontFamily="@font/roboto_regular"
                         android:gravity="center"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

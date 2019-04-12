@@ -361,7 +361,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:id="@+id/lin_fav"
-                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/searchbtn">
 
                 <com.eleganz.msafiri.lib.RobotoMediumTextView
@@ -380,11 +379,25 @@
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/fav_rec"
+
                     android:overScrollMode="never"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                 </android.support.v7.widget.RecyclerView>
+
+                <TextView
+                    android:fontFamily="@font/roboto_light"
+
+                    android:gravity="center"
+                    android:visibility="gone"
+                    android:layout_marginBottom="10dp"
+                    android:id="@+id/txt_fav"
+                    android:text="You have no favourite routes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                </TextView>
             </LinearLayout>
         </android.support.v7.widget.CardView>
 

@@ -1,27 +1,23 @@
 package com.eleganz.msafiri;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
-import android.os.Handler;
 import android.os.StrictMode;
-import android.support.animation.SpringAnimation;
-import android.support.animation.SpringForce;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -68,6 +64,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -104,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
     private String TAG = "MainActivityLog";
     String str_accessToken="",devicetoken="";
 ProgressDialog progressDialog;
-String user_id;
+String user_id,fname;
     public GoogleApiClient googleApiClient;
     private String social_name,social_profile_pic,social_email;
     private String social_lname;
@@ -119,6 +117,7 @@ String user_id;
         setContentView(R.layout.activity_main);
         progressDialog=new ProgressDialog(MainActivity.this);
         progressDialog.setCancelable(false);
+        progressDialog.setMessage("Please Wait");
         progressDialog.setCanceledOnTouchOutside(false);
         sessionManager = new SessionManager(MainActivity.this);
         final Animation popin = AnimationUtils.loadAnimation(MainActivity.this, R.anim.pop_in);
@@ -147,14 +146,20 @@ String user_id;
 
             HashMap<String, String> userData = sessionManager.getUserDetails();
             user_id = userData.get(SessionManager.USER_ID);
+            fname=userData.get(SessionManager.FNAME);
+
+            if (fname != null && !fname.isEmpty())
+            {
+                startActivity(new Intent(MainActivity.this, HomeActivity.class));
+                finish();
+            }
             /*if (currentTripSession.hasTrip()) {
 
                 Toast.makeText(this, "dfgdg", Toast.LENGTH_SHORT).show();
                 getSingleTripData();
             }
             else {*/
-                startActivity(new Intent(MainActivity.this, HomeActivity.class));
-                finish();
+
            // }
 
         }
@@ -172,7 +177,16 @@ String user_id;
         loginregister.startAnimation(flyin5);
 
         loginsigninwith.startAnimation(flyin6);
-
+        /*try {
+            PackageInfo info = getPackageManager().getPackageInfo(
+                    "com.eleganz.msafiri",
+                    PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            }
+        } catch (PackageManager.NameNotFoundException e) {    } catch (NoSuchAlgorithmException e) {    }*/
         bottom.startAnimation(flyin7);
         GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -220,7 +234,9 @@ String user_id;
                     email.setError("Please enter valid Email");
                     email.requestFocus();
 
-                } else if (password.getText().toString().trim().isEmpty()) {
+                }
+
+                else if (password.getText().toString().trim().isEmpty()) {
                     YoYo.with(Techniques.Shake)
                             .duration(700)
                             .repeat(0)
@@ -314,7 +330,7 @@ String user_id;
 
                 bottom.startAnimation(flyout7);
 
-                startActivity(new Intent(MainActivity.this, RegisterationActivity.class));
+                startActivity(new Intent(MainActivity.this, RegistrationActivity.class));
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 
             }
@@ -486,7 +502,7 @@ String user_id;
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(BASEURL).build();
         final ApiInterface apiInterface = restAdapter.create(ApiInterface.class);
         HashMap<String,String> hashMap=currentTripSession.getTripDetails();
-        apiInterface.getSingleTripData(hashMap.get(CurrentTripSession.TRIP_ID),user_id, new Callback<Response>() {
+        apiInterface.getSingleTripData(hashMap.get(CurrentTripSession.TRIP_ID), new Callback<Response>() {
             @Override
             public void success(Response response, Response response2) {
                 try {
@@ -731,10 +747,26 @@ String user_id;
 
                                 Log.d(TAG, "" + jsonObject1.getString("photo"));
                                 Log.d(TAG, "" + jsonObject1.getString("fname"));
-                                Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                                startActivity(intent);
-                                finish();
-                                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+
+                                String fname=jsonObject1.getString("fname");
+
+                                if (fname != null && !fname.isEmpty())
+                                {
+                                    Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+
+                                }
+                                else
+                                {
+                                    Intent intent = new Intent(MainActivity.this, RegistrationContinue.class);
+                                    startActivity(intent);
+                                    finish();
+                                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+
+                                }
+
 
                             }
 

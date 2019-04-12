@@ -2,7 +2,8 @@
     <string name="app_name">MSafiri</string>
     <string name="title_activity_forgot_password">ForgotPasswordActivity</string>
     <string name="alreadymember">Already member? <b>Sign In here</b></string>
-    <string name="registerhere">Don\'t have account? <b>Register Here</b></string>
+    <string name="registerhere">Don\'t have account? <b><u>Register Here</u></b></string>
+    <string name="forgotpassword"><u>Forgot Password</u></string>
     <string name="agree">I agree the terms of use</string>
     <string name="hintemail"><font size="15">Email Address</font></string>
     <string name="hintnewpassword"><font size="15">New Password</font></string>
@@ -33,7 +34,9 @@
     <string name="cant_connect">Can\'t Connect</string>
     <string name="no_internet">No Internet Connection</string>
     <string name="Please_enter_email">Please Enter Email</string>
+    <string name="Please_enter_fname">Please Enter First Name</string>
     <string name="Please_Enter_Password">Please Enter Password</string>
+    <string name="Please_Enter_Password_length">Password must contain atleast 6 characters</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="google_maps_key">AIzaSyCZJDD1Osg2A3bYeAQG6UtTD9fll8t5-IU</string>
@@ -44,4 +47,6 @@
     <string name="payment"><font size="20">Your payment of $30.00 \n has been succesfully received.</font></string>
     <string name="cancelnote"><font size="10">Note: Your amount will be refunded in your account in next 48 hours.</font></string>
     <string name="address"><font size="10">2385 McDowell Street \n Location</font></string>
+    <string name="no_ride">Looks like there aren\'t any  \n pickups available.</string>
+    <string name="no_cr_ride">Looks like there aren\'t any  \n ongoing ride.</string>
 </resources>

@@ -35,6 +35,19 @@ public interface ApiInterface {
             Callback<Response> callback
     );
 
+    @FormUrlEncoded
+    @POST("/updateProfile")
+    public void updateProfile(
+            @Field("user_id") String user_id,
+            @Field("mobile_number") String mobile_number,
+            @Field("gender") String gender,
+            @Field("fname") String fname,
+            @Field("lname") String lname,
+            @Field("country") String country,
+            @Field("user_email") String user_email,
+            Callback<Response> callback
+    );
+
 
     @FormUrlEncoded
     @POST("/socialLogin")
@@ -137,6 +150,16 @@ public interface ApiInterface {
 
     );
 
+
+@FormUrlEncoded
+    @POST("/Triplocations")
+    void getTripLocation(
+        @Field("") String user_id,
+
+            Callback<Response> callback
+
+    );
+
     @FormUrlEncoded
     @POST("/getdriverTrips")
     void getdriverTrips(
@@ -205,7 +228,6 @@ public interface ApiInterface {
     @POST("/singleTrip")
     void getSingleTripData(
             @Field("id") String id,
-            @Field("user_id") String user_id,
 
 
             Callback<Response> callback
@@ -254,6 +276,7 @@ public interface ApiInterface {
             @Field("trip_id") String trip_id,
             @Field("user_id") String user_id,
             @Field("driver_id") String driver_id,
+            @Field("status") String status,
             Callback<Response> callback
 
     );

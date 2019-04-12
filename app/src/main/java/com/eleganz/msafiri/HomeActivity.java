@@ -9,8 +9,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -32,6 +34,7 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -57,6 +60,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.Locale;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -104,7 +108,7 @@ public class HomeActivity extends AppCompatActivity
         HashMap<String, String> userData = sessionManager.getUserDetails();
         user_id = userData.get(SessionManager.USER_ID);
         photo = userData.get(SessionManager.PHOTO);
-        user = userData.get(SessionManager.USERNAME);
+        user = userData.get(SessionManager.FNAME);
         lname = userData.get(SessionManager.LNAME);
         login_type = userData.get(SessionManager.LOGIN_TYPE);
 
@@ -262,6 +266,11 @@ public class HomeActivity extends AppCompatActivity
 
 
         }
+        else if (id==R.id.nav_cr_trips)
+        {
+            startActivity(new Intent(HomeActivity.this, TrackingScreen.class));
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        }
         /*else if (id == R.id.nav_rating) {
            *//* startActivity(new Intent(HomeActivity.this,ReviewActivity.class));
             overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
@@ -270,7 +279,7 @@ public class HomeActivity extends AppCompatActivity
         else if (id == R.id.nav_logout) {
             // sessionManager.logoutUser();
 
-            new AlertDialog.Builder(this).setTitle("Are you sure you want to logout?").setCancelable(false)
+            AlertDialog alertDialog=     new AlertDialog.Builder(this).setMessage("Are you sure you want to logout?").setCancelable(false)
 
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
@@ -293,11 +302,23 @@ public class HomeActivity extends AppCompatActivity
                     dialogInterface.dismiss();
                 }
             }).show();
+
+            TextView textView = (TextView) alertDialog.findViewById(android.R.id.message);
+            Typeface face= Typeface.createFromAsset(getAssets(),"fonts/Roboto-Light.ttf");
+            textView.setTypeface(face);
         } else if (id == R.id.nav_drive) {
 
+
+
         } else if (id == R.id.nav_legal) {
-            startActivity(new Intent(HomeActivity.this, LegalActivity.class));
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+           /* startActivity(new Intent(HomeActivity.this, LegalActivity.class));
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);*/
+
+
+            String uri = String.format(Locale.ENGLISH, "http://maps.google.com/maps?saddr=%f,%f(%s)&daddr=%f,%f (%s)", 23.0350, 72.5293, "Home Sweet Home", 22.9962, 72.5235, "Where the party is at");
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+            intent.setPackage("com.google.android.apps.maps");
+            startActivity(intent);
 
 
         }
@@ -333,7 +354,7 @@ public class HomeActivity extends AppCompatActivity
                                 JSONObject jsonObject1 = jsonArray.getJSONObject(i);
 
 
-                               // user_name.setText(jsonObject1.getString("fname"));
+                                user_name.setText(jsonObject1.getString("fname"));
                                 imagePreference.putString("photo", jsonObject1.getString("photo"));
                                 imagePreference.commit();
                                 if (login_type.equalsIgnoreCase("manual")) {
@@ -375,7 +396,7 @@ public class HomeActivity extends AppCompatActivity
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(BASEURL).build();
         final ApiInterface apiInterface = restAdapter.create(ApiInterface.class);
         HashMap<String,String> hashMap=currentTripSession.getTripDetails();
-        apiInterface.getSingleTripData(hashMap.get(CurrentTripSession.TRIP_ID),user_id, new Callback<Response>() {
+        apiInterface.getSingleTripData(hashMap.get(CurrentTripSession.TRIP_ID), new Callback<Response>() {
             @Override
             public void success(Response response, Response response2) {
                 try {

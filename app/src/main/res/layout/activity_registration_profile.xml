@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:background="#fff"
-    >
+    android:layout_height="match_parent">
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#fff"
+        tools:context="com.example.dell.newapp.Settings">
 
 
         <android.support.v7.widget.Toolbar
@@ -48,20 +52,9 @@
             </RelativeLayout>
         </android.support.v7.widget.Toolbar>
 
-    <ScrollView
-        android:layout_below="@+id/toolbar"
-android:fitsSystemWindows="true"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:background="#fff"
-        android:layout_height="match_parent">
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar">
         <LinearLayout
             android:id="@+id/header"
+            android:layout_below="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#f7f7f7"
@@ -75,28 +68,28 @@ android:fitsSystemWindows="true"
                 android:orientation="vertical">
 
 
-                <LinearLayout
-                    android:id="@+id/pic_layout"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:gravity="center"
-                    android:layout_gravity="center"
-                    android:layout_margin="15dp"
-                    android:scaleType="centerInside"
-                    android:orientation="vertical" >
-
-                    <ImageView
-                        android:transitionName="simple_activity_transition"
-
-                        android:id="@+id/profile_pic"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                    <LinearLayout
+                        android:id="@+id/pic_layout"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:gravity="center"
                         android:layout_gravity="center"
-                        android:src="@drawable/pr" />
+                        android:layout_margin="15dp"
+                        android:scaleType="centerInside"
+                        android:orientation="vertical" >
+
+                        <ImageView
+                            android:transitionName="simple_activity_transition"
+android:background="@drawable/pr"
+                            android:id="@+id/profile_pic"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:src="@drawable/pr" />
 
 
 
-                </LinearLayout>
+                    </LinearLayout>
 
 
 
@@ -110,32 +103,31 @@ android:fitsSystemWindows="true"
             android:id="@+id/content"
             android:layout_below="@+id/header"
             android:focusableInTouchMode="true"
-            android:layout_margin="15dp"
+            android:padding="15dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="#fff"
             >
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:errorTextAppearance="@style/error_appearance"
-                app:hintTextAppearance="@style/TextAppearance.AppCompat.Small"
-                >
-                <EditText
-                    android:fontFamily="@font/roboto_regular"
-                    android:id="@+id/fname"
-                    android:layout_width="match_parent"
-                    android:maxLines="1"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:errorTextAppearance="@style/error_appearance"
+                        app:hintTextAppearance="@style/TextAppearance.AppCompat.Small"
+                        >
+                        <EditText
+                            android:id="@+id/fname"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                            android:fontFamily="@font/roboto_regular"
 
-
-                    android:inputType="textPersonName"
-                    android:layout_height="wrap_content"
-                    android:hint="First Name"
-                    android:textColorHint="#878787"
-                    />
-            </android.support.design.widget.TextInputLayout>
+                            android:layout_width="match_parent"
+                            android:maxLines="1"
+                            android:inputType="textPersonName|textCapWords"
+                            android:layout_height="wrap_content"
+                            android:hint="First Name"
+                            android:textColorHint="#878787"
+                            />
+                    </android.support.design.widget.TextInputLayout>
 
 
 
@@ -149,12 +141,11 @@ android:fitsSystemWindows="true"
                     android:id="@+id/lname"
                     android:layout_width="match_parent"
                     android:maxLines="1"
-                    android:inputType="textPersonName"
+                    android:inputType="textPersonName|textCapWords"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
                     android:fontFamily="@font/roboto_regular"
                     android:layout_height="wrap_content"
                     android:hint="Last Name"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
-
                     android:textColorHint="#878787"
                     />
             </android.support.design.widget.TextInputLayout>
@@ -169,19 +160,19 @@ android:fitsSystemWindows="true"
                     android:id="@+id/email"
                     android:layout_width="match_parent"
                     android:maxLines="1"
-                    android:fontFamily="@font/roboto_regular"
                     android:focusable="false"
                     android:inputType="textEmailAddress"
                     android:layout_height="wrap_content"
                     android:hint="Email"
                     android:textAppearance="@style/TextAppearance.AppCompat.Small"
-
+                    android:fontFamily="@font/roboto_regular"
                     android:textColorHint="#878787"
                     />
             </android.support.design.widget.TextInputLayout>
 
 
-            <android.support.design.widget.TextInputLayout
+<android.support.design.widget.TextInputLayout
+    android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:errorTextAppearance="@style/error_appearance"
@@ -193,11 +184,10 @@ android:fitsSystemWindows="true"
                     android:maxLines="1"
                     android:inputType="textPassword"
                     android:focusable="false"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
                     android:fontFamily="@font/roboto_regular"
                     android:layout_height="wrap_content"
                     android:text="Password"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
-
                     android:textColorHint="#878787"
                     />
             </android.support.design.widget.TextInputLayout>
@@ -214,13 +204,11 @@ android:fitsSystemWindows="true"
                     android:id="@+id/phone"
                     android:layout_width="match_parent"
                     android:maxLines="1"
-
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
                     android:fontFamily="@font/roboto_regular"
                     android:inputType="phone"
                     android:layout_height="wrap_content"
                     android:hint="Phone Number"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
-
                     android:textColorHint="#878787"
                     />
             </android.support.design.widget.TextInputLayout>
@@ -236,7 +224,6 @@ android:fitsSystemWindows="true"
             android:layout_gravity="bottom"
             android:id="@+id/findride"
             android:layout_margin="35dp"
-
             android:layout_marginBottom="?attr/actionBarSize"
             android:background="@drawable/btn_bg">
 
@@ -246,14 +233,11 @@ android:fitsSystemWindows="true"
                 android:text="Save"
                 android:id="@+id/updateData"
                 android:padding="8dp"
-                android:textStyle="bold"
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:textColor="#fff"/>
 
         </LinearLayout>
-    </RelativeLayout>
-
-    </ScrollView>
 
     </RelativeLayout>
+</ScrollView>

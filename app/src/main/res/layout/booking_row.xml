@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="2dp"
+    app:cardBackgroundColor="#ffffff"
+    app:cardCornerRadius="5dp"
+    app:cardElevation="3dp"
+    app:cardUseCompatPadding="true"
+    >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="130dp">
+        <LinearLayout
+            android:id="@+id/lin_withimg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:padding="5dp">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/circleview"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+
+                android:layout_margin="5dp"
+                android:src="@drawable/user_image" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/roboto_light"
+                android:text="Rating 4.5"
+                android:textColor="@color/text_color"
+                android:textSize="12sp"/>
+
+
+            <TextView
+                android:id="@+id/trip_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+android:textColor="#ac000000"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/roboto_regular"
+                android:text="$ 146.00"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+
+
+        </LinearLayout>
+        <View
+            android:id="@+id/view_line"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:layout_toRightOf="@+id/lin_withimg"
+            android:background="#e4e4e4"/>
+        <LinearLayout
+            android:padding="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@+id/view_line"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+               <LinearLayout
+                   android:id="@+id/lin1address"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:gravity="center_vertical"
+                   android:orientation="horizontal">
+                   <ImageView
+                       android:id="@+id/circle_stroke"
+                       android:layout_width="10dp"
+                       android:layout_height="10dp"
+                       android:layout_marginRight="10dp"
+                       android:src="@drawable/circle_stroke"/>
+                   <TextView
+                       android:id="@+id/pickup_address"
+                       android:layout_width="wrap_content"
+android:textColor="#414141"
+                       android:singleLine="true"
+                       android:ellipsize="end"
+                       android:fontFamily="@font/roboto_regular"
+                       android:layout_height="wrap_content"
+                       android:layout_toRightOf="@+id/circle_stroke"
+                       android:text="W 90th St, New York, NY 100025"
+
+                       android:textSize="12sp" />
+
+               </LinearLayout>
+                <LinearLayout
+
+                    android:id="@+id/lin2view"
+                    android:layout_width="10dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/lin1address"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+                    <View
+
+                        android:layout_width="1dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:background="@color/colorPrimary"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/lin2view"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:layout_marginRight="10dp"
+                        android:src="@drawable/circle_stroke"/>
+                    <TextView
+                        android:singleLine="true"
+                        android:ellipsize="end"
+                        android:id="@+id/pickup_destination"
+                        android:layout_width="wrap_content"
+                        android:textColor="#414141"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/circle_stroke"
+                        android:text="W 90th St, New York, NY 100025"
+                        android:fontFamily="@font/roboto_regular"
+
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_marginBottom="8dp"
+
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:gravity="bottom"
+                    android:layout_gravity="bottom"
+                    android:layout_width="match_parent"
+                        android:layout_weight="0.6"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_medium"
+                        android:text="Vehicle name"
+                        android:textColor="#cccccc"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/vehicle_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_medium"
+                        android:text="KUC 265U"
+                        android:textColor="@android:color/black"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:gravity="bottom"
+                    android:layout_gravity="bottom"
+                    android:layout_weight="0.4"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:textSize="12sp"
+                        android:textColor="#cccccc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Time"
+                        android:fontFamily="@font/roboto_medium"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_medium"
+                        android:text="11 Apr,2019, 01:45 PM"
+                        android:id="@+id/datetime"
+                        android:textColor="@android:color/black"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>
+</layout>

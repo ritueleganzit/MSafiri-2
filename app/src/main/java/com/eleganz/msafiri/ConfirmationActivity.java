@@ -87,7 +87,7 @@ public class ConfirmationActivity extends AppCompatActivity implements OnMapRead
     CallAPiActivity callAPiActivity;
     CircleImageView photo;
     SessionManager sessionManager;
-    String user_id,id,driver_id;
+    String user_id,driver_id,trip_id;
     SpotsDialog dialog;
     RelativeLayout  cnfrel;
     RelativeLayout dummyrel;
@@ -121,6 +121,9 @@ public class ConfirmationActivity extends AppCompatActivity implements OnMapRead
         duration= (RobotoMediumTextView) findViewById(R.id.duration);
         cnf_trip_price= (RobotoMediumTextView) findViewById(R.id.cnf_trip_price);
          currentTripSession=new CurrentTripSession(ConfirmationActivity.this);
+        HashMap<String, String> tripdata=currentTripSession.getTripDetails();
+        trip_id=tripdata.get(CurrentTripSession.TRIP_ID);
+        driver_id=tripdata.get(CurrentTripSession.DRIVER_ID);
         callAPiActivity = new CallAPiActivity(this);
         cnf= (Button) findViewById(R.id.cnf);
         sessionManager=new SessionManager(ConfirmationActivity.this);
@@ -132,6 +135,8 @@ public class ConfirmationActivity extends AppCompatActivity implements OnMapRead
         HashMap<String, String> userData=sessionManager.getUserDetails();
         user_id=userData.get(SessionManager.USER_ID);
 
+        Log.d("Confirmationtrip",""+trip_id);
+        Log.d("Confirmationdriver",""+driver_id);
 
 
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
@@ -140,6 +145,7 @@ public class ConfirmationActivity extends AppCompatActivity implements OnMapRead
 
             }
         });
+
         mapView.getMapAsync(this);
         if(mapView != null)
         {
@@ -147,15 +153,13 @@ public class ConfirmationActivity extends AppCompatActivity implements OnMapRead
             mapView.onResume();
             mapView.getMapAsync(this);
         }
-        HashMap<String, String> tripData=currentTripSession.getTripDetails();
-        id=tripData.get(CurrentTripSession.TRIP_ID);
 
         cnf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CaptureMapScreen();
-
-               /* startActivity(new Intent(ConfirmationActivity.this,PaymentActivity.class));*/
+CaptureMapScreen();
+dialog.show();
+/* startActivity(new Intent(ConfirmationActivity.this,PaymentActivity.class));*/
             }
         });
 
@@ -163,9 +167,10 @@ public class ConfirmationActivity extends AppCompatActivity implements OnMapRead
 
     }
 
-    @Override
+   /* @Override
     public void onBackPressed() {
-        new AlertDialog.Builder(ConfirmationActivity.this)
+
+        *//*new AlertDialog.Builder(ConfirmationActivity.this)
                 .setTitle("Are you sure you want to cancel trip?")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
@@ -182,7 +187,13 @@ public class ConfirmationActivity extends AppCompatActivity implements OnMapRead
                     }
                 })
                 .setCancelable(false)
-                .show();
+                .show();*//*
+    }*/
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 
     private void cancelTrip(String trip_id) {
@@ -240,6 +251,7 @@ callAPiActivity.doPostWithFiles(ConfirmationActivity.this, map, URLCONFIRM, phot
     @Override
     public void onSuccessResult(JSONObject result) throws JSONException {
         String message = result.getString("message");
+dialog.dismiss();
 
         Log.d("messageimage", message);
         Log.d("messageimage", photoPath);
@@ -253,6 +265,7 @@ callAPiActivity.doPostWithFiles(ConfirmationActivity.this, map, URLCONFIRM, phot
         else
         {
 
+
             Toast.makeText(ConfirmationActivity.this, ""+message, Toast.LENGTH_SHORT).show();
 
 
@@ -262,7 +275,7 @@ callAPiActivity.doPostWithFiles(ConfirmationActivity.this, map, URLCONFIRM, phot
 
     @Override
     public void onFailureResult(String message) throws JSONException {
-
+dialog.dismiss();
     }
 });
        /* RestAdapter restAdapter=new RestAdapter.Builder().setEndpoint(BASEURL).build();
@@ -313,7 +326,8 @@ callAPiActivity.doPostWithFiles(ConfirmationActivity.this, map, URLCONFIRM, phot
         final StringBuilder stringBuilder=new StringBuilder();
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(BASEURL).build();
         final ApiInterface apiInterface = restAdapter.create(ApiInterface.class);
-apiInterface.getSingleTripData(id,user_id, new Callback<Response>() {
+        Log.d("Confirmationsingle",""+trip_id+" "+user_id);
+apiInterface.getSingleTripData(trip_id, new Callback<Response>() {
     @Override
     public void success(Response response, Response response2) {
         try {
@@ -697,11 +711,11 @@ Log.d("theurl",url);
     }
 
     private void print2(Bitmap bitmapp){
-        ProgressDialog dialog = new ProgressDialog(ConfirmationActivity.this);
+       /* ProgressDialog dialog = new ProgressDialog(ConfirmationActivity.this);
 
         dialog.setMessage("Saving...");
         dialog.show();
-
+*/
         //bitmapp = getBitmapFromView(native_resit,native_resit.getChildAt(0).getHeight(),native_resit.getChildAt(0).getWidth());
         try {
             File defaultFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/MSafiriData");
@@ -728,12 +742,13 @@ Log.d("theurl",url);
 
             Log.d(TAG,photoPath);
 
-            dialog.dismiss();
-            confirmTrip(id);
+
+
+            confirmTrip(trip_id);
             Toast.makeText(ConfirmationActivity.this, "Saved!!", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             e.printStackTrace();
-            dialog.dismiss();
+
             Toast.makeText(ConfirmationActivity.this, "Failed!!", Toast.LENGTH_SHORT).show();
         }
     }

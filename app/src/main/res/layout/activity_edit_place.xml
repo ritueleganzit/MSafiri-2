@@ -65,7 +65,7 @@
                 android:layout_marginLeft="5dp"
                 />
             <EditText
-
+                android:fontFamily="@font/roboto_regular"
                 android:focusable="false"
                 android:enabled="false"
                 android:id="@+id/otherhome"
@@ -86,7 +86,7 @@
 
             <EditText
                 android:focusable="false"
-
+                android:fontFamily="@font/roboto_regular"
                 android:id="@+id/place_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

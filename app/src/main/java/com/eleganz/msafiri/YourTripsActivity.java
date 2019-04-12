@@ -1,5 +1,6 @@
 package com.eleganz.msafiri;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.eleganz.msafiri.adapter.MyTripAdapter;
@@ -55,11 +57,12 @@ public class YourTripsActivity extends AppCompatActivity  {
     SessionManager sessionManager;
     String user_id;
     SpotsDialog dialog;
-    RobotoMediumTextView tv_no_data;
+    LinearLayout tv_no_data;
     RecyclerView list;
 
     ArrayList<HistoryData> arrayList=new ArrayList<>();
     private static final String TAG = "YourTripsActivityLog";
+    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,7 +84,7 @@ public class YourTripsActivity extends AppCompatActivity  {
             }
         });
         list=findViewById(R.id.list);
-        tv_no_data=findViewById(R.id.tv_no_data);
+        tv_no_data=findViewById(R.id.tv_no_data_lin);
         dialog = new SpotsDialog(YourTripsActivity.this);
 
         RecyclerView.LayoutManager layoutManager=new LinearLayoutManager(YourTripsActivity.this,LinearLayoutManager.VERTICAL,false);
@@ -116,52 +119,78 @@ public class YourTripsActivity extends AppCompatActivity  {
                     if (jsonObject.getString("status").equalsIgnoreCase("1"))
                     {
                         JSONArray jsonArray=jsonObject.getJSONArray("data");
+                        Log.d("YourTripstatus",""+stringBuilder);
 
                         for (int i=0;i<jsonArray.length();i++)
                         {
                             JSONObject jsonObject1=jsonArray.getJSONObject(i);
-                            HistoryData historyData=new HistoryData(jsonObject1.getString("driver_id"),
-                                    jsonObject1.getString("trip_id"),
-                                    jsonObject1.getString("rating"),
-                                    jsonObject1.getString("comments"),
-                                    jsonObject1.getString("user_trip_status"),
-                                    jsonObject1.getString("status"),
-                                    jsonObject1.getString("from_title"),
-                                    jsonObject1.getString("from_lat"),
-                                    jsonObject1.getString("from_lng"),
-                                    jsonObject1.getString("from_address"),
-                                    jsonObject1.getString("to_title"),
-                                    jsonObject1.getString("to_lat"),
-                                    jsonObject1.getString("to_lng"),
-                                    jsonObject1.getString("to_address"),
-                                    jsonObject1.getString("end_datetime"),
-                                    jsonObject1.getString("last_lat"),
-                                    jsonObject1.getString("last_lng"),
-                                    jsonObject1.getString("fullname"),
-                                    jsonObject1.getString("photo"),
-                                    jsonObject1.getString("vehicle_name"),
-                                    jsonObject1.getString("trip_price"),
-                                    jsonObject1.getString("calculate_time"),
-                                    jsonObject1.getString("trip_screenshot")
+                            String user_trip_status=jsonObject1.getString("user_trip_status");
+                            if(user_trip_status != null && !user_trip_status.isEmpty())
+                            {
+                                if ((user_trip_status.equalsIgnoreCase("booked")) || (user_trip_status.equalsIgnoreCase("confirm")) || (user_trip_status.equalsIgnoreCase("onboard")))
+                                {
+                                    Log.d("YourTripstatus",""+user_trip_status);
+                                }
+                                else {
+                                    Log.d("YourTripstatus","-->"+user_trip_status);
+
+                                    HistoryData historyData=new HistoryData(jsonObject1.getString("driver_id"),
+                                            jsonObject1.getString("trip_id"),
+                                            jsonObject1.getString("rating"),
+                                            jsonObject1.getString("comments"),
+                                            jsonObject1.getString("user_trip_status"),
+                                            jsonObject1.getString("status"),
+                                            jsonObject1.getString("from_title"),
+                                            jsonObject1.getString("from_lat"),
+                                            jsonObject1.getString("from_lng"),
+                                            jsonObject1.getString("from_address"),
+                                            jsonObject1.getString("to_title"),
+                                            jsonObject1.getString("to_lat"),
+                                            jsonObject1.getString("to_lng"),
+                                            jsonObject1.getString("to_address"),
+                                            jsonObject1.getString("end_datetime"),
+                                            jsonObject1.getString("last_lat"),
+                                            jsonObject1.getString("last_lng"),
+                                            jsonObject1.getString("fullname"),
+                                            jsonObject1.getString("photo"),
+                                            jsonObject1.getString("vehicle_name"),
+                                            jsonObject1.getString("trip_price"),
+                                            jsonObject1.getString("calculate_time"),
+                                            jsonObject1.getString("trip_screenshot")
                                     );
 
-                            historyData.setDate(jsonObject1.getString("datetime"));
-                            arrayList.add(historyData);
-                            Collections.reverse(arrayList);
+                                    historyData.setDate(jsonObject1.getString("datetime"));
+                                    arrayList.add(historyData);
+                                    Collections.reverse(arrayList);
+                                }
+                            }
+                            else {
+                                Log.d("YourTripstatus","empty");
+                            }
+
 
                         }
+                        if ((arrayList.isEmpty()) || (arrayList.size()==0) || (arrayList==null))
+                    {
+                        tv_no_data.setVisibility(View.VISIBLE);
+                    }
+                    else {
+                            tv_no_data.setVisibility(View.GONE);
+                            MyTripAdapter myTripAdapter=new MyTripAdapter(arrayList,YourTripsActivity.this);
+                            list.setAdapter(myTripAdapter);
+                            Log.d("YourTripstatus",""+stringBuilder);
+                            Log.d("YourTripstatus",""+arrayList.get(0).getUser_trip_status());
+                        }
 
-                        MyTripAdapter myTripAdapter=new MyTripAdapter(arrayList,YourTripsActivity.this);
-                        list.setAdapter(myTripAdapter);
 
-                        tv_no_data.setVisibility(View.GONE);
+
                     }
                     else {
                         dialog.dismiss();
                         tv_no_data.setVisibility(View.VISIBLE);
                     }
 
-                    Log.d("your",""+stringBuilder);
+
 
                 } catch (IOException e) {
                     e.printStackTrace();

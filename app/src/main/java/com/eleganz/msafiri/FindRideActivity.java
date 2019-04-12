@@ -27,7 +27,6 @@ import com.allattentionhere.fabulousfilter.AAH_FabulousFragment;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.eleganz.msafiri.fragment.MySampleFabFragment;
-import com.eleganz.msafiri.lib.RobotoMediumTextView;
 import com.eleganz.msafiri.model.DriverData;
 import com.eleganz.msafiri.session.CurrentTripSession;
 import com.eleganz.msafiri.session.SessionManager;
@@ -69,9 +68,10 @@ public class FindRideActivity extends AppCompatActivity implements AAH_FabulousF
     ImageView filterimg;
     int img[]={R.drawable.kriti,R.drawable.kriti,R.drawable.kriti,R.drawable.kriti,R.drawable.kriti,R.drawable.kriti,R.drawable.kriti,R.drawable.kriti,R.drawable.kriti};
     ListView findridelist;
+
     FloatingActionButton fab;
     String price,rating;
-    TextView txtno_data;
+    LinearLayout txtno_data;
     private ShimmerFrameLayout shimmerFrameLayout;
     SpotsDialog dialog;
     private MarkerOptions options = new MarkerOptions();
@@ -98,6 +98,9 @@ public class FindRideActivity extends AppCompatActivity implements AAH_FabulousF
         shimmerFrameLayout = (ShimmerFrameLayout) findViewById(R.id.shimmerLayout);
         shimmerFrameLayout.startShimmer();
         dialog = new SpotsDialog(FindRideActivity.this);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
+
         dialog.show();
         HashMap<String, String> userData=sessionManager.getUserDetails();
         user_id=userData.get(SessionManager.USER_ID);
@@ -233,6 +236,7 @@ apiInterface.getSortByPriceTrip(user_id,from_title, to_title,get_date,seats,pric
         final StringBuilder stringBuilder=new StringBuilder();
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint("http://itechgaints.com/M-safiri-API/").build();
         final ApiInterface apiInterface = restAdapter.create(ApiInterface.class);
+        Log.d("mydata",""+user_id+" fghf "+from_title+" yfy "+to_title+" zsdfs "+get_date+seats);
 
         apiInterface.getdriverTrips(user_id,from_title, to_title,get_date,seats, new Callback<Response>() {
             @Override
@@ -248,7 +252,6 @@ apiInterface.getSortByPriceTrip(user_id,from_title, to_title,get_date,seats,pric
                     JSONObject jsonObject=new JSONObject(""+stringBuilder);
 
                     Log.d("mydata",""+stringBuilder);
-                    Log.d("mydata",""+user_id+""+from_title+""+get_date+seats);
 if (jsonObject.getString("message").equalsIgnoreCase("success"))
 {
     shimmerFrameLayout.stopShimmer();
@@ -301,6 +304,7 @@ else {
 
                 @Override
             public void failure(RetrofitError error) {
+                Log.d("mydata",""+error.getMessage());
                     shimmerFrameLayout.stopShimmer();
                     dialog.dismiss();
                     shimmerFrameLayout.setVisibility(View.GONE);
@@ -470,18 +474,19 @@ else {
         public View getView(int i, View view, ViewGroup viewGroup) {
             LayoutInflater inflater= (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
 
-            view=inflater.inflate(R.layout.selectride,null);
+            view=inflater.inflate(R.layout.booking_row,null);
 
             CircleImageView imageView=view.findViewById(R.id.circleview);
             Animation animation = AnimationUtils.loadAnimation(context, R.anim.item_animation_fall_down);
             view.startAnimation(animation);
             final DriverData driverData=arrayList.get(i);
-            Button book=view.findViewById(R.id.book);
-            RatingBar rating=view.findViewById(R.id.rating);
-            RobotoMediumTextView vehicle_name=view.findViewById(R.id.vehicle_name);
-            RobotoMediumTextView pickup_destination=view.findViewById(R.id.pickup_destination);
-            RobotoMediumTextView trip_price=view.findViewById(R.id.trip_price);
-            RobotoMediumTextView datetime=view.findViewById(R.id.datetime);
+
+          //  RatingBar rating=view.findViewById(R.id.rating);
+            TextView vehicle_name=view.findViewById(R.id.vehicle_name);
+            TextView pickup_address=view.findViewById(R.id.pickup_address);
+            TextView pickup_destination=view.findViewById(R.id.pickup_destination);
+            final TextView trip_price=view.findViewById(R.id.trip_price);
+            TextView datetime=view.findViewById(R.id.datetime);
             Glide.with(context).load(driverData.getPhoto()).apply(new RequestOptions().placeholder(R.drawable.pr).error(R.drawable.pr)).into(imageView);
             pickup_destination.setSelected(true);
             pickup_destination.setText(driverData.getPickup()+"-"+driverData.getDestination());
@@ -497,7 +502,7 @@ else {
 
                 }else {
                     Log.d("ratinggg",""+driverData.getRating());
-                    rating.setRating(Float.parseFloat(driverData.getRating()));
+                    //rating.setRating(Float.parseFloat(driverData.getRating()));
                 }
 
 
@@ -505,21 +510,76 @@ else {
             }
 
             datetime.setText(""+parseDateToddMMyyyy(driverData.getTime()));
-            book.setOnClickListener(new View.OnClickListener() {
+            view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
 
                     //Toast.makeText(FindRideActivity.this, ""+driverData.getDriver_id()+" ", Toast.LENGTH_SHORT).show();
                     //api call
+
+                    Log.d("find",""+driverData.getTrip_id());
+
+dialog.show();
                     bookRide(driverData.getDriver_id(),driverData.getTrip_id());
-                   /* startActivity(new Intent(context,ConfirmationActivity.class).putExtra("trip_id",driverData.getTrip_id())
+
+                   /* startActivity(new Intent(context,FindRideActivity.class).putExtra("trip_id",driverData.getTrip_id())
                     .putExtra("driver_id",driverData.getDriver_id()));*/
 
                 }
             });
             return view;
         }
+
+        private void bookRide(final String driver_id, final String trip_id) {
+            RestAdapter restAdapter=new RestAdapter.Builder().setEndpoint(BASEURL).build();
+            ApiInterface apiInterface=restAdapter.create(ApiInterface.class);
+            apiInterface.joinTrip(trip_id, user_id, driver_id,"0", new Callback<Response>() {
+                @Override
+                public void success(Response response, Response response2) {
+                    try {
+                        final StringBuilder stringBuilder=new StringBuilder();
+                        dialog.dismiss();
+                        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(response.getBody().in()));
+                        String line;
+                        while ((line = bufferedReader.readLine()) != null) {
+                            stringBuilder.append(line);
+                        }
+                        Log.d("FindRideActivity",""+stringBuilder);
+                        JSONObject jsonObject=new JSONObject(""+stringBuilder);
+                        if (jsonObject.getString("message").equalsIgnoreCase("success"))
+
+                        {
+
+                            CurrentTripSession currentTripSession=new CurrentTripSession(FindRideActivity.this);
+                            currentTripSession.createTripSession(trip_id,driver_id,false);
+                            startActivity(new Intent(context,ConfirmationActivity.class));
+                            finish();
+
+                        }
+
+                        else
+                        {
+
+                            Toast.makeText(FindRideActivity.this, "You cannot book this ride", Toast.LENGTH_SHORT).show();
+
+                            Log.d("FindRideActivity",""+jsonObject.getString("message"));
+
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    dialog.dismiss();
+                }
+            });
+        }
+        
         public String parseDateToddMMyyyy(String time) {
             String inputPattern = "yyyy-MM-dd HH:mm:ss";
             String outputPattern = "dd MMM ,yyyy h:mm a";
@@ -537,54 +597,7 @@ else {
             }
             return str;
         }
-        private void bookRide(final String driver_id, final String trip_id) {
-            RestAdapter restAdapter=new RestAdapter.Builder().setEndpoint(BASEURL).build();
-            ApiInterface apiInterface=restAdapter.create(ApiInterface.class);
-            apiInterface.joinTrip(trip_id, user_id, driver_id, new Callback<Response>() {
-                @Override
-                public void success(Response response, Response response2) {
-                    try {
-                        final StringBuilder stringBuilder=new StringBuilder();
 
-                        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(response.getBody().in()));
-                        String line;
-                        while ((line = bufferedReader.readLine()) != null) {
-                            stringBuilder.append(line);
-                        }
-                        Log.d("ConfirmationActivity",""+stringBuilder);
-                        JSONObject jsonObject=new JSONObject(""+stringBuilder);
-                        if (jsonObject.getString("message").equalsIgnoreCase("success"))
-
-                        {
-
-                            CurrentTripSession currentTripSession=new CurrentTripSession(context);
-                            currentTripSession.createTripSession(trip_id,driver_id,false);
-                            startActivity(new Intent(context,ConfirmationActivity.class)
-                                  );
-                            finish();
-                        }
-
-                        else
-                        {
-
-                            Toast.makeText(context, "You cannot book this ride", Toast.LENGTH_SHORT).show();
-
-                            Log.d("ConfirmationActivity",""+jsonObject.getString("message"));
-
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void failure(RetrofitError error) {
-
-                }
-            });
-        }
 
 
     }

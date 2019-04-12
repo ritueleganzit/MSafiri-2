@@ -104,14 +104,27 @@ app:elevation="0dp"
         </LinearLayout>
 
 
-        <TextView
+        <LinearLayout
+            android:id="@+id/txtno_data"
             android:layout_gravity="center"
             android:gravity="center"
             android:visibility="gone"
-            android:id="@+id/txtno_data"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="No Driver Available"/>
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.AppCompatImageView
+                android:layout_width="50dp"
+                android:src="@mipmap/ic_no_ride"
+                android:layout_height="50dp" />
+            <TextView
+                android:fontFamily="@font/roboto_light"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/no_ride"/>
+        </LinearLayout>
 
          </FrameLayout>
 </RelativeLayout>

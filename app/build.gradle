@@ -14,7 +14,7 @@ android {
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
-        project.ext.set("archivesBaseName", "MSafiriUser-9-3-2019" + defaultConfig.versionName);
+        project.ext.set("archivesBaseName", "MSafiriUser-11-4-2019" + defaultConfig.versionName);
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -69,8 +69,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:9.2.0'
     implementation 'com.google.firebase:firebase-auth:9.2.0'
     implementation 'com.google.firebase:firebase-messaging:9.2.0'
-    implementation project(':library')
     implementation 'com.chaos.view:pinview:1.4.2'
+
+    implementation 'com.braintreepayments:card-form:4.1.0'
+    implementation "com.github.battleent:RibbonViews:1.1.6"
     implementation 'com.github.GoodieBag:Pinview:v1.3'
 
 }

@@ -1,8 +1,6 @@
 package com.eleganz.msafiri;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.StrictMode;
@@ -18,11 +16,10 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.eleganz.msafiri.lib.ArrayAdapterWithIcon;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.eleganz.msafiri.lib.RobotoMediumTextView;
 import com.eleganz.msafiri.session.SessionManager;
 import com.eleganz.msafiri.utils.ApiInterface;
@@ -45,7 +42,7 @@ import retrofit.client.Response;
 
 import static com.eleganz.msafiri.utils.Constant.BASEURL;
 
-public class RegisterationActivity extends AppCompatActivity {
+public class RegistrationActivity extends AppCompatActivity {
     RobotoMediumTextView signtxt;
     CheckBox terms_cb;
     Button signup;
@@ -57,7 +54,7 @@ public class RegisterationActivity extends AppCompatActivity {
     private AnimationDrawable animationDrawable;
     private ImageView progress;
     LinearLayout progressBar;
-    private String TAG="RegisterationActivity";
+    private String TAG="RegistrationActivity";
     private String Token;
     private String devicetoken;
 
@@ -66,7 +63,7 @@ public class RegisterationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        sessionManager=new SessionManager(RegisterationActivity.this);
+        sessionManager=new SessionManager(RegistrationActivity.this);
 
         setContentView(R.layout.activity_registeration);
         logo = findViewById(R.id.logo);
@@ -79,8 +76,9 @@ public class RegisterationActivity extends AppCompatActivity {
         cpassword = findViewById(R.id.cpassword);
         signup = findViewById(R.id.signup);
         terms_cb = findViewById(R.id.terms_cb);
-        progressDialog=new ProgressDialog(RegisterationActivity.this);
+        progressDialog=new ProgressDialog(RegistrationActivity.this);
         progressDialog.setCancelable(false);
+        progressDialog.setMessage("Please Wait");
         progressDialog.setCanceledOnTouchOutside(false);
         signtxt=findViewById(R.id.signtxt);
 
@@ -100,7 +98,7 @@ public class RegisterationActivity extends AppCompatActivity {
         signtxt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(RegisterationActivity.this,MainActivity.class));
+                startActivity(new Intent(RegistrationActivity.this,MainActivity.class));
                 overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
                 finish();
 /*
@@ -108,7 +106,7 @@ public class RegisterationActivity extends AppCompatActivity {
                 final Integer[] icons = new Integer[] {R.drawable.envelope, R.drawable.ic_action_name};
                 ListAdapter adapter = new ArrayAdapterWithIcon(getApplicationContext(), items, icons);
 
-                new AlertDialog.Builder(RegisterationActivity.this).setTitle("Select Image")
+                new AlertDialog.Builder(RegistrationActivity.this).setTitle("Select Image")
                         .setAdapter(adapter, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int item ) {
                                 Toast.makeText(getApplicationContext(), "Item Selected: " + item, Toast.LENGTH_SHORT).show();
@@ -145,7 +143,7 @@ public class RegisterationActivity extends AppCompatActivity {
                 }
                 else
                 {
-                    Toast.makeText(RegisterationActivity.this, "No token", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegistrationActivity.this, "No token", Toast.LENGTH_SHORT).show();
                 }
                 try {
                     Thread.sleep(1000);
@@ -190,14 +188,15 @@ progressDialog.dismiss();
 
 
 
-                        startActivity(new Intent(RegisterationActivity.this,HomeActivity.class));
+                        startActivity(new Intent(RegistrationActivity.this,RegistrationContinue.class));
                         overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
 
                         finish();
 
                     }
-                    else {
-                        Toast.makeText(RegisterationActivity.this, ""+jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+                    else
+                    {
+                        Toast.makeText(RegistrationActivity.this, ""+jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                     }
 
 
@@ -233,13 +232,13 @@ progressDialog.dismiss();
     @Override
     protected void onResume() {
         super.onResume();
-        final Animation flyin1 = AnimationUtils.loadAnimation(RegisterationActivity.this, R.anim.flyin1);
-        final Animation flyin2 = AnimationUtils.loadAnimation(RegisterationActivity.this, R.anim.flyin2);
-        final Animation flyin3 = AnimationUtils.loadAnimation(RegisterationActivity.this, R.anim.flyin3);
-        final Animation flyin4 = AnimationUtils.loadAnimation(RegisterationActivity.this, R.anim.flyin4);
-        final Animation flyin5 = AnimationUtils.loadAnimation(RegisterationActivity.this, R.anim.flyin5);
-        final Animation flyin6 = AnimationUtils.loadAnimation(RegisterationActivity.this, R.anim.flyin6);
-        final Animation flyin7 = AnimationUtils.loadAnimation(RegisterationActivity.this, R.anim.flyin7);
+        final Animation flyin1 = AnimationUtils.loadAnimation(RegistrationActivity.this, R.anim.flyin1);
+        final Animation flyin2 = AnimationUtils.loadAnimation(RegistrationActivity.this, R.anim.flyin2);
+        final Animation flyin3 = AnimationUtils.loadAnimation(RegistrationActivity.this, R.anim.flyin3);
+        final Animation flyin4 = AnimationUtils.loadAnimation(RegistrationActivity.this, R.anim.flyin4);
+        final Animation flyin5 = AnimationUtils.loadAnimation(RegistrationActivity.this, R.anim.flyin5);
+        final Animation flyin6 = AnimationUtils.loadAnimation(RegistrationActivity.this, R.anim.flyin6);
+        final Animation flyin7 = AnimationUtils.loadAnimation(RegistrationActivity.this, R.anim.flyin7);
         email.startAnimation(flyin1 );
 
         logo.startAnimation(flyin1);
@@ -259,13 +258,13 @@ progressDialog.dismiss();
     @Override
     public void onBackPressed() {
 
-        final Animation flyout1 = AnimationUtils.loadAnimation(RegisterationActivity.this, R.anim.flyout1);
-        final Animation flyout2 = AnimationUtils.loadAnimation(RegisterationActivity.this, R.anim.flyout2);
-        final Animation flyout3 = AnimationUtils.loadAnimation(RegisterationActivity.this, R.anim.flyout3);
-        final Animation flyout4 = AnimationUtils.loadAnimation(RegisterationActivity.this, R.anim.flyout4);
-        final Animation flyout5 = AnimationUtils.loadAnimation(RegisterationActivity.this, R.anim.flyout5);
-        final Animation flyout6 = AnimationUtils.loadAnimation(RegisterationActivity.this, R.anim.flyout6);
-        final Animation flyout7 = AnimationUtils.loadAnimation(RegisterationActivity.this, R.anim.flyout7);
+        final Animation flyout1 = AnimationUtils.loadAnimation(RegistrationActivity.this, R.anim.flyout1);
+        final Animation flyout2 = AnimationUtils.loadAnimation(RegistrationActivity.this, R.anim.flyout2);
+        final Animation flyout3 = AnimationUtils.loadAnimation(RegistrationActivity.this, R.anim.flyout3);
+        final Animation flyout4 = AnimationUtils.loadAnimation(RegistrationActivity.this, R.anim.flyout4);
+        final Animation flyout5 = AnimationUtils.loadAnimation(RegistrationActivity.this, R.anim.flyout5);
+        final Animation flyout6 = AnimationUtils.loadAnimation(RegistrationActivity.this, R.anim.flyout6);
+        final Animation flyout7 = AnimationUtils.loadAnimation(RegistrationActivity.this, R.anim.flyout7);
 
         email.startAnimation(flyout1);
 
@@ -311,24 +310,32 @@ progressDialog.dismiss();
 
           if (email.getText().toString().equals("")) {
             email.setError(""+getResources().getString(R.string.Please_enter_email));
-
+              YoYo.with(Techniques.Shake).duration(700).repeat(0).playOn(email);
             email.requestFocus();
             return false;
         }
         else if (!matcher.matches()) {
             email.setError(""+getResources().getString(R.string.Please_Enter_Valid_Email));
-
+              YoYo.with(Techniques.Shake).duration(700).repeat(0).playOn(email);
             email.requestFocus();
             return false;
         }
           else  if (password.getText().toString().equals("")) {
             password.setError(""+getResources().getString(R.string.Please_Enter_Password));
-
+              YoYo.with(Techniques.Shake).duration(700).repeat(0).playOn(password);
             password.requestFocus();
             return false;
         }
+        else if(password.getText().toString().trim().length() < 6)
+          {
+              password.setError(""+getResources().getString(R.string.Please_Enter_Password_length));
+              YoYo.with(Techniques.Shake).duration(700).repeat(0).playOn(password);
+              password.requestFocus();
+              return false;
+          }
         else if (!(password.getText().toString().equals(cpassword.getText().toString()))) {
             cpassword.setError(""+getResources().getString(R.string.Password_doesnt_match));
+              YoYo.with(Techniques.Shake).duration(700).repeat(0).playOn(cpassword);
 
             cpassword.requestFocus();
             return false;

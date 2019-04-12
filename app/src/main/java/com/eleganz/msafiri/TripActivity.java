@@ -509,7 +509,7 @@ GoogleMap map;
         final StringBuilder stringBuilder=new StringBuilder();
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(BASEURL).build();
         final ApiInterface apiInterface = restAdapter.create(ApiInterface.class);
-        apiInterface.getSingleTripData(historyData.getTrip_id(),user_id, new Callback<Response>() {
+        apiInterface.getSingleTripData(historyData.getTrip_id(), new Callback<Response>() {
             @Override
             public void success(Response response, Response response2) {
                 try {

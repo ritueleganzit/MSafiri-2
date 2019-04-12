@@ -42,21 +42,35 @@
                 android:layout_height="wrap_content" />
         </RelativeLayout>
     </android.support.v7.widget.Toolbar>
+    <LinearLayout
+        android:id="@+id/tv_no_data_lin"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:visibility="gone"
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:layout_width="50dp"
+            android:src="@mipmap/ic_no_ride"
+            android:layout_height="50dp" />
+        <TextView
+            android:fontFamily="@font/roboto_light"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No History"/>
+    </LinearLayout>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list"
-        android:layout_width="match_parent"
+         android:layout_width="match_parent"
         android:layout_below="@+id/toolbar"
         android:layout_height="wrap_content">
 
     </android.support.v7.widget.RecyclerView>
 
-    <com.eleganz.msafiri.lib.RobotoMediumTextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar"
-android:gravity="center"
-        android:id="@+id/tv_no_data"
-        android:visibility="gone"
-        android:layout_centerInParent="true"
-        android:text="No History"/>
+
 </RelativeLayout>

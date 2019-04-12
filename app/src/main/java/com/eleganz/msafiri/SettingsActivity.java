@@ -106,7 +106,7 @@ RobotoMediumTextView othersaved;
         user_id=hashMap.get(SessionManager.USER_ID);
         image=hashMap.get(SessionManager.PHOTO);
         login_type=hashMap.get(SessionManager.LOGIN_TYPE);
-        user = hashMap.get(SessionManager.USERNAME);
+        user = hashMap.get(SessionManager.FNAME);
         ImageView back=findViewById(R.id.back);
         fav=findViewById(R.id.fav);
         fname=findViewById(R.id.fname);

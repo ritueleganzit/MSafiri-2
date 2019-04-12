@@ -1,9 +1,6 @@
 package com.eleganz.msafiri;
 
-import android.*;
 import android.Manifest;
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,11 +10,11 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -55,7 +52,7 @@ import retrofit.client.Response;
 
 import static com.eleganz.msafiri.utils.Constant.BASEURL;
 
-public class EditProfile extends AppCompatActivity {
+public class RegistrationContinue extends AppCompatActivity {
     SessionManager sessionManager;
     String user_id, password, image ,name,login_type,emailtxt,lnametxt;
     EditText email, fname, lname, phone;
@@ -75,9 +72,9 @@ public class EditProfile extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_profile);
+        setContentView(R.layout.activity_registration_profile);
 
-        sessionManager = new SessionManager(EditProfile.this);
+        sessionManager = new SessionManager(RegistrationContinue.this);
         sh_imagePreference = getSharedPreferences("imagepref", MODE_PRIVATE);
         imagePreference = sh_imagePreference.edit();
 
@@ -116,7 +113,7 @@ emailtxt=hashMap.get(SessionManager.EMAIL);
             Glide.with(getApplicationContext()).load(image).apply(RequestOptions.circleCropTransform()).into(profile_pic);
 
         }
-        dialog = new SpotsDialog(EditProfile.this);
+        dialog = new SpotsDialog(RegistrationContinue.this);
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
@@ -131,18 +128,18 @@ emailtxt=hashMap.get(SessionManager.EMAIL);
         updateData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isValid()){
 
+                if (isValid()) {
                     if (mediapath != null && !mediapath.isEmpty())
                     {
+                        dialog.show();
                         editDataWithImage();
                     }
                     else {
-
+                        dialog.show();
                         editData();
                     }
                 }
-
 
             }
         });
@@ -151,7 +148,7 @@ emailtxt=hashMap.get(SessionManager.EMAIL);
         ch_password.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Dialog dialog = new Dialog(EditProfile.this);
+                final Dialog dialog = new Dialog(RegistrationContinue.this);
                 dialog.setContentView(R.layout.dialog_layout);
 
                 final EditText old = dialog.findViewById(R.id.oldpassword);
@@ -213,7 +210,7 @@ emailtxt=hashMap.get(SessionManager.EMAIL);
             @Override
             public void onClick(View v) {
                 if (checkLocationPermission()) {
-                    if (ContextCompat.checkSelfPermission(EditProfile.this,
+                    if (ContextCompat.checkSelfPermission(RegistrationContinue.this,
                             Manifest.permission.WRITE_EXTERNAL_STORAGE)
                             == PackageManager.PERMISSION_GRANTED) {
 
@@ -224,91 +221,14 @@ emailtxt=hashMap.get(SessionManager.EMAIL);
             }
         });
     }
-    private void editData(){
-       /* HashMap<String, String> map = new HashMap<>();
-        map.put("user_id", user_id);
-        map.put("mobile_number", phone.getText().toString());
-        map.put("gender", "");
-        map.put("fname", fname.getText().toString());
-        map.put("lname", lname.getText().toString());
-        map.put("country", "");
-        map.put("user_email", email.getText().toString());*/
 
-        final StringBuilder stringBuilder=new StringBuilder();
-        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(BASEURL).build();
-        final ApiInterface apiInterface = restAdapter.create(ApiInterface.class);
-        apiInterface.updateProfile(user_id, phone.getText().toString(), "", fname.getText().toString(), lname.getText().toString(), "", email.getText().toString(), new Callback<Response>() {
-            @Override
-            public void success(Response response, Response response2) {
-                try {
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(response.getBody().in()));
-                    String line;
-                    while ((line = bufferedReader.readLine()) != null) {
-                        stringBuilder.append(line);
-                    }
-                    Log.d(TAG, "Success " + stringBuilder);
-
-                    if(stringBuilder != null || !(stringBuilder.toString().equals("")))
-                    {
-                        JSONObject result=new JSONObject(""+stringBuilder);
-                        String message = result.getString("message");
-                        if (message.equalsIgnoreCase("success"))
-                        {
-                            JSONArray jsonArray = result.getJSONArray("data");
-                            for (int i = 0; i < jsonArray.length(); i++) {
-
-                                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                Log.d("mobile_number", ""+jsonObject.getString("mobile_number"));
-
-                                if (jsonObject.getString("mobile_number") != null && !jsonObject.getString("mobile_number").isEmpty())
-                                {
-                                    phone.setText(jsonObject.getString("mobile_number"));
-                                }
-
-
-
-                                sessionManager.updateImage(jsonObject.getString("photo"));
-                                HashMap<String, String> hashMap = sessionManager.getUserDetails();
-                                image = hashMap.get(SessionManager.PHOTO);
-
-                                Glide.with(getApplicationContext())
-                                        .load(image)
-
-                                        .apply(RequestOptions.circleCropTransform().placeholder(R.drawable.pr))
-
-
-                                        .into(profile_pic);
-
-                                Toast.makeText(EditProfile.this, "Data Saved Successfully", Toast.LENGTH_SHORT).show();
-
-                            }
-                        }
-
-                    }
-
-
-                }
-                catch (Exception e)
-                {
-
-                }
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        });
-
-
-    }
     public void changePassword(String password)
     {
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint("http://itechgaints.com/M-safiri-API/").build();
         final ApiInterface myInterface = restAdapter.create(ApiInterface.class);
-        myInterface.userChangepassword(user_id,password, new retrofit.Callback<retrofit.client.Response>() {
+        myInterface.userChangepassword(user_id,password, new Callback<Response>() {
             @Override
-            public void success(retrofit.client.Response response, retrofit.client.Response response2) {
+            public void success(Response response, Response response2) {
                 final StringBuilder stringBuilder = new StringBuilder();
                 try {
                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(response.getBody().in()));
@@ -380,7 +300,7 @@ emailtxt=hashMap.get(SessionManager.EMAIL);
             fname.requestFocus();
             return false;
         }
-        else   if (email.getText().toString().equals("")) {
+      else   if (email.getText().toString().equals("")) {
             email.setError(""+getResources().getString(R.string.Please_enter_email));
             YoYo.with(Techniques.Shake).duration(700).repeat(0).playOn(email);
             email.requestFocus();
@@ -429,7 +349,7 @@ emailtxt=hashMap.get(SessionManager.EMAIL);
 
 
                 cursor.close();
-                Glide.with(EditProfile.this).load(mediapath).apply(RequestOptions.circleCropTransform()).into(profile_pic);
+                Glide.with(RegistrationContinue.this).load(mediapath).apply(RequestOptions.circleCropTransform()).into(profile_pic);
 
                 Log.d("file_size", "mediapath : " + mediapath + " ---- " + file_size);
 
@@ -442,6 +362,88 @@ emailtxt=hashMap.get(SessionManager.EMAIL);
         } else if (requestCode == RESULT_CANCELED) {
             Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show();
         }
+
+    }
+
+    private void editData(){
+       /* HashMap<String, String> map = new HashMap<>();
+        map.put("user_id", user_id);
+        map.put("mobile_number", phone.getText().toString());
+        map.put("gender", "");
+        map.put("fname", fname.getText().toString());
+        map.put("lname", lname.getText().toString());
+        map.put("country", "");
+        map.put("user_email", email.getText().toString());*/
+
+        final StringBuilder stringBuilder=new StringBuilder();
+        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(BASEURL).build();
+        final ApiInterface apiInterface = restAdapter.create(ApiInterface.class);
+        apiInterface.updateProfile(user_id, phone.getText().toString(), "", fname.getText().toString(), lname.getText().toString(), "", email.getText().toString(), new Callback<Response>() {
+            @Override
+            public void success(Response response, Response response2) {
+                dialog.dismiss();
+                try {
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(response.getBody().in()));
+                    String line;
+                    while ((line = bufferedReader.readLine()) != null) {
+                        stringBuilder.append(line);
+                    }
+                    Log.d(TAG, "Success " + stringBuilder);
+
+                    if(stringBuilder != null || !(stringBuilder.toString().equals("")))
+                    {
+                        JSONObject result=new JSONObject(""+stringBuilder);
+                        String message = result.getString("message");
+                        if (message.equalsIgnoreCase("success"))
+                        {
+                            JSONArray jsonArray = result.getJSONArray("data");
+                            for (int i = 0; i < jsonArray.length(); i++) {
+
+                                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                Log.d("mobile_number", ""+jsonObject.getString("mobile_number"));
+
+                                if (jsonObject.getString("mobile_number") != null && !jsonObject.getString("mobile_number").isEmpty())
+                                {
+                                    phone.setText(jsonObject.getString("mobile_number"));
+                                }
+
+
+
+                                    sessionManager.updateImage(jsonObject.getString("photo"));
+                                    HashMap<String, String> hashMap = sessionManager.getUserDetails();
+                                    image = hashMap.get(SessionManager.PHOTO);
+
+                                    Glide.with(getApplicationContext())
+                                            .load(image)
+
+                                            .apply(RequestOptions.circleCropTransform().placeholder(R.drawable.pr))
+
+
+                                            .into(profile_pic);
+
+                                    startActivity(new Intent(RegistrationContinue.this,HomeActivity.class));
+                                    overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+                                    finish();
+
+                            }
+                        }
+
+                    }
+
+
+                }
+                catch (Exception e)
+                {
+                    dialog.dismiss();
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                dialog.dismiss();
+            }
+        });
+
 
     }
 
@@ -460,18 +462,17 @@ emailtxt=hashMap.get(SessionManager.EMAIL);
             @Override
             public void onSuccessResult(JSONObject result) throws JSONException {
                 String message = result.getString("message");
-
+                dialog.dismiss();
                 Log.d("messageimage", ""+result);
                 if (message.equalsIgnoreCase("success")) {
+
                     JSONArray jsonArray = result.getJSONArray("data");
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         Log.d("mobile_number", ""+jsonObject.getString("mobile_number"));
 
-                        if (jsonObject.getString("mobile_number").equalsIgnoreCase("")){
-
-                        }
-                        else {
+                        if (jsonObject.getString("mobile_number") != null && !jsonObject.getString("mobile_number").isEmpty())
+                        {
                             phone.setText(jsonObject.getString("mobile_number"));
                         }
 
@@ -486,7 +487,7 @@ emailtxt=hashMap.get(SessionManager.EMAIL);
                             Glide.with(getApplicationContext())
                                     .load(image)
 
-                                    .apply(RequestOptions.circleCropTransform())
+                                    .apply(RequestOptions.circleCropTransform().placeholder(R.drawable.pr))
 
                                     .into(profile_pic);
                         }
@@ -494,19 +495,24 @@ emailtxt=hashMap.get(SessionManager.EMAIL);
                             Glide.with(getApplicationContext())
                                     .load(image)
 
-                                    .apply(RequestOptions.circleCropTransform())
+                                    .apply(RequestOptions.circleCropTransform().placeholder(R.drawable.pr))
 
                                     .into(profile_pic);
                         }
+
+                        startActivity(new Intent(RegistrationContinue.this,HomeActivity.class));
+                        overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+                        finish();
                     }
                 }
+
 
             }
 
             @Override
             public void onFailureResult(String message) throws JSONException {
                 Log.d("message failue", message);
-
+                dialog.dismiss();
             }
         });
 
@@ -596,26 +602,26 @@ emailtxt=hashMap.get(SessionManager.EMAIL);
 
 
     public boolean checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission(EditProfile.this,
+        if (ContextCompat.checkSelfPermission(RegistrationContinue.this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
 
             // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(EditProfile.this,
-                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(RegistrationContinue.this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
 
                 // Show an explanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
-                new android.support.v7.app.AlertDialog.Builder(EditProfile.this)
+                new android.support.v7.app.AlertDialog.Builder(RegistrationContinue.this)
                         .setTitle("Gallery Permission")
                         .setMessage("Allow app to use this permission to upload image")
                         .setPositiveButton("ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 //Prompt the user once explanation has been shown
-                                ActivityCompat.requestPermissions(EditProfile.this,
-                                        new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                ActivityCompat.requestPermissions(RegistrationContinue.this,
+                                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                                         1);
                             }
                         })
@@ -625,8 +631,8 @@ emailtxt=hashMap.get(SessionManager.EMAIL);
 
             } else {
                 // No explanation needed, we can request the permission.
-                ActivityCompat.requestPermissions(EditProfile.this,
-                        new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                ActivityCompat.requestPermissions(RegistrationContinue.this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                         1);
             }
             return false;

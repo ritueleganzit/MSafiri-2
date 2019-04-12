@@ -34,7 +34,7 @@ public class SessionManager {
     // User name (make variable public to access from outside)
     public static final String USER_ID = "user_id";
     public static final String PHOTO = "photo";
-    public static final String USERNAME= "username";
+    public static final String FNAME= "fname";
     public static final String PASSWORD= "password";
     public static final String EMAIL= "email";
     public static final String LNAME= "lname";
@@ -49,14 +49,14 @@ public class SessionManager {
     }
 
 
-    public void createLoginSession(String login_type,String email,String lname,String user_id,String username,String password,String photo){
+    public void createLoginSession(String login_type,String email,String lname,String user_id,String fname,String password,String photo){
         // Storing login value as TRUE
         editor.putBoolean(IS_LOGIN, true);
 
         // Storing name in pref
         editor.putString(USER_ID, user_id);
         editor.putString(PHOTO, photo);
-        editor.putString(USERNAME, username);
+        editor.putString(FNAME, fname);
         editor.putString(PASSWORD, password);
         editor.putString(LOGIN_TYPE, login_type);
         editor.putString(EMAIL, email);
@@ -107,7 +107,7 @@ public class SessionManager {
         HashMap<String, String> user = new HashMap<String, String>();
         // user name
         user.put(USER_ID, pref.getString(USER_ID, null));
-        user.put(USERNAME, pref.getString(USERNAME, null));
+        user.put(FNAME, pref.getString(FNAME, null));
         user.put(PASSWORD, pref.getString(PASSWORD, null));
         user.put(PHOTO, pref.getString(PHOTO, null));
         user.put(LOGIN_TYPE, pref.getString(LOGIN_TYPE, null));

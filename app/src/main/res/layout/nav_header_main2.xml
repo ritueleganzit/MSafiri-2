@@ -29,6 +29,7 @@
         app:civ_border_color="#ffff" />
 
     <com.eleganz.msafiri.lib.RobotoMediumTextView
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"

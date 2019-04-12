@@ -238,6 +238,7 @@ android:layout_alignParentTop="true"
                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
                        android:textStyle="bold"
                        android:gravity="center"
+                       android:fontFamily="@font/roboto_regular"
                        android:layout_width="80dp"
                        android:layout_height="wrap_content"
                        android:text="Destination" />

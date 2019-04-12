@@ -76,6 +76,7 @@ public class MapFragment extends Fragment {
     LinearLayout findride;
     ProgressBar pickup_progress,destination_progress;
     LinearLayout top;
+    TextView txt_fav;
     String strEditText1, strEditText2;
 Button searchbtn;
 
@@ -120,6 +121,7 @@ CardView cardseat;
         lin_fav=v.findViewById(R.id.lin_fav);
         findride= v.findViewById(R.id.findride);
         from_pickup= v.findViewById(R.id.from_pickup);
+        txt_fav= v.findViewById(R.id.txt_fav);
         from_destination= v.findViewById(R.id.from_destination);
         card2= v.findViewById(R.id.card2);
         no_of_seats=v.findViewById(R.id.no_of_seats);
@@ -249,8 +251,8 @@ date_selected.setText(""+getCurrentTimeStamp());
 
                                     from_pickup.setText(item.getTitle());
                                     from_destination.setText("");
-                                    destination_progress.setVisibility(View.VISIBLE);
-                                    getToList("" + item.getTitle());
+                                   /* destination_progress.setVisibility(View.VISIBLE);*/
+                                   // getToList("" + item.getTitle());
                                     dialog.dismiss();
                                 }
                             }
@@ -267,29 +269,33 @@ date_selected.setText(""+getCurrentTimeStamp());
             @Override
             public void onClick(View v) {
 
-                if (arrayList_des!=null) {
-                    if (arrayList_des.size() > 0) {
-                        ContactSearchDialogCompat dialog = new ContactSearchDialogCompat(getActivity(), "Search...",
-                                "Select Destination Location", null, arrayList_des,
-                                new SearchResultListener<ContactModel>() {
-                                    @Override
-                                    public void onSelected(
-                                            BaseSearchDialogCompat dialog,
-                                            ContactModel item, int position
-                                    ) {
+                if (from_pickup.getText().toString().equalsIgnoreCase("")) {
+                    Toast.makeText(getActivity(), "Please select pickup location", Toast.LENGTH_SHORT).show();
+                } else {
+                    if (sampleSearchModels != null) {
+                        if (sampleSearchModels.size() > 0) {
+                            ContactSearchDialogCompat dialog = new ContactSearchDialogCompat(getActivity(), "Search...",
+                                    "Select Destination Location", null, sampleSearchModels,
+                                    new SearchResultListener<ContactModel>() {
+                                        @Override
+                                        public void onSelected(
+                                                BaseSearchDialogCompat dialog,
+                                                ContactModel item, int position
+                                        ) {
 
-                                        from_destination.setText(item.getTitle());
-                                        dialog.dismiss();
+                                            from_destination.setText(item.getTitle());
+                                            dialog.dismiss();
+                                        }
                                     }
-                                }
-                        );
-                        dialog.show();
-                       // dialog.getSearchBox().setTypeface(Typeface.SERIF);
+                            );
+                            dialog.show();
+                            // dialog.getSearchBox().setTypeface(Typeface.SERIF);
 
+                        }
                     }
-                }
 
                 }
+            }
         });
 
 //        top.startAnimation(pop_anim);
@@ -470,13 +476,15 @@ date_selected.setText(""+getCurrentTimeStamp());
         return new SimpleDateFormat("yyyy-MM-dd").format(new Date());
     }
     private void getToList(String result) {
+
+        Log.d("myyyy",""+arrayList_desaddress);
         arrayList_des=new ArrayList<>();
         arrayList_des=arrayList_desaddress;
         final StringBuilder stringBuilder=new StringBuilder();
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(BASEURL).build();
         final ApiInterface apiInterface = restAdapter.create(ApiInterface.class);
 
-        apiInterface.getallTolist(result, new Callback<Response>() {
+        apiInterface.getTripLocation("", new Callback<Response>() {
             @Override
             public void success(Response response, Response response2) {
 
@@ -507,7 +515,7 @@ date_selected.setText(""+getCurrentTimeStamp());
 
                             JSONObject childObject=jsonArray.getJSONObject(i);
 
-                            ContactModel searchModel=new ContactModel(childObject.getString("to_title"),0);
+                            ContactModel searchModel=new ContactModel(childObject.getString("address"),0);
 
                             arrayList_des.add(searchModel);
 
@@ -543,7 +551,7 @@ date_selected.setText(""+getCurrentTimeStamp());
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(BASEURL).build();
         final ApiInterface apiInterface = restAdapter.create(ApiInterface.class);
 
-        apiInterface.getAllTripData("",new Callback<Response>() {
+        apiInterface.getTripLocation("",new Callback<Response>() {
             @Override
             public void success(Response response, Response response2) {
 
@@ -570,7 +578,7 @@ date_selected.setText(""+getCurrentTimeStamp());
 
                             JSONObject childObject=jsonArray.getJSONObject(i);
 
-                           if (contains(sampleSearchModels,childObject.getString("from_title")))
+                           if (contains(sampleSearchModels,childObject.getString("address")))
 
                            {
 
@@ -578,7 +586,7 @@ date_selected.setText(""+getCurrentTimeStamp());
                            else {
 
 
-                               ContactModel searchModel = new ContactModel(childObject.getString("from_title"),0);
+                               ContactModel searchModel = new ContactModel(childObject.getString("address"),0);
                                sampleSearchModels.add(searchModel);
                            }
 
@@ -690,6 +698,7 @@ date_selected.setText(""+getCurrentTimeStamp());
 
                     {
                         lin_fav.setVisibility(View.VISIBLE);
+                        txt_fav.setVisibility(View.GONE);
 
                         JSONArray jsonArray=jsonObject.getJSONArray("data");
                         for (int i=0;i<jsonArray.length();i++)
@@ -716,7 +725,8 @@ date_selected.setText(""+getCurrentTimeStamp());
 
                     }
                     else {
-                        lin_fav.setVisibility(View.GONE);
+
+                        txt_fav.setVisibility(View.VISIBLE);
                     }
 
 
@@ -734,7 +744,7 @@ date_selected.setText(""+getCurrentTimeStamp());
 
             @Override
             public void failure(RetrofitError error) {
-
+                txt_fav.setVisibility(View.VISIBLE);
             }
         });
     }
