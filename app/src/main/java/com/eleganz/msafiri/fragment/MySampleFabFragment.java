@@ -18,7 +18,7 @@ import com.eleganz.msafiri.R;
 public class MySampleFabFragment  extends AAH_FabulousFragment {
     RadioGroup rg;
 
-    String data;
+    String data="";
     public static MySampleFabFragment newInstance() {
         MySampleFabFragment f = new MySampleFabFragment();
         return f;

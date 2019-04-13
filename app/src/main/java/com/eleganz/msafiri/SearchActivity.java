@@ -116,7 +116,7 @@ public class SearchActivity extends AppCompatActivity implements LocationAdapter
                     JSONObject jsonObject=new JSONObject(""+stringBuilder);
 
                     Log.d("jlkjl","sdf"+stringBuilder);
-                    Toast.makeText(SearchActivity.this, ""+stringBuilder, Toast.LENGTH_SHORT).show();
+                  //  Toast.makeText(SearchActivity.this, ""+stringBuilder, Toast.LENGTH_SHORT).show();
 
                     if (jsonObject!=null) {
 

@@ -127,7 +127,7 @@ public class YourTripsActivity extends AppCompatActivity  {
                             String user_trip_status=jsonObject1.getString("user_trip_status");
                             if(user_trip_status != null && !user_trip_status.isEmpty())
                             {
-                                if ((user_trip_status.equalsIgnoreCase("booked")) || (user_trip_status.equalsIgnoreCase("confirm")) || (user_trip_status.equalsIgnoreCase("onboard")))
+                                if ( (user_trip_status.equalsIgnoreCase("booked"))||(user_trip_status.equalsIgnoreCase("onboard")) || (user_trip_status.equalsIgnoreCase("confirm")))
                                 {
                                     Log.d("YourTripstatus",""+user_trip_status);
                                 }

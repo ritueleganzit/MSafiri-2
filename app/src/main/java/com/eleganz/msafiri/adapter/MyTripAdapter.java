@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.battleent.ribbonviews.RibbonTag;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.eleganz.msafiri.ConfirmationActivity;
@@ -61,12 +62,22 @@ public class MyTripAdapter extends RecyclerView.Adapter<MyTripAdapter.MyViewHold
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
         final HistoryData historyData = arrayList.get(position);
-        if (historyData.getUser_trip_status().equalsIgnoreCase("booked")) {
-            holder.tvongoing.setVisibility(View.GONE);
+        if (historyData.getUser_trip_status()
+                .equalsIgnoreCase("cancel")) {
+            holder.textribbon.setRibbonColor(Color.parseColor("#DD6B55"));
+            holder.textribbon.setTagText("Cancel");
+            holder.textribbon.setTagTextColor(Color.WHITE);
             // blink(holder.tvongoing);
-        } else {
-            holder.tvongoing.setVisibility(View.GONE);
         }
+        /*if (historyData.getStatus().equalsIgnoreCase("pending")){
+            holder.textribbon.setRibbonColor(Color.parseColor("#4c8bf5"));
+            holder.textribbon.setTagText("Booked");
+            holder.textribbon.setTagTextColor(Color.WHITE);
+        }*//*if(historyData.getStatus().equalsIgnoreCase("deactive")) {
+            holder.textribbon.setRibbonColor(Color.parseColor("#6bd505"));
+            holder.textribbon.setTagText("Completed");
+            holder.textribbon.setTagTextColor(Color.WHITE);
+        }*/
 
 
         Log.d("myadapter",""+historyData.getUser_trip_status());
@@ -162,7 +173,7 @@ public class MyTripAdapter extends RecyclerView.Adapter<MyTripAdapter.MyViewHold
         TextView tvongoing;
         RobotoMediumTextView trip_price, fullname, vehicle_name;
         SquareImageView squareImageView;
-
+        RibbonTag textribbon;
         public MyViewHolder(View itemView) {
             super(itemView);
 
@@ -170,6 +181,7 @@ public class MyTripAdapter extends RecyclerView.Adapter<MyTripAdapter.MyViewHold
             tvongoing = itemView.findViewById(R.id.tvongoing);
             squareImageView = itemView.findViewById(R.id.squareImageView);
             pickuploc = itemView.findViewById(R.id.pickuploc);
+            textribbon = itemView.findViewById(R.id.textribbon);
             desloc = itemView.findViewById(R.id.desloc);
             to_date = itemView.findViewById(R.id.to_date);
             from_date = itemView.findViewById(R.id.from_date);

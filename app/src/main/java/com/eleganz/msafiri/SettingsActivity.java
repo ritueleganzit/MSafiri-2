@@ -201,7 +201,7 @@ finish();
         homedelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(SettingsActivity.this, ""+sharedPreferences.getString("home",""), Toast.LENGTH_SHORT).show();
+              //  Toast.makeText(SettingsActivity.this, ""+sharedPreferences.getString("home",""), Toast.LENGTH_SHORT).show();
 
                 final StringBuilder stringBuilder=new StringBuilder();
                 RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(BASEURL).build();
@@ -247,7 +247,7 @@ finish();
             @Override
             public void onClick(View v) {
 
-                Toast.makeText(SettingsActivity.this, sharedPreferences.getString("work",""), Toast.LENGTH_SHORT).show();
+              //  Toast.makeText(SettingsActivity.this, sharedPreferences.getString("work",""), Toast.LENGTH_SHORT).show();
 
 
                 final StringBuilder stringBuilder=new StringBuilder();
@@ -438,7 +438,7 @@ finish();
 
 
                     {
-                        Toast.makeText(SettingsActivity.this, "called", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(SettingsActivity.this, "called", Toast.LENGTH_SHORT).show();
                         //call update
                         updatemyworkAddress(sharedPreferences.getString("work",""));
 

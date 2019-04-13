@@ -3,7 +3,9 @@ package com.eleganz.msafiri;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,13 +25,17 @@ import com.eleganz.msafiri.lib.RobotoMediumTextView;
 import com.eleganz.msafiri.session.CurrentTripSession;
 import com.eleganz.msafiri.session.SessionManager;
 import com.eleganz.msafiri.utils.ApiInterface;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONArray;
@@ -39,6 +45,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -231,6 +238,34 @@ public class CurrentTrip extends AppCompatActivity implements OnMapReadyCallback
         });
         getSingleTripData();
     }
+    private void drawRoute(double from_lat, double from_lng, double to_lat, double to_lng) {
+        LatLng markerLoc=new LatLng(from_lat, from_lng);
+
+        BitmapDrawable bitmapdraw=(BitmapDrawable)getResources().getDrawable(R.drawable.location_green);
+        Bitmap b=bitmapdraw.getBitmap();
+        Bitmap firstMarker = Bitmap.createScaledBitmap(b, 84   , 84, false);
+
+        map.addMarker(new MarkerOptions()
+                .position(new LatLng(from_lat, from_lng))
+                .anchor(0.5f, 0.5f)
+                .draggable(true)
+
+                .icon(BitmapDescriptorFactory.fromBitmap(firstMarker)));
+
+        BitmapDrawable bitmapdraw2=(BitmapDrawable)getResources().getDrawable(R.drawable.location_red);
+        Bitmap b2=bitmapdraw2.getBitmap();
+        Bitmap firstMarker2 = Bitmap.createScaledBitmap(b2, 84   , 84, false);
+
+        map.addMarker(new MarkerOptions()
+                .position(new LatLng(to_lat, to_lng))
+                .anchor(0.5f, 0.5f)
+                .draggable(true)
+
+                .icon(BitmapDescriptorFactory.fromBitmap(firstMarker2)));
+
+        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(markerLoc, 12);
+        map.animateCamera(update);
+    }
 
 
     private void getSingleTripData() {
@@ -285,6 +320,11 @@ public class CurrentTrip extends AppCompatActivity implements OnMapReadyCallback
                                     .load(childObjct.getString("photo"))
                                     .apply(new RequestOptions().placeholder(R.drawable.pr).error(R.drawable.pr))
                                     .into(fab);
+
+                            drawRoute(childObjct.getDouble("from_lat"),childObjct.getDouble("from_lng"),childObjct.getDouble("to_lat"),childObjct.getDouble("to_lng"));
+
+
+
                            /* fullname.setText(childObjct.getString("fullname"));
                             from_address.setText(childObjct.getString("from_address"));
                             to_address.setText(childObjct.getString("to_address"));

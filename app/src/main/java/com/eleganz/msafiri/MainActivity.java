@@ -799,6 +799,7 @@ String user_id,fname;
                 Log.d(TAG, "failure " + error.getMessage() + "");
 
                 logo.startAnimation(flyout1);
+                Toast.makeText(MainActivity.this, "Try Again", Toast.LENGTH_SHORT).show();
 
                                         /*progress.startAnimation(flyout1);
                                         animationDrawable.stop();*/

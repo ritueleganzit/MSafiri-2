@@ -320,40 +320,42 @@ else {
 
     @Override
     public void onComplete(String time) {
-        Toast.makeText(this, "answer"+time, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "answer"+time, Toast.LENGTH_SHORT).show();
 
         Log.d("answer",""+time);
 
-
-        if (time.equalsIgnoreCase("high"))
-        {
-         price="high";
-         rating="";
-         if (arrayList.size()>0)
-         {
-             arrayList.clear();
-         }
-         getSortPriceTrip();
-        }  if (time.equalsIgnoreCase("low"))
-        {
-         price="low";
-         rating="";
-         if (arrayList.size()>0)
-         {
-             arrayList.clear();
-         }
-            getSortPriceTrip();        }
-
-        if (time.equalsIgnoreCase("rating"))
-        {
-            rating="yes";
-            price="";
-            if (arrayList.size()>0)
+        if(time != null && !time.isEmpty()){
+            if (time.equalsIgnoreCase("high"))
             {
-                arrayList.clear();
+                price="high";
+                rating="";
+                if (arrayList.size()>0)
+                {
+                    arrayList.clear();
+                }
+                getSortPriceTrip();
+            }  if (time.equalsIgnoreCase("low"))
+            {
+                price="low";
+                rating="";
+                if (arrayList.size()>0)
+                {
+                    arrayList.clear();
+                }
+                getSortPriceTrip();        }
+
+            if (time.equalsIgnoreCase("rating"))
+            {
+                rating="yes";
+                price="";
+                if (arrayList.size()>0)
+                {
+                    arrayList.clear();
+                }
+                getSortRatingTrip();
             }
-            getSortRatingTrip();
         }
+
     }
 
     private void getSortRatingTrip() {
@@ -489,7 +491,8 @@ else {
             TextView datetime=view.findViewById(R.id.datetime);
             Glide.with(context).load(driverData.getPhoto()).apply(new RequestOptions().placeholder(R.drawable.pr).error(R.drawable.pr)).into(imageView);
             pickup_destination.setSelected(true);
-            pickup_destination.setText(driverData.getPickup()+"-"+driverData.getDestination());
+            pickup_address.setText(driverData.getPickup());
+            pickup_destination.setText(driverData.getDestination());
             vehicle_name.setText(driverData.getVehiclename());
             trip_price.setText("$ "+driverData.getPrice());
 

@@ -19,6 +19,8 @@ import com.eleganz.msafiri.HomeActivity;
 import com.eleganz.msafiri.R;
 import com.google.firebase.messaging.RemoteMessage;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 /**
@@ -28,14 +30,35 @@ import com.google.firebase.messaging.RemoteMessage;
 public class MyFirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
 
     long[] vib;
+    String message="",notification_type="";
     SharedPreferences sharedPreferences;
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
 
-        showNotification1(remoteMessage.getData().get("title"), remoteMessage.getData().get("message"));
-        Log.d("mssgggggggg", "" + remoteMessage.getData().toString());
+
+        try {
+            JSONObject jsonObject=new JSONObject(remoteMessage.getData().get("message")+"");
+            message=jsonObject.getString("message");
+            notification_type=jsonObject.getString("type");
+            Log.d("mssgggggggg", "" + remoteMessage.getData().toString());
+
+
+            if (notification_type.equalsIgnoreCase("user_reminder"))
+            {
+                showNotification1(remoteMessage.getData().get("title"), message);
+
+            }
+            else{
+                showNotification1(remoteMessage.getData().get("title"), message);
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
 
     }
 
@@ -89,6 +112,7 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
                         .setContentTitle(name)
                         .setAutoCancel(true)
                         .setNumber(1)
+                        .setContentIntent(pendingIntent)
                         .setColor(255)
                         .setContentText(text)
                         .setWhen(System.currentTimeMillis());

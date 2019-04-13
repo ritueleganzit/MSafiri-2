@@ -71,7 +71,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:9.2.0'
     implementation 'com.chaos.view:pinview:1.4.2'
 
-    
+    implementation "com.github.battleent:RibbonViews:1.1.6"
     implementation 'com.github.GoodieBag:Pinview:v1.3'
 
 }

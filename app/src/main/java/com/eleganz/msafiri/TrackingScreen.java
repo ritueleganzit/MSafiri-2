@@ -3,7 +3,9 @@ package com.eleganz.msafiri;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,12 +25,19 @@ import com.eleganz.msafiri.lib.RobotoMediumTextView;
 import com.eleganz.msafiri.session.SessionManager;
 import com.eleganz.msafiri.utils.ApiInterface;
 import com.eleganz.msafiri.utils.HistoryData;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,6 +46,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -153,6 +163,7 @@ public class TrackingScreen extends AppCompatActivity implements OnMapReadyCallb
         }
         Log.e(TAG, "Style parsing failed.");
 
+
         map.getUiSettings().setAllGesturesEnabled(true);
         map.getUiSettings().setMapToolbarEnabled(true);
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -193,7 +204,7 @@ public class TrackingScreen extends AppCompatActivity implements OnMapReadyCallb
             public void success(Response response, Response response2) {
 
 
-                dialog.dismiss();
+
 
                 try {
                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(response.getBody().in()));
@@ -208,6 +219,7 @@ public class TrackingScreen extends AppCompatActivity implements OnMapReadyCallb
                     if (jsonObject.getString("status").equalsIgnoreCase("1"))
                     {
                         JSONArray jsonArray=jsonObject.getJSONArray("data");
+                        Log.d("Trackingscreen",""+stringBuilder);
 
                         for (int i=0;i<jsonArray.length();i++)
                         {
@@ -221,7 +233,7 @@ public class TrackingScreen extends AppCompatActivity implements OnMapReadyCallb
                             {
                                 txtno_data.setVisibility(View.GONE);
                                 layout_map.setVisibility(View.VISIBLE);
-                                if ((user_trip_status.equalsIgnoreCase("booked")) || (user_trip_status.equalsIgnoreCase("confirm")) || (user_trip_status.equalsIgnoreCase("onboard")))
+                                if ((user_trip_status.equalsIgnoreCase("booked"))||(user_trip_status.equalsIgnoreCase("confirm")) || (user_trip_status.equalsIgnoreCase("onboard")))
                                 {
 
                                     trip_id=jsonObject1.getString("trip_id");
@@ -236,6 +248,15 @@ public class TrackingScreen extends AppCompatActivity implements OnMapReadyCallb
                                             .into(fab)
                                                 ;
                                     Log.d("sdadbooked",""+stringBuilder);
+                                    Log.d("sdadbooked",""+jsonObject1.getDouble("from_lat"));
+                                    Log.d("sdadbooked",""+jsonObject1.getDouble("from_lng"));
+                                    Log.d("sdadbooked",""+jsonObject1.getDouble("to_lat"));
+                                    Log.d("sdadbooked",""+jsonObject1.getDouble("to_lng"));
+                                    drawRoute(jsonObject1.getDouble("from_lat"),jsonObject1.getDouble("from_lng"),jsonObject1.getDouble("to_lat"),jsonObject1.getDouble("to_lng"));
+
+
+
+
                                 }
                                 else {
                             txtno_data.setVisibility(View.VISIBLE);
@@ -273,6 +294,39 @@ public class TrackingScreen extends AppCompatActivity implements OnMapReadyCallb
         });
 
     }
+
+    private void drawRoute(double from_lat, double from_lng, double to_lat, double to_lng) {
+        dialog.dismiss();
+
+        LatLng markerLoc=new LatLng(from_lat, from_lng);
+        BitmapDrawable bitmapdraw=(BitmapDrawable)getResources().getDrawable(R.drawable.location_green);
+        Bitmap b=bitmapdraw.getBitmap();
+        Bitmap firstMarker = Bitmap.createScaledBitmap(b, 84   , 84, false);
+
+        map.addMarker(new MarkerOptions()
+                .position(new LatLng(from_lat, from_lng))
+                .anchor(0.5f, 0.5f)
+                .draggable(true)
+
+                .icon(BitmapDescriptorFactory.fromBitmap(firstMarker)));
+
+        BitmapDrawable bitmapdraw2=(BitmapDrawable)getResources().getDrawable(R.drawable.location_red);
+        Bitmap b2=bitmapdraw2.getBitmap();
+        Bitmap firstMarker2 = Bitmap.createScaledBitmap(b2, 84   , 84, false);
+
+        map.addMarker(new MarkerOptions()
+
+                .position(new LatLng(to_lat, to_lng))
+                .anchor(0.5f, 0.5f)
+                .draggable(true)
+
+                .icon(BitmapDescriptorFactory.fromBitmap(firstMarker2))
+        );
+        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(markerLoc, 12);
+        map.animateCamera(update);
+
+    }
+
     public void initView(){
         mapView = (MapView) findViewById(R.id.map);
         //btn= (Button) findViewById(R.id.btn);

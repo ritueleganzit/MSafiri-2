@@ -167,7 +167,7 @@ public class SavePlaceAcitivity extends AppCompatActivity {
                     if (jsonObject.getString("message").equalsIgnoreCase("Data already exist"))
                     {
 
-                        Toast.makeText(SavePlaceAcitivity.this, ""+jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+                       // Toast.makeText(SavePlaceAcitivity.this, ""+jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(SavePlaceAcitivity.this,SettingsActivity.class));
                         finish();
                         //id requrired to update in response
@@ -247,7 +247,7 @@ public class SavePlaceAcitivity extends AppCompatActivity {
 
             }
             else {
-                Toast.makeText(this, "Close", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(this, "Close", Toast.LENGTH_SHORT).show();
             }
         }
     }

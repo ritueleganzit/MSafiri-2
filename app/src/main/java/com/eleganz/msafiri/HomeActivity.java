@@ -41,6 +41,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.eleganz.msafiri.fragment.MapFragment;
 import com.eleganz.msafiri.lib.RobotoMediumTextView;
+import com.eleganz.msafiri.model.Home;
 import com.eleganz.msafiri.session.CurrentTripSession;
 import com.eleganz.msafiri.session.SessionManager;
 import com.eleganz.msafiri.utils.ApiInterface;
@@ -86,6 +87,8 @@ public class HomeActivity extends AppCompatActivity
     private GoogleApiClient mGoogleApiClient;
     private String user_trip_status,login_type;
 
+    String noti_message="";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,7 +115,12 @@ public class HomeActivity extends AppCompatActivity
         lname = userData.get(SessionManager.LNAME);
         login_type = userData.get(SessionManager.LOGIN_TYPE);
 
+noti_message=getIntent().getStringExtra("content");
 
+        if(noti_message != null && !noti_message.isEmpty())
+        {
+            openDialog(noti_message);
+        }
        /* if (currentTripSession.hasTrip()) {
 
             Toast.makeText(this, "dfgdg", Toast.LENGTH_SHORT).show();
@@ -184,6 +192,28 @@ public class HomeActivity extends AppCompatActivity
         mGoogleApiClient.connect();
         super.onStart();
     }
+
+
+    public void openDialog(String message)
+    {
+
+        AlertDialog alertDialog=  new AlertDialog.Builder(HomeActivity.this)
+                .setMessage(""+message)
+                .setTitle("Alert")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface d, int which) {
+
+                    }
+                })
+
+                .setCancelable(false)
+                .show();
+        TextView textView = (TextView) alertDialog.findViewById(android.R.id.message);
+        Typeface face= Typeface.createFromAsset(getAssets(),"fonts/Roboto-Light.ttf");
+        textView.setTypeface(face);
+    }
+
 
     @Override
     protected void onResume() {
