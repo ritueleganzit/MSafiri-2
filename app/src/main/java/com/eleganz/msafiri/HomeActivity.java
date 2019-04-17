@@ -18,6 +18,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.ViewCompat;
 import android.util.Log;
@@ -45,6 +46,7 @@ import com.eleganz.msafiri.model.Home;
 import com.eleganz.msafiri.session.CurrentTripSession;
 import com.eleganz.msafiri.session.SessionManager;
 import com.eleganz.msafiri.utils.ApiInterface;
+import com.eleganz.msafiri.utils.MyFirebaseMessagingService;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -87,7 +89,7 @@ public class HomeActivity extends AppCompatActivity
     private GoogleApiClient mGoogleApiClient;
     private String user_trip_status,login_type;
 
-    String noti_message="";
+    String noti_message="",type="",ntrip_id="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,16 +112,32 @@ public class HomeActivity extends AppCompatActivity
         imagePreference = sh_imagePreference.edit();
         HashMap<String, String> userData = sessionManager.getUserDetails();
         user_id = userData.get(SessionManager.USER_ID);
-        photo = userData.get(SessionManager.PHOTO);
         user = userData.get(SessionManager.FNAME);
         lname = userData.get(SessionManager.LNAME);
         login_type = userData.get(SessionManager.LOGIN_TYPE);
 
 noti_message=getIntent().getStringExtra("content");
+        type=getIntent().getStringExtra("type");
+
+
 
         if(noti_message != null && !noti_message.isEmpty())
         {
-            openDialog(noti_message);
+            if(type != null && !type.isEmpty()) {
+            if(type.equalsIgnoreCase("complete_trip"))
+            {
+
+            }
+            else
+            {
+                openDialog(noti_message);
+
+            }
+
+        }
+
+
+
         }
        /* if (currentTripSession.hasTrip()) {
 
@@ -193,17 +211,40 @@ noti_message=getIntent().getStringExtra("content");
         super.onStart();
     }
 
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(HomeActivity.this)
+                .unregisterReceiver(mBroadcastReceiver);
+        super.onPause();
+    }
 
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver(){
+        @Override
+        public void onReceive(Context context, Intent intent){
+            // read any data you might need from intent and do your action here
+
+            String data=intent.getStringExtra("complete");
+            ntrip_id=intent.getStringExtra("trip_id");
+            if(data != null && !data.isEmpty())
+            {
+                startActivity(new Intent(HomeActivity.this, ReviewActivity.class).putExtra("trip_id",ntrip_id));
+
+            }
+
+        }
+    };
     public void openDialog(String message)
     {
 
         AlertDialog alertDialog=  new AlertDialog.Builder(HomeActivity.this)
                 .setMessage(""+message)
-                .setTitle("Alert")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface d, int which) {
+                        if (type!=null && !type.isEmpty())
+                        {
 
+                        }
                     }
                 })
 
@@ -222,11 +263,13 @@ noti_message=getIntent().getStringExtra("content");
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right);
         ft.replace(R.id.container, map_one);
         ft.commit();
+        HashMap<String, String> userData = sessionManager.getUserDetails();
 
+        photo = userData.get(SessionManager.PHOTO);
         Log.d(TAG, "---" + photo);
       //  Glide.with(getApplicationContext()).load(photo).apply(RequestOptions.circleCropTransform()).into(profile_image);
-
-
+        LocalBroadcastManager.getInstance(HomeActivity.this)
+                .registerReceiver(mBroadcastReceiver, MyFirebaseMessagingService.BROADCAST_INTENT_FILTER);
         if (photo != null && !photo.isEmpty()) {
             // doSomething
             Glide.with(getApplicationContext()).load(photo).apply(RequestOptions.circleCropTransform()).into(profile_image);
@@ -462,7 +505,6 @@ if (user_trip_status.equalsIgnoreCase("completed")) {
 
     Log.d("jyity8u",""+user_trip_status);
 
-    startActivity(new Intent(HomeActivity.this, ReviewActivity.class));
 }
 
 

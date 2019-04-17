@@ -1,12 +1,15 @@
 package com.eleganz.msafiri;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,6 +28,7 @@ import com.eleganz.msafiri.lib.RobotoMediumTextView;
 import com.eleganz.msafiri.session.CurrentTripSession;
 import com.eleganz.msafiri.session.SessionManager;
 import com.eleganz.msafiri.utils.ApiInterface;
+import com.eleganz.msafiri.utils.MyFirebaseMessagingService;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -62,16 +66,48 @@ public class CurrentTrip extends AppCompatActivity implements OnMapReadyCallback
     MapView mapView;
     Button cancelride, tellbtn;
     SessionManager sessionManager;
-    String user_id,id;
+    String user_id,id,driver_id;
     GoogleMap map;
     ImageView back;
     CircleImageView fab;
     SpotsDialog spotsDialog;
     boolean isVisible=true;
     RelativeLayout dummyrel,cnfrel;
-
+    String noti_message="",type="",ntrip_id="";
     RobotoMediumTextView cr_vehicle_name,cr_trip_price,cr_pickup,cr_pickupaddress,cr_dest,cr_destaddress,fullname,cr_calculate_time;
     CurrentTripSession currentTripSession;
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(CurrentTrip.this)
+                .unregisterReceiver(mBroadcastReceiver);
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(CurrentTrip.this)
+                .registerReceiver(mBroadcastReceiver, MyFirebaseMessagingService.BROADCAST_INTENT_FILTER);
+    }
+
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver(){
+        @Override
+        public void onReceive(Context context, Intent intent){
+            // read any data you might need from intent and do your action here
+
+            String data=intent.getStringExtra("complete");
+            type=intent.getStringExtra("type");
+            ntrip_id=intent.getStringExtra("trip_id");
+
+            if(data != null && !data.isEmpty())
+            {
+                startActivity(new Intent(CurrentTrip.this, ReviewActivity.class).putExtra("trip_id",ntrip_id));
+
+            }
+
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,6 +126,8 @@ public class CurrentTrip extends AppCompatActivity implements OnMapReadyCallback
         user_id = userData.get(SessionManager.USER_ID);
         HashMap<String, String> tripData=currentTripSession.getTripDetails();
         id=tripData.get(CurrentTripSession.TRIP_ID);
+        driver_id=tripData.get(CurrentTripSession.DRIVER_ID);
+
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -99,7 +137,9 @@ public class CurrentTrip extends AppCompatActivity implements OnMapReadyCallback
         tellbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(CurrentTrip.this, TellYourDriverActivity.class));
+                startActivity(new Intent(CurrentTrip.this, TellYourDriverActivity.class)
+                .putExtra("tripbookedid",id)
+                .putExtra("tripdriverid",driver_id));
             }
         });
 
@@ -315,7 +355,19 @@ public class CurrentTrip extends AppCompatActivity implements OnMapReadyCallback
                             fullname.setText(""+childObjct.getString("fullname"));
                             cr_destaddress.setText(""+childObjct.getString("to_address"));
                             cr_calculate_time.setText(""+childObjct.getString("calculate_time"));
-                            cr_trip_price.setText("$ "+childObjct.getString("trip_price"));
+
+                            String price=childObjct.getString("trip_price");
+
+                            if (price.equalsIgnoreCase("null"))
+
+                            {
+                                cr_trip_price.setText("$ 0");
+                            }
+                            else
+                            {
+                                cr_trip_price.setText("$ "+price);
+
+                            }
                             Glide.with(CurrentTrip.this)
                                     .load(childObjct.getString("photo"))
                                     .apply(new RequestOptions().placeholder(R.drawable.pr).error(R.drawable.pr))
@@ -369,7 +421,7 @@ public class CurrentTrip extends AppCompatActivity implements OnMapReadyCallback
     private void cancelTrip(String trip_id) {
         RestAdapter restAdapter=new RestAdapter.Builder().setEndpoint(BASEURL).build();
         ApiInterface apiInterface=restAdapter.create(ApiInterface.class);
-        apiInterface.confirmTrip(trip_id, user_id, "cancel", new Callback<Response>() {
+        apiInterface.cancelTrip(trip_id, user_id, new Callback<Response>() {
             @Override
             public void success(Response response, Response response2) {
                 try {

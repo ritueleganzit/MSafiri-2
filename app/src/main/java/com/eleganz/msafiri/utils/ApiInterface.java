@@ -7,8 +7,11 @@ import retrofit.client.Response;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
+import retrofit.http.Multipart;
 import retrofit.http.POST;
+import retrofit.http.Part;
 import retrofit.http.Query;
+import retrofit.mime.TypedFile;
 
 /**
  * Created by eleganz on 1/11/18.
@@ -208,7 +211,7 @@ public interface ApiInterface {
             @Field("user_id") String user_id,
             @Field("trip_id") String trip_id,
 
-            @Field("ratting") String ratting,
+            @Field("rating") String ratting,
             @Field("comments") String comments,
 
             Callback<Response> callback
@@ -244,6 +247,22 @@ public interface ApiInterface {
 
     );
 
+
+    @Multipart
+    @POST("/updateProfile")
+    void updateProfilewithImage(
+            @Part("user_id") String user_id,
+            @Part("mobile_number") String mobile_number,
+            @Part("gender") String gender,
+            @Part("fname") String fname,
+            @Part("lname") String lname,
+            @Part("country") String user_email,
+            @Part("photo")TypedFile photo,
+            Callback<Response> callback
+
+
+
+            );
 
     @FormUrlEncoded
     @POST("/allTolist")
@@ -287,8 +306,20 @@ public interface ApiInterface {
     void confirmTrip(
             @Field("trip_id") String trip_id,
             @Field("user_id") String user_id,
+            @Field("id") String id,
 
             @Field("status") String status,
+            Callback<Response> callback
+
+    );
+
+
+@FormUrlEncoded
+    @POST("/cancelTrip")
+    void cancelTrip(
+            @Field("trip_id") String trip_id,
+            @Field("user_id") String user_id,
+
             Callback<Response> callback
 
     );

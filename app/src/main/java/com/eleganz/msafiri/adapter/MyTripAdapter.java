@@ -20,6 +20,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.eleganz.msafiri.ConfirmationActivity;
 import com.eleganz.msafiri.R;
 import com.eleganz.msafiri.TripActivity;
+import com.eleganz.msafiri.TripBooked;
 import com.eleganz.msafiri.lib.RobotoMediumTextView;
 import com.eleganz.msafiri.model.TripData;
 import com.eleganz.msafiri.utils.HistoryData;
@@ -69,6 +70,22 @@ public class MyTripAdapter extends RecyclerView.Adapter<MyTripAdapter.MyViewHold
             holder.textribbon.setTagTextColor(Color.WHITE);
             // blink(holder.tvongoing);
         }
+        if (historyData.getUser_trip_status().equalsIgnoreCase("missed")){
+            holder.textribbon.setRibbonColor(Color.parseColor("#4c8bf5"));
+            holder.textribbon.setTagText("Missed");
+            holder.textribbon.setTagTextColor(Color.WHITE);
+        }
+        if (historyData.getUser_trip_status().equalsIgnoreCase("completed")){
+            holder.textribbon.setRibbonColor(Color.parseColor("#6bd505"));
+            holder.textribbon.setTagText("Completed");
+            holder.textribbon.setTagTextColor(Color.WHITE);
+        }
+if (historyData.getUser_trip_status().equalsIgnoreCase("booked")){
+            holder.textribbon.setRibbonColor(Color.parseColor("#6bd505"));
+            holder.textribbon.setTagText("Booked");
+            holder.textribbon.setTagTextColor(Color.WHITE);
+        }
+
         /*if (historyData.getStatus().equalsIgnoreCase("pending")){
             holder.textribbon.setRibbonColor(Color.parseColor("#4c8bf5"));
             holder.textribbon.setTagText("Booked");
@@ -91,7 +108,18 @@ public class MyTripAdapter extends RecyclerView.Adapter<MyTripAdapter.MyViewHold
                 .load(historyData.getTrip_screenshot())
                 .into(holder.squareImageView);
 
-        holder.trip_price.setText("$ " + historyData.getTrip_price());
+        if (historyData.getTrip_price()!=null && !historyData.getTrip_price().isEmpty())
+
+        {
+            holder.trip_price.setText("$ " + historyData.getTrip_price());
+
+        }
+        if (historyData.getTrip_price().equalsIgnoreCase("null"))
+        {
+            holder.trip_price.setText("$ 0" );
+
+        }
+
 
         holder.main_card.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,7 +129,7 @@ public class MyTripAdapter extends RecyclerView.Adapter<MyTripAdapter.MyViewHold
 
                 if (historyData.getUser_trip_status().equalsIgnoreCase("booked")) {
 
-                    context.startActivity(new Intent(context, TripActivity.class)
+                    context.startActivity(new Intent(context, TripBooked.class)
                             .putExtra("historyData", historyData));
                 } else {
                     context.startActivity(new Intent(context, TripActivity.class)

@@ -87,7 +87,7 @@ public class ConfirmationActivity extends AppCompatActivity implements OnMapRead
     CallAPiActivity callAPiActivity;
     CircleImageView photo;
     SessionManager sessionManager;
-    String user_id,driver_id,trip_id;
+    String user_id,driver_id,trip_id,joinid;
     SpotsDialog dialog;
     RelativeLayout  cnfrel;
     RelativeLayout dummyrel;
@@ -96,7 +96,6 @@ public class ConfirmationActivity extends AppCompatActivity implements OnMapRead
     RobotoMediumTextView fullname,vehicle_number,to_address,from_address,duration,cnf_trip_price;
     private String durationtxt;
     boolean isVisible=true;
-    String URLCONFIRM = "http://itechgaints.com/M-safiri-API/confirmTrip";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +103,7 @@ public class ConfirmationActivity extends AppCompatActivity implements OnMapRead
         setContentView(R.layout.activity_confirmation);
         ImageView back=findViewById(R.id.back);
         dialog = new SpotsDialog(ConfirmationActivity.this);
-        dialog.show();
+        joinid=getIntent().getStringExtra("joinid");
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -199,7 +198,7 @@ dialog.show();
     private void cancelTrip(String trip_id) {
         RestAdapter restAdapter=new RestAdapter.Builder().setEndpoint(BASEURL).build();
         ApiInterface apiInterface=restAdapter.create(ApiInterface.class);
-        apiInterface.confirmTrip(trip_id, user_id, "cancel", new Callback<Response>() {
+        apiInterface.confirmTrip(trip_id, user_id, "","cancel", new Callback<Response>() {
             @Override
             public void success(Response response, Response response2) {
                 try {
@@ -223,7 +222,7 @@ dialog.show();
                     else
                     {
                         spotsDialog.dismiss();
-                        Toast.makeText(ConfirmationActivity.this, ""+jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+                     //   Toast.makeText(ConfirmationActivity.this, ""+jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
 
                         Log.d("cancelTrip",""+jsonObject.getString("message"));
 
@@ -242,85 +241,7 @@ dialog.show();
             }
         });
     }
-    private void confirmTrip(String trip_id) {
-        HashMap<String, String> map = new HashMap<>();
-        map.put("user_id", user_id);
-        map.put("trip_id",trip_id);
-        map.put("status", "booked");
-callAPiActivity.doPostWithFiles(ConfirmationActivity.this, map, URLCONFIRM, photoPath, "trip_screenshot", new GetResponse() {
-    @Override
-    public void onSuccessResult(JSONObject result) throws JSONException {
-        String message = result.getString("message");
-dialog.dismiss();
 
-        Log.d("messageimage", message);
-        Log.d("messageimage", photoPath);
-        if (message.equalsIgnoreCase("success"))
-
-        {
-            startActivity(new Intent(ConfirmationActivity.this,PaymentActivity.class));
-
-        }
-
-        else
-        {
-
-
-            Toast.makeText(ConfirmationActivity.this, ""+message, Toast.LENGTH_SHORT).show();
-
-
-        }
-
-    }
-
-    @Override
-    public void onFailureResult(String message) throws JSONException {
-dialog.dismiss();
-    }
-});
-       /* RestAdapter restAdapter=new RestAdapter.Builder().setEndpoint(BASEURL).build();
-        ApiInterface apiInterface=restAdapter.create(ApiInterface.class);
-        apiInterface.confirmTrip(trip_id, user_id, "booked", new Callback<Response>() {
-            @Override
-            public void success(Response response, Response response2) {
-                try {
-                    final StringBuilder stringBuilder=new StringBuilder();
-
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(response.getBody().in()));
-                    String line;
-                    while ((line = bufferedReader.readLine()) != null) {
-                        stringBuilder.append(line);
-                    }
-                    Log.d("ConfirmationActivity",""+stringBuilder);
-                    JSONObject jsonObject=new JSONObject(""+stringBuilder);
-                    if (jsonObject.getString("message").equalsIgnoreCase("success"))
-
-                    {
-                        startActivity(new Intent(ConfirmationActivity.this,PaymentActivity.class));
-                        finish();
-                    }
-
-                    else
-                    {
-
-                        Toast.makeText(ConfirmationActivity.this, ""+jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
-
-                        Log.d("ConfirmationActivity",""+jsonObject.getString("message"));
-
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        });*/
-    }
 
     private void getSingleTripData() {
         final StringBuilder stringBuilder=new StringBuilder();
@@ -347,10 +268,22 @@ apiInterface.getSingleTripData(trip_id, new Callback<Response>() {
                     from_address.setText(childObjct.getString("from_address"));
                     to_address.setText(childObjct.getString("to_address"));
                     duration.setText(childObjct.getString("calculate_time"));
-                    cnf_trip_price.setText("$ "+childObjct.getString("trip_price"));
-                    vehicle_number.setText(""+childObjct.getString("vehicle_name")+" "+childObjct.getString("vehicle_number"));
+
+                    String imgurl=childObjct.getString("photo");
+
+                    Log.d("imgurl",imgurl);
+
+                    if (childObjct.getString("trip_price").equalsIgnoreCase("null")) {
+                        cnf_trip_price.setText("$ 0");
+                    }
+                    else
+                    {
+                        cnf_trip_price.setText("$ "+childObjct.getString("trip_price"));
+
+                    }
+                        vehicle_number.setText(""+childObjct.getString("vehicle_name")+" "+childObjct.getString("vehicle_number"));
                     Glide.with(ConfirmationActivity.this)
-                            .load(childObjct.getString("photo"))
+                            .load(imgurl)
                     .apply(new RequestOptions().placeholder(R.drawable.pr).error(R.drawable.pr))
                             .into(photo);
                     drawRoute(childObjct.getDouble("from_lat"),childObjct.getDouble("from_lng"),childObjct.getDouble("to_lat"),childObjct.getDouble("to_lng"));
@@ -499,7 +432,7 @@ apiInterface.getSingleTripData(trip_id, new Callback<Response>() {
 
             }
         });
-
+dialog.show();
         getSingleTripData();
     }
 
@@ -741,15 +674,26 @@ Log.d("theurl",url);
             photoPath=""+file;
 
             Log.d(TAG,photoPath);
+dialog.dismiss();
+
+//            confirmTrip(trip_id);
 
 
+            startActivity(new Intent(ConfirmationActivity.this,PaymentActivity.class)
+            .putExtra("photoPath",photoPath)
+            .putExtra("joinid",joinid)
+            .putExtra("user_id",user_id)
+            .putExtra("trip_id",trip_id)
 
-            confirmTrip(trip_id);
-            Toast.makeText(ConfirmationActivity.this, "Saved!!", Toast.LENGTH_SHORT).show();
+
+            );
+
+
+            //   Toast.makeText(ConfirmationActivity.this, "Saved!!", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             e.printStackTrace();
 
-            Toast.makeText(ConfirmationActivity.this, "Failed!!", Toast.LENGTH_SHORT).show();
+         //   Toast.makeText(ConfirmationActivity.this, "Failed!!", Toast.LENGTH_SHORT).show();
         }
     }
     private static boolean isExternalStorageReadOnly() {

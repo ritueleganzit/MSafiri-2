@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+
+    android:fitsSystemWindows="true">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorButton"
+        android:focusableInTouchMode="true">
+
+
+        <ImageView
+            android:id="@+id/review_close"
+            android:layout_width="25dp"
+
+            android:layout_height="25dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="10dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_close_dialog" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_light"
+                android:text="Your recent trip"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+
+                android:textColor="#ffffff" />
+
+            <TextView
+                android:id="@+id/review_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/roboto_light"
+                android:text="Jan 12, 2018 10:05 AM"
+                android:textColor="#ffffff"
+                android:textSize="12sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+
+                android:layout_marginRight="15dp"
+                android:background="@drawable/linear_bg"
+                android:orientation="vertical">
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="#ffffff"
+                    app:cardElevation="6dp"
+                    app:contentPadding="15dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center">
+
+                        <LinearLayout
+                            android:id="@+id/lin1address"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/circle_stroke"
+                                android:layout_width="10dp"
+                                android:layout_height="10dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/circle_stroke" />
+
+                            <TextView
+                                android:id="@+id/review_pickup"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_toRightOf="@+id/circle_stroke"
+                                android:ellipsize="end"
+                                android:fontFamily="@font/roboto_regular"
+                                android:singleLine="true"
+                                android:text="W 90th St, New York, NY 100025"
+                                android:textColor="#414141"
+
+                                android:textSize="12sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+
+                            android:id="@+id/lin2view"
+                            android:layout_width="10dp"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/lin1address"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <View
+
+                                android:layout_width="1dp"
+                                android:layout_height="20dp"
+                                android:layout_gravity="center"
+                                android:background="@color/colorPrimary" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/lin1address3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/lin2view"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="10dp"
+                                android:layout_height="10dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/circle_stroke" />
+
+                            <TextView
+                                android:id="@+id/review_destination"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_toRightOf="@+id/circle_stroke"
+                                android:ellipsize="end"
+                                android:fontFamily="@font/roboto_regular"
+                                android:singleLine="true"
+                                android:text="W 90th St, New York, NY 100025"
+                                android:textColor="#414141"
+
+                                android:textSize="12sp" />
+
+
+                        </LinearLayout>
+
+                        <View
+                            android:id="@+id/lin4view"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_below="@+id/lin1address3"
+                            android:layout_marginTop="5dp"
+                            android:background="#D0D0D0" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/lin4view"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:orientation="vertical">
+
+                                <de.hdodenhof.circleimageview.CircleImageView
+                                    android:id="@+id/fab"
+                                    android:layout_width="50dp"
+                                    android:layout_height="50dp"
+                                    android:layout_gravity="center"
+
+                                    android:layout_margin="5dp"
+                                    android:src="@drawable/user_image" />
+
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical">
+
+
+                                    <TextView
+                                        android:id="@+id/review_drivername"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="@font/roboto_regular"
+                                        android:gravity="left|center"
+                                        android:inputType="textCapWords"
+                                        android:paddingLeft="8dp"
+                                        android:text="Name"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:id="@+id/review_vehicle"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="@font/roboto_light"
+                                        android:gravity="left|center"
+
+                                        android:paddingLeft="8dp"
+
+
+                                        android:text="Swift"
+
+                                        android:textSize="12sp" />
+                                </LinearLayout>
+
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:gravity="top"
+                                android:orientation="vertical">
+
+                                <TextView
+
+                                    android:id="@+id/review_price"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:fontFamily="@font/roboto_medium"
+                                    android:text="$ 440"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/trip_price"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="Wallet"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </RelativeLayout>
+
+
+                </android.support.v7.widget.CardView>
+
+                <TextView
+                    android:layout_width="match_parent"
+
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:fontFamily="@font/roboto_light"
+                    android:gravity="center_horizontal"
+                    android:text="Rating for driver"
+                    android:textSize="14sp"
+
+                    />
+
+                <RatingBar
+                    android:id="@+id/addrating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:clickable="true"
+                    android:isIndicator="false"
+                    android:numStars="5"
+
+                    android:scaleX=".7"
+                    android:scaleY=".7"
+                    android:soundEffectsEnabled="true"
+                    android:theme="@style/ReviewRatingBar">
+
+                </RatingBar>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@+id/lin1address3"
+                    android:layout_marginTop="5dp"
+                    android:background="#D0D0D0" />
+
+                <EditText
+                    android:id="@+id/ed_comment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:fontFamily="@font/roboto_light"
+                    android:gravity="center"
+                    android:hint="Leave a comment"
+                    android:lines="5"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/btnrating"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bt_corner"
+                    android:gravity="center"
+                    android:hapticFeedbackEnabled="true"
+                    android:padding="15dp"
+                    android:text="Submit"
+                    android:textColor="#ffffff" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+
+    </RelativeLayout>
+</ScrollView>

@@ -85,7 +85,7 @@ android:fitsSystemWindows="true"
                     android:scaleType="centerInside"
                     android:orientation="vertical" >
 
-                    <ImageView
+                    <de.hdodenhof.circleimageview.CircleImageView
                         android:transitionName="simple_activity_transition"
 
                         android:id="@+id/profile_pic"

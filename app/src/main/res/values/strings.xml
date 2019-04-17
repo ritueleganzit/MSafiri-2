@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TuRyde</string>
+    <string name="app_name">TuRyde-User</string>
     <string name="title_activity_forgot_password">ForgotPasswordActivity</string>
     <string name="alreadymember">Already member? <b>Sign In here</b></string>
     <string name="registerhere">Don\'t have account? <b><u>Register Here</u></b></string>

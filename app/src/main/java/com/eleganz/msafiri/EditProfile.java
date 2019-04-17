@@ -13,6 +13,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -43,21 +44,24 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import dmax.dialog.SpotsDialog;
+import me.nereo.multi_image_selector.MultiImageSelector;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import retrofit.mime.TypedFile;
 
 import static com.eleganz.msafiri.utils.Constant.BASEURL;
 
 public class EditProfile extends AppCompatActivity {
     SessionManager sessionManager;
-    String user_id, password, image ,name,login_type,emailtxt,lnametxt;
+    String user_id, password, image, name, login_type, emailtxt, lnametxt;
     EditText email, fname, lname, phone;
     String mediapath = "";
     CallAPiActivity callAPiActivity;
@@ -72,6 +76,10 @@ public class EditProfile extends AppCompatActivity {
     String URLCHANGEPASSWORD = " http://itechgaints.com/M-safiri-API/userChangepassword";
     private String TAG = "EditProfile";
     SpotsDialog dialog;
+    private static final int REQUEST_IMAGE = 2;
+    protected static final int REQUEST_STORAGE_READ_ACCESS_PERMISSION = 101;
+    private ArrayList<String> mSelectPath;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,11 +93,11 @@ public class EditProfile extends AppCompatActivity {
         sessionManager.checkLogin();
         HashMap<String, String> hashMap = sessionManager.getUserDetails();
         password = hashMap.get(SessionManager.PASSWORD);
-image=hashMap.get(SessionManager.PHOTO);
-name=hashMap.get(SessionManager.FNAME);
-emailtxt=hashMap.get(SessionManager.EMAIL);
-        lnametxt=hashMap.get(SessionManager.LNAME);
-        login_type=hashMap.get(SessionManager.LOGIN_TYPE);
+        image = hashMap.get(SessionManager.PHOTO);
+        name = hashMap.get(SessionManager.FNAME);
+        emailtxt = hashMap.get(SessionManager.EMAIL);
+        lnametxt = hashMap.get(SessionManager.LNAME);
+        login_type = hashMap.get(SessionManager.LOGIN_TYPE);
         user_id = hashMap.get(SessionManager.USER_ID);
         callAPiActivity = new CallAPiActivity(this);
         email = findViewById(R.id.email);
@@ -105,14 +113,12 @@ emailtxt=hashMap.get(SessionManager.EMAIL);
             email.setText(emailtxt);
             lname.setText(lnametxt);
 
-        }
-        else {
+        } else {
             ch_password.setVisibility(View.VISIBLE);
             ch_password.setText(password);
         }
 
-        if (image != null && !image.isEmpty())
-        {
+        if (image != null && !image.isEmpty()) {
             Glide.with(getApplicationContext()).load(image).apply(RequestOptions.circleCropTransform()).into(profile_pic);
 
         }
@@ -131,13 +137,14 @@ emailtxt=hashMap.get(SessionManager.EMAIL);
         updateData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isValid()){
+                if (isValid()) {
 
-                    if (mediapath != null && !mediapath.isEmpty())
-                    {
+                    if (mediapath != null && !mediapath.isEmpty()) {
+                        dialog.show();
+
                         editDataWithImage();
-                    }
-                    else {
+                    } else {
+                        dialog.show();
 
                         editData();
                     }
@@ -146,7 +153,7 @@ emailtxt=hashMap.get(SessionManager.EMAIL);
 
             }
         });
-        Log.d("imagecheck",""+image);
+        Log.d("imagecheck", "" + image);
 
         ch_password.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -162,43 +169,35 @@ emailtxt=hashMap.get(SessionManager.EMAIL);
                     @Override
                     public void onClick(View view) {
 
-                        if ((old.getText().toString().trim().equalsIgnoreCase("")))
-                        {
+                        if ((old.getText().toString().trim().equalsIgnoreCase(""))) {
                             YoYo.with(Techniques.Shake)
                                     .duration(700)
                                     .repeat(0)
                                     .playOn(old);
                             old.setError("Please enter old Password");
                             old.requestFocus();
-                        }
-                        else if (!(old.getText().toString().trim().equalsIgnoreCase(password)))
-                        {
+                        } else if (!(old.getText().toString().trim().equalsIgnoreCase(password))) {
                             YoYo.with(Techniques.Shake)
                                     .duration(700)
                                     .repeat(0)
                                     .playOn(old);
                             old.setError("Wrong Password");
                             old.requestFocus();
-                        }
-                        else if (neww.getText().toString().trim().isEmpty())
-                        {
+                        } else if (neww.getText().toString().trim().isEmpty()) {
                             YoYo.with(Techniques.Shake)
                                     .duration(700)
                                     .repeat(0)
                                     .playOn(neww);
                             neww.setError("Please enter new Password");
                             neww.requestFocus();
-                        }
-                        else if (!(confirm.getText().toString().equalsIgnoreCase(neww.getText().toString())))
-                        {
+                        } else if (!(confirm.getText().toString().equalsIgnoreCase(neww.getText().toString()))) {
                             YoYo.with(Techniques.Shake)
                                     .duration(700)
                                     .repeat(0)
                                     .playOn(confirm);
                             confirm.setError("Password does not match");
                             confirm.requestFocus();
-                        }
-                        else {
+                        } else {
                             changePassword(confirm.getText().toString());
                             dialog.dismiss();
                         }
@@ -224,22 +223,17 @@ emailtxt=hashMap.get(SessionManager.EMAIL);
             }
         });
     }
-    private void editData(){
-       /* HashMap<String, String> map = new HashMap<>();
-        map.put("user_id", user_id);
-        map.put("mobile_number", phone.getText().toString());
-        map.put("gender", "");
-        map.put("fname", fname.getText().toString());
-        map.put("lname", lname.getText().toString());
-        map.put("country", "");
-        map.put("user_email", email.getText().toString());*/
 
-        final StringBuilder stringBuilder=new StringBuilder();
+    private void editData() {
+
+        final StringBuilder stringBuilder = new StringBuilder();
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(BASEURL).build();
         final ApiInterface apiInterface = restAdapter.create(ApiInterface.class);
         apiInterface.updateProfile(user_id, phone.getText().toString(), "", fname.getText().toString(), lname.getText().toString(), "", email.getText().toString(), new Callback<Response>() {
             @Override
             public void success(Response response, Response response2) {
+                dialog.dismiss();
+
                 try {
                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(response.getBody().in()));
                     String line;
@@ -248,36 +242,23 @@ emailtxt=hashMap.get(SessionManager.EMAIL);
                     }
                     Log.d(TAG, "Success " + stringBuilder);
 
-                    if(stringBuilder != null || !(stringBuilder.toString().equals("")))
-                    {
-                        JSONObject result=new JSONObject(""+stringBuilder);
+                    if (stringBuilder != null || !(stringBuilder.toString().equals(""))) {
+                        JSONObject result = new JSONObject("" + stringBuilder);
                         String message = result.getString("message");
-                        if (message.equalsIgnoreCase("success"))
-                        {
+                        if (message.equalsIgnoreCase("success")) {
                             JSONArray jsonArray = result.getJSONArray("data");
                             for (int i = 0; i < jsonArray.length(); i++) {
 
                                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                Log.d("mobile_number", ""+jsonObject.getString("mobile_number"));
+                                Log.d("mobile_number", "" + jsonObject.getString("mobile_number"));
 
-                                if (jsonObject.getString("mobile_number") != null && !jsonObject.getString("mobile_number").isEmpty())
-                                {
+                                if (jsonObject.getString("mobile_number") != null && !jsonObject.getString("mobile_number").isEmpty()) {
                                     phone.setText(jsonObject.getString("mobile_number"));
                                 }
 
 
 
-                                sessionManager.updateImage(jsonObject.getString("photo"));
-                                HashMap<String, String> hashMap = sessionManager.getUserDetails();
-                                image = hashMap.get(SessionManager.PHOTO);
 
-                                Glide.with(getApplicationContext())
-                                        .load(image)
-
-                                        .apply(RequestOptions.circleCropTransform().placeholder(R.drawable.pr))
-
-
-                                        .into(profile_pic);
 
                                 Toast.makeText(EditProfile.this, "Data Saved Successfully", Toast.LENGTH_SHORT).show();
 
@@ -287,26 +268,24 @@ emailtxt=hashMap.get(SessionManager.EMAIL);
                     }
 
 
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
 
                 }
             }
 
             @Override
             public void failure(RetrofitError error) {
-
+                dialog.dismiss();
             }
         });
 
 
     }
-    public void changePassword(String password)
-    {
+
+    public void changePassword(String password) {
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint("http://itechgaints.com/M-safiri-API/").build();
         final ApiInterface myInterface = restAdapter.create(ApiInterface.class);
-        myInterface.userChangepassword(user_id,password, new retrofit.Callback<retrofit.client.Response>() {
+        myInterface.userChangepassword(user_id, password, new retrofit.Callback<retrofit.client.Response>() {
             @Override
             public void success(retrofit.client.Response response, retrofit.client.Response response2) {
                 final StringBuilder stringBuilder = new StringBuilder();
@@ -325,29 +304,22 @@ emailtxt=hashMap.get(SessionManager.EMAIL);
                         JSONObject jsonObject = new JSONObject("" + stringBuilder);
                         String status = jsonObject.getString("status");
                         JSONArray jsonArray = null;
-                        if(status.equalsIgnoreCase("1"))
-                        {
+                        if (status.equalsIgnoreCase("1")) {
                             jsonArray = jsonObject.getJSONArray("data");
-                            for(int i=0;i<jsonArray.length();i++)
-                            {
-                                JSONObject jsonObject1=jsonArray.getJSONObject(i);
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject jsonObject1 = jsonArray.getJSONObject(i);
 
                                 String password = jsonObject1.getString("password");
                                 ch_password.setText(password);
                                 sessionManager.updatePassword(password);
 
 
-
                             }
-                        }
-                        else
-                        {
+                        } else {
 
                         }
 
-                    }
-                    else
-                    {
+                    } else {
 
                     }
 
@@ -375,140 +347,182 @@ emailtxt=hashMap.get(SessionManager.EMAIL);
         matcher = pattern.matcher(email.getText().toString());
 
         if (fname.getText().toString().equals("")) {
-            fname.setError(""+getResources().getString(R.string.Please_enter_fname));
+            fname.setError("" + getResources().getString(R.string.Please_enter_fname));
             YoYo.with(Techniques.Shake).duration(700).repeat(0).playOn(fname);
             fname.requestFocus();
             return false;
-        }
-        else   if (email.getText().toString().equals("")) {
-            email.setError(""+getResources().getString(R.string.Please_enter_email));
+        } else if (email.getText().toString().equals("")) {
+            email.setError("" + getResources().getString(R.string.Please_enter_email));
             YoYo.with(Techniques.Shake).duration(700).repeat(0).playOn(email);
             email.requestFocus();
             return false;
-        }
-        else if (!matcher.matches()) {
-            email.setError(""+getResources().getString(R.string.Please_Enter_Valid_Email));
+        } else if (!matcher.matches()) {
+            email.setError("" + getResources().getString(R.string.Please_Enter_Valid_Email));
             YoYo.with(Techniques.Shake).duration(700).repeat(0).playOn(email);
             email.requestFocus();
             return false;
-        }
-        else  if (ch_password.getText().toString().equals("")) {
-            ch_password.setError(""+getResources().getString(R.string.Please_Enter_Password));
+        } else if (ch_password.getText().toString().equals("")) {
+            ch_password.setError("" + getResources().getString(R.string.Please_Enter_Password));
             YoYo.with(Techniques.Shake).duration(700).repeat(0).playOn(ch_password);
             ch_password.requestFocus();
             return false;
         }
 
 
-
-
         return true;
     }
+
     private void openImageChooser() {
-        Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(galleryIntent, GALLERY_CODE);
+        pickImage();
+    }
+
+    private void pickImage() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN // Permission was added in API Level 16
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE,
+                    getString(R.string.mis_permission_rationale),
+                    REQUEST_STORAGE_READ_ACCESS_PERMISSION);
+        } else {
+
+            MultiImageSelector selector = MultiImageSelector.create(EditProfile.this);
+            selector.single();
+            selector.showCamera(false);
+
+            selector.origin(mSelectPath);
+            selector.start(EditProfile.this, REQUEST_IMAGE);
+        }
+    }
+
+    private void requestPermission(final String permission, String rationale, final int requestCode) {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
+            new android.support.v7.app.AlertDialog.Builder(this)
+                    .setTitle(R.string.mis_permission_dialog_title)
+                    .setMessage(rationale)
+                    .setPositiveButton(R.string.mis_permission_dialog_ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ActivityCompat.requestPermissions(EditProfile.this, new String[]{permission}, requestCode);
+                        }
+                    })
+                    .setNegativeButton(R.string.mis_permission_dialog_cancel, null)
+                    .create().show();
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{permission}, requestCode);
+        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            Log.d("file_size", "mediapath : " + "onactivityres" + " ---- " + "");
 
-            if (requestCode == GALLERY_CODE) {
-                Uri selectedImage = data.getData();
-                String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-                assert cursor != null;
-                cursor.moveToFirst();
-                int clumnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                mediapath = cursor.getString(clumnIndex);
-                file = new File(mediapath);
-                int file_size = Integer.parseInt(String.valueOf(file.length() / 1024));
-                Log.d("file_size", "" + file_size);
+        if (requestCode == REQUEST_IMAGE) {
+            if (resultCode == RESULT_OK) {
+                mSelectPath = data.getStringArrayListExtra(MultiImageSelector.EXTRA_RESULT);
+                StringBuilder sb = new StringBuilder();
+                for (String p : mSelectPath) {
+                    sb.append(p);
+                    sb.append("\n");
+                }
 
+                mediapath = "" + sb.toString();
 
-                cursor.close();
-                Glide.with(EditProfile.this).load(mediapath).apply(RequestOptions.circleCropTransform()).into(profile_pic);
+                Glide.with(EditProfile.this)
+                        .load("" + mediapath.trim())
+                        .apply(new RequestOptions().centerCrop())
 
-                Log.d("file_size", "mediapath : " + mediapath + " ---- " + file_size);
-
-
-            }
-            if (requestCode == CAMERA_CODE) {
-
+                        .into(profile_pic);
+                Log.d("sdadad", "" + mediapath);
             }
 
-        } else if (requestCode == RESULT_CANCELED) {
-            Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show();
+
         }
+        if (requestCode == CAMERA_CODE) {
+
+        }
+
 
     }
 
     private void editDataWithImage() {
 
 
-        HashMap<String, String> map = new HashMap<>();
-        map.put("user_id", user_id);
-        map.put("mobile_number", phone.getText().toString());
-        map.put("gender", "");
-        map.put("fname", fname.getText().toString());
-        map.put("lname", lname.getText().toString());
-        map.put("country", "");
-        map.put("user_email", email.getText().toString());
-        callAPiActivity.doPostWithFiles(this, map, "http://itechgaints.com/M-safiri-API/updateProfile", mediapath, "photo", new GetResponse() {
-            @Override
-            public void onSuccessResult(JSONObject result) throws JSONException {
-                String message = result.getString("message");
+        final StringBuilder stringBuilder=new StringBuilder();
+        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(BASEURL).build();
+        final ApiInterface apiInterface = restAdapter.create(ApiInterface.class);
+        TypedFile typedFile=new TypedFile("multipart/form-data",new File(""+mediapath.trim()));
+        apiInterface.updateProfilewithImage(user_id, phone.getText().toString(), "", fname.getText().toString()
+                , lname.getText().toString(),  email.getText().toString(),typedFile, new Callback<Response>() {
+                    @Override
+                    public void success(Response response, Response response2) {
+                        dialog.dismiss();
+                        BufferedReader bufferedReader = null;
+                        try {
+                            bufferedReader = new BufferedReader(new InputStreamReader(response.getBody().in()));
+                            String line;
+                            while ((line = bufferedReader.readLine()) != null) {
+                                stringBuilder.append(line);
+                                if (stringBuilder != null || !(stringBuilder.toString().equalsIgnoreCase(""))) {
 
-                Log.d("messageimage", ""+result);
-                if (message.equalsIgnoreCase("success")) {
-                    JSONArray jsonArray = result.getJSONArray("data");
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        Log.d("mobile_number", ""+jsonObject.getString("mobile_number"));
+                                    Toast.makeText(EditProfile.this, "Saved", Toast.LENGTH_SHORT).show();
+                                    JSONObject jsonObject = new JSONObject("" + stringBuilder);
+                                    if (jsonObject.getString("status").equalsIgnoreCase("1"))
+                                    {
+                                        JSONArray jsonArray = jsonObject.getJSONArray("data");
+                                        for (int i=0;i<jsonArray.length();i++)
 
-                        if (jsonObject.getString("mobile_number").equalsIgnoreCase("")){
+                                        {
+                                            JSONObject childObject = jsonArray.getJSONObject(i);
+                                            String strphone,email,fname,lname,imgurl;
+                                            strphone=childObject.getString("mobile_number");
+                                            imgurl=childObject.getString("photo");
 
-                        }
-                        else {
-                            phone.setText(jsonObject.getString("mobile_number"));
-                        }
+                                            Log.d("myeditimage",""+imgurl);
 
-                        if (mediapath!=null) {
+                                            if(strphone != null && !strphone.isEmpty()) {
 
-                            Log.d("messageimage", ""+jsonObject.getString("photo"));
+                                                phone.setText(jsonObject.getString("mobile_number"));
+                                            }
+                                            if (imgurl!=null && !imgurl.isEmpty())
 
-                            sessionManager.updateImage(jsonObject.getString("photo"));
-                            HashMap<String, String> hashMap = sessionManager.getUserDetails();
-                            image = hashMap.get(SessionManager.PHOTO);
+                                            {
+                                                Glide.with(getApplicationContext())
+                                                        .load(""+imgurl)
 
-                            Glide.with(getApplicationContext())
-                                    .load(image)
+                                                        .apply(RequestOptions.circleCropTransform().placeholder(R.drawable.pr))
 
-                                    .apply(RequestOptions.circleCropTransform())
+                                                        .into(profile_pic);
 
-                                    .into(profile_pic);
-                        }
-                        else {
-                            Glide.with(getApplicationContext())
-                                    .load(image)
+                                                sessionManager.updateImage(""+imgurl);
+                                            }
 
-                                    .apply(RequestOptions.circleCropTransform())
 
-                                    .into(profile_pic);
+
+
+
+
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        Toast.makeText(EditProfile.this, ""+jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            }
+                        }catch (Exception E)
+                        {
+
                         }
                     }
-                }
 
-            }
+                    @Override
+                    public void failure(RetrofitError error) {
+                        dialog.dismiss();                    }
+                });
 
-            @Override
-            public void onFailureResult(String message) throws JSONException {
-                Log.d("message failue", message);
 
-            }
-        });
+
 
 
     }
@@ -538,7 +552,6 @@ emailtxt=hashMap.get(SessionManager.EMAIL);
                             JSONObject jsonObject1 = jsonArray.getJSONObject(i);
 
 
-
                             if (login_type.equalsIgnoreCase("manual")) {
                                 sessionManager.updateImage(jsonObject1.getString("photo"));
 
@@ -548,22 +561,15 @@ emailtxt=hashMap.get(SessionManager.EMAIL);
                                 lname.setText(jsonObject1.getString("lname"));
                                 phone.setText(jsonObject1.getString("mobile_number"));
 
-                            }
+                            } else {
+                                if (jsonObject1.getString("mobile_number").equalsIgnoreCase("")) {
 
-                            else {
-                                if (jsonObject1.getString("mobile_number").equalsIgnoreCase(""))
-                                {
-
-                                }
-                                else
-                                {
+                                } else {
                                     phone.setText(jsonObject1.getString("mobile_number"));
-                                }if (jsonObject1.getString("lname").equalsIgnoreCase(""))
-                                {
-
                                 }
-                                else
-                                {
+                                if (jsonObject1.getString("lname").equalsIgnoreCase("")) {
+
+                                } else {
                                     lname.setText(jsonObject1.getString("lname"));
                                 }
                                 fname.setText(name);

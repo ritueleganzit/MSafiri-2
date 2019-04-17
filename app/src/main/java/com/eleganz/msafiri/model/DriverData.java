@@ -6,7 +6,7 @@ package com.eleganz.msafiri.model;
 
 public class DriverData {
 
-    String trip_id,driver_id,photo,vehiclename,pickup,destination,time,rating,price;
+    String id,trip_id,driver_id,photo,vehiclename,pickup,destination,time,rating,price;
 
 
     public DriverData(String trip_id, String driver_id, String photo, String vehiclename, String pickup, String destination, String time, String rating, String price) {
@@ -20,6 +20,8 @@ public class DriverData {
         this.rating = rating;
         this.price = price;
     }
+
+
 
     public String getTrip_id() {
         return trip_id;

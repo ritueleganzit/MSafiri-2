@@ -57,8 +57,8 @@ public class TellYourDriverActivity extends AppCompatActivity {
         user_id = userData.get(SessionManager.USER_ID);
         currentTripSession = new CurrentTripSession(TellYourDriverActivity.this);
         HashMap<String, String> tripData = currentTripSession.getTripDetails();
-        trip_id = tripData.get(CurrentTripSession.TRIP_ID);
-        driver_id = tripData.get(CurrentTripSession.DRIVER_ID);
+        trip_id = getIntent().getStringExtra("tripbookedid");
+        driver_id = getIntent().getStringExtra("tripdriverid");
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

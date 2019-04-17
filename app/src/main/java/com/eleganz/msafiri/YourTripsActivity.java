@@ -1,7 +1,10 @@
 package com.eleganz.msafiri;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,6 +25,7 @@ import com.eleganz.msafiri.model.TripData;
 import com.eleganz.msafiri.session.SessionManager;
 import com.eleganz.msafiri.utils.ApiInterface;
 import com.eleganz.msafiri.utils.HistoryData;
+import com.eleganz.msafiri.utils.MyFirebaseMessagingService;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -59,6 +63,7 @@ public class YourTripsActivity extends AppCompatActivity  {
     SpotsDialog dialog;
     LinearLayout tv_no_data;
     RecyclerView list;
+    String noti_message="",type="",ntrip_id="";
 
     ArrayList<HistoryData> arrayList=new ArrayList<>();
     private static final String TAG = "YourTripsActivityLog";
@@ -70,6 +75,9 @@ public class YourTripsActivity extends AppCompatActivity  {
         ImageView back=findViewById(R.id.back);
         sessionManager=new SessionManager(YourTripsActivity.this);
 
+        if(type != null && !type.isEmpty()) {
+
+        }
         sessionManager.checkLogin();
 
 
@@ -93,8 +101,36 @@ public class YourTripsActivity extends AppCompatActivity  {
 
         userTrips();
     }
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(YourTripsActivity.this)
+                .unregisterReceiver(mBroadcastReceiver);
+        super.onPause();
+    }
 
-    private void userTrips() {
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(YourTripsActivity.this)
+                .registerReceiver(mBroadcastReceiver, MyFirebaseMessagingService.BROADCAST_INTENT_FILTER);
+    }
+
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver(){
+        @Override
+        public void onReceive(Context context, Intent intent){
+            // read any data you might need from intent and do your action here
+
+            String data=intent.getStringExtra("complete");
+            type=intent.getStringExtra("type");
+            ntrip_id=intent.getStringExtra("trip_id");
+            if(data != null && !data.isEmpty())
+            {
+                startActivity(new Intent(YourTripsActivity.this, ReviewActivity.class).putExtra("trip_id",ntrip_id));
+
+            }
+
+        }
+    };    private void userTrips() {
         dialog.show();
         final StringBuilder stringBuilder=new StringBuilder();
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint("http://itechgaints.com/M-safiri-API/").build();
@@ -127,12 +163,12 @@ public class YourTripsActivity extends AppCompatActivity  {
                             String user_trip_status=jsonObject1.getString("user_trip_status");
                             if(user_trip_status != null && !user_trip_status.isEmpty())
                             {
-                                if ( (user_trip_status.equalsIgnoreCase("booked"))||(user_trip_status.equalsIgnoreCase("onboard")) || (user_trip_status.equalsIgnoreCase("confirm")))
+                                if (((user_trip_status.equalsIgnoreCase("0"))) ||(user_trip_status.equalsIgnoreCase("onboard")) || (user_trip_status.equalsIgnoreCase("confirm")))
                                 {
-                                    Log.d("YourTripstatus",""+user_trip_status);
+                                    Log.d("YourTripstatus","if"+user_trip_status);
                                 }
                                 else {
-                                    Log.d("YourTripstatus","-->"+user_trip_status);
+                                    Log.d("YourTripstatus","else-->"+user_trip_status);
 
                                     HistoryData historyData=new HistoryData(jsonObject1.getString("driver_id"),
                                             jsonObject1.getString("trip_id"),

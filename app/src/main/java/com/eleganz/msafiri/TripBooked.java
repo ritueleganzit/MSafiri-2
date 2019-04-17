@@ -1,11 +1,14 @@
 package com.eleganz.msafiri;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -25,6 +28,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.eleganz.msafiri.lib.RobotoMediumTextView;
+import com.eleganz.msafiri.session.CurrentTripSession;
 import com.eleganz.msafiri.session.SessionManager;
 import com.eleganz.msafiri.utils.ApiInterface;
 import com.eleganz.msafiri.utils.DirectionsJSONParser;
@@ -70,39 +74,40 @@ import retrofit.client.Response;
 
 import static com.eleganz.msafiri.utils.Constant.BASEURL;
 
-public class TripActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class TripBooked extends AppCompatActivity implements OnMapReadyCallback {
     SessionManager sessionManager;
     String user_id;
-SpotsDialog spotsDialog;
+    SpotsDialog spotsDialog;
     RelativeLayout dummyrel;
     boolean isVisible=true;
     TimerTask mTimerTask;
     final Handler handler = new Handler();
     Timer t = new Timer();
     MapView mapView;
-    private String TAG="TripActivity";
-HistoryData historyData;
-CircleImageView driver_fab;
+    private String TAG="TripBooked";
+    HistoryData historyData;
+    CircleImageView driver_fab;
     RelativeLayout  cnfrel;
-TextView pickuploc,pickuplocaddress,destloc,destlocaddress,comment,trip_rate;
-RatingBar ratingBar;
-RobotoMediumTextView driver_txt1,vehicle_tx1,calculate_time;
-GoogleMap map;
+    RobotoMediumTextView pickuploc,pickuplocaddress,destloc,destlocaddress,comment,trip_rate;
+    RatingBar ratingBar;
+    RobotoMediumTextView driver_txt1,vehicle_tx1,calculate_time;
+    GoogleMap map;
     Runnable runnable;
+    CurrentTripSession currentTripSession;
     private int nCounter = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_trip);
+        setContentView(R.layout.activity_trip_booked);
         ImageView back=findViewById(R.id.back);
         mapView= (MapView) findViewById(R.id.map);
-        sessionManager=new SessionManager(TripActivity.this);
-
+        sessionManager=new SessionManager(TripBooked.this);
+        currentTripSession=new CurrentTripSession(TripBooked.this);
         sessionManager.checkLogin();
 
         Log.d(TAG,"oncreate");
         cnfrel=findViewById(R.id.cnfrel);
-        dummyrel=findViewById(R.id.dummyrel);
+        dummyrel=findViewById(R.id.temp);
         HashMap<String, String> userData=sessionManager.getUserDetails();
         user_id=userData.get(SessionManager.USER_ID);
         ratingBar=findViewById(R.id.ratingBar);
@@ -110,12 +115,11 @@ GoogleMap map;
         pickuplocaddress=findViewById(R.id.pickuplocaddress);
         destlocaddress=findViewById(R.id.destlocaddress);
         destloc=findViewById(R.id.destloc);
-        comment=findViewById(R.id.comment);
         driver_fab=findViewById(R.id.driver_fab);
         driver_txt1=findViewById(R.id.driver_txt1);
         vehicle_tx1=findViewById(R.id.vehicle_tx1);
         calculate_time=findViewById(R.id.calculate_time);
-        spotsDialog=new SpotsDialog(TripActivity.this);
+        spotsDialog=new SpotsDialog(TripBooked.this);
 
         trip_rate=findViewById(R.id.trip_rate);
         back.setOnClickListener(new View.OnClickListener() {
@@ -146,13 +150,13 @@ GoogleMap map;
         if (historyData.getUser_trip_status().equalsIgnoreCase("booked"))
         {
 
-           // Toast.makeText(this, ""+historyData.getUser_trip_status(), Toast.LENGTH_SHORT).show();
-           // doTimerTask();
+            // Toast.makeText(this, ""+historyData.getUser_trip_status(), Toast.LENGTH_SHORT).show();
+            // doTimerTask();
             startService(new Intent(this, SensorService.class));
         }
 
         else {
-           // Toast.makeText(this, ""+historyData.getUser_trip_status(), Toast.LENGTH_SHORT).show();
+            // Toast.makeText(this, ""+historyData.getUser_trip_status(), Toast.LENGTH_SHORT).show();
             stopService(new Intent(this, SensorService.class));
             //stopTask();
         }
@@ -186,16 +190,55 @@ GoogleMap map;
 
 
 
-     //
-             // pickuploc.setText(""+historyData.getFrom_title());
+        //
+        // pickuploc.setText(""+historyData.getFrom_title());
 
-              pickuplocaddress.setText(""+historyData.getFrom_address());
-                     //destloc.setText(""+historyData.getTo_title());
-                      destlocaddress.setText(""+historyData.getTo_address());
-                      comment.setText(""+historyData.getComments());
+        pickuplocaddress.setText(""+historyData.getFrom_address());
+        //destloc.setText(""+historyData.getTo_title());
+        destlocaddress.setText(""+historyData.getTo_address());
         driver_txt1.setText(""+historyData.getFullname());
         vehicle_tx1.setText(""+historyData.getVehicle_name());
         calculate_time.setText(""+historyData.getCalculate_time());
+
+
+        findViewById(R.id.tellbtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(TripBooked.this, TellYourDriverActivity.class)
+                        .putExtra("tripbookedid",historyData.getTrip_id())
+                        .putExtra("tripdriverid",historyData.getDriver_id()));
+
+            }
+        });
+        findViewById(R.id.cancelride).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog alertDialog=  new AlertDialog.Builder(TripBooked.this)
+                        .setMessage("Are you sure you want to cancel trip?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface d, int which) {
+                                spotsDialog.show();
+
+                                cancelTrip(historyData.getTrip_id());
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .setCancelable(false)
+                        .show();
+                TextView textView = (TextView) alertDialog.findViewById(android.R.id.message);
+                Typeface face= Typeface.createFromAsset(getAssets(),"fonts/Roboto-Light.ttf");
+                textView.setTypeface(face);
+
+
+
+            }
+        });
         if (historyData.getTrip_price()!=null && !historyData.getTrip_price().isEmpty())
 
         {
@@ -211,10 +254,60 @@ GoogleMap map;
 
 
 
-        Glide.with(TripActivity.this).load(""+historyData.getPhoto()).apply(new RequestOptions().placeholder(R.drawable.male)).into(driver_fab);
-       // trip_rate.setText(""+historyData.getTrip_price());
+        Glide.with(TripBooked.this).load(""+historyData.getPhoto()).apply(new RequestOptions().placeholder(R.drawable.male)).into(driver_fab);
+        // trip_rate.setText(""+historyData.getTrip_price());
     }
 
+    private void cancelTrip(String trip_id) {
+        RestAdapter restAdapter=new RestAdapter.Builder().setEndpoint(BASEURL).build();
+        ApiInterface apiInterface=restAdapter.create(ApiInterface.class);
+        apiInterface.cancelTrip(trip_id, user_id, new Callback<Response>() {
+            @Override
+            public void success(Response response, Response response2) {
+                try {
+                    final StringBuilder stringBuilder=new StringBuilder();
+
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(response.getBody().in()));
+                    String line;
+                    while ((line = bufferedReader.readLine()) != null) {
+                        stringBuilder.append(line);
+                    }
+                    Log.d("cancelTrip",""+stringBuilder);
+                    JSONObject jsonObject=new JSONObject(""+stringBuilder);
+                    if (jsonObject.getString("message").equalsIgnoreCase("success"))
+
+                    {
+                        currentTripSession.clearTripData();
+
+                        spotsDialog.dismiss();
+                        startActivity(new Intent(TripBooked.this, CancelRideActivity.class));
+                        finish();
+                    }
+
+                    else
+                    {
+                        spotsDialog.dismiss();
+
+                        Toast.makeText(TripBooked.this, ""+jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+
+                        Log.d("cancelTrip",""+jsonObject.getString("message"));
+
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                spotsDialog.dismiss();
+
+            }
+        });
+
+    }
 
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
@@ -309,7 +402,7 @@ GoogleMap map;
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            ParserTask parserTask = new ParserTask();
+            TripBooked.ParserTask parserTask = new TripBooked.ParserTask();
 
 
             parserTask.execute(result);
@@ -339,7 +432,7 @@ GoogleMap map;
         @Override
         protected void onPostExecute(List<List<HashMap<String,String>>> result) {
             ArrayList points  = new ArrayList();
-            SharedPreferences db= PreferenceManager.getDefaultSharedPreferences(TripActivity.this);
+            SharedPreferences db= PreferenceManager.getDefaultSharedPreferences(TripBooked.this);
 
             SharedPreferences.Editor collection = db.edit();
             Gson gson = new Gson();
@@ -411,7 +504,7 @@ GoogleMap map;
         mMarkerArray.add(amarker1);
         mMarkerArray.add(amarker2);
 
-       LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
         for (Marker marker : mMarkerArray) {
             builder.include(marker.getPosition());
         }
@@ -421,7 +514,7 @@ GoogleMap map;
         map.moveCamera(cu);
         map.animateCamera(cu);
         String url = getDirectionsUrl(origin, destination);
-        DownloadTask downloadTask = new DownloadTask();
+        TripBooked.DownloadTask downloadTask = new TripBooked.DownloadTask();
 
         // Start downloading json data from Google Directions API
         downloadTask.execute(url);
@@ -492,7 +585,7 @@ GoogleMap map;
                     JSONObject jsonObject1=jsonArray1.getJSONObject(i);
                     Log.d("Exceptiondataaa",jsonObject1.getJSONObject("distance").getString("text"));
 
-                   // durationtxt=jsonObject1.getJSONObject("duration").getString("text");
+                    // durationtxt=jsonObject1.getJSONObject("duration").getString("text");
 
 
                 }
@@ -500,7 +593,7 @@ GoogleMap map;
             }
 
 
-        br.close();
+            br.close();
 
         } catch (Exception e) {
             Log.d("Exception", e.toString());
@@ -565,3 +658,4 @@ GoogleMap map;
     }
 
 }
+

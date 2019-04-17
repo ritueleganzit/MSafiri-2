@@ -64,9 +64,12 @@
 
 
 
-    <style name="ReviewRatingBar" parent="Theme.AppCompat">
+    <style name="ReviewRatingBar"
+        parent="Widget.AppCompat.RatingBar.Small">
+
+
         <item name="colorControlNormal">@android:color/darker_gray</item>
-        <item name="colorControlActivated">@android:color/holo_red_dark</item>
+        <item name="colorControlActivated">@android:color/holo_orange_dark</item>
     </style>
     <style name="Theme.AppCompat.Transparent.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Transparent the theme here -->

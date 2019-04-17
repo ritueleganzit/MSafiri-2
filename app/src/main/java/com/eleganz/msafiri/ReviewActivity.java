@@ -1,5 +1,7 @@
 package com.eleganz.msafiri;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -13,6 +15,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.eleganz.msafiri.session.CurrentTripSession;
 import com.eleganz.msafiri.session.SessionManager;
@@ -54,60 +58,59 @@ import spencerstudios.com.bungeelib.Bungee;
 
 import static com.eleganz.msafiri.utils.Constant.BASEURL;
 
-public class ReviewActivity extends AppCompatActivity implements OnMapReadyCallback {
-    MapView mapView;
+public class ReviewActivity extends AppCompatActivity  {
     EditText ed_comment;
-    RatingBar ratingBar;
+    RatingBar addrating;
     SessionManager sessionManager;
     String user_id,trip_id,comments;
-    Button btnrating;
+    TextView review_price, btnrating,review_date,review_destination,review_drivername,review_vehicle,review_pickup;
     float rating;
-    GoogleMap map;
+    ProgressDialog progressDialog;
     CurrentTripSession currentTripSession;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_review);
-        ImageView back=findViewById(R.id.back);
-        back.setOnClickListener(new View.OnClickListener() {
+        setContentView(R.layout.tripreview);
+        ImageView review_close=findViewById(R.id.review_close);
+        review_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onBackPressed();
             }
         });
-        mapView= (MapView) findViewById(R.id.map);
         ed_comment=  findViewById(R.id.ed_comment);
+        review_date=  findViewById(R.id.review_date);
+        review_price=  findViewById(R.id.review_price);
+        review_destination=  findViewById(R.id.review_destination);
+        review_pickup=  findViewById(R.id.review_pickup);
+        review_drivername=  findViewById(R.id.review_drivername);
+        review_vehicle=  findViewById(R.id.review_vehicle);
         btnrating=  findViewById(R.id.btnrating);
         sessionManager=new SessionManager(ReviewActivity.this);
         currentTripSession=new CurrentTripSession(ReviewActivity.this);
-
+        progressDialog=new ProgressDialog(ReviewActivity.this);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setCancelable(false);
         sessionManager.checkLogin();
         HashMap<String, String> tripData=currentTripSession.getTripDetails();
-        trip_id=tripData.get(CurrentTripSession.TRIP_ID);
-trip_id="65";
+        trip_id=getIntent().getStringExtra("trip_id");
         HashMap<String, String> userData=sessionManager.getUserDetails();
         user_id=userData.get(SessionManager.USER_ID);
 
-
-        ratingBar= (RatingBar) findViewById(R.id.ratingBar);
-        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+Log.d("ttrip_idnoti",""+trip_id);
+        addrating= (RatingBar) findViewById(R.id.addrating);
+        addrating.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
 rating=v;
             }
         });
-        mapView.getMapAsync(this);
-        if(mapView != null)
-        {
-            mapView.onCreate(null);
-            mapView.onResume();
-            mapView.getMapAsync(this);
-        }
 
+        getSingleTripData();
         btnrating.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                progressDialog.show();
                 giveRating();
             }
         });
@@ -123,12 +126,16 @@ rating=v;
             public void success(Response response, Response response2) {
 
 
+                progressDialog.dismiss();
+                Toast.makeText(ReviewActivity.this, "Review Send", Toast.LENGTH_SHORT).show();
+                currentTripSession.clearTripData();
+                startActivity(new Intent(ReviewActivity.this,HomeActivity.class));
 
             }
 
             @Override
             public void failure(RetrofitError error) {
-
+                progressDialog.dismiss();
             }
         });
 
@@ -136,28 +143,7 @@ rating=v;
 
     }
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        map=googleMap;
-        MapsInitializer.initialize(getApplicationContext());
-        map.getUiSettings().setAllGesturesEnabled(false);
 
-        boolean success = map.setMapStyle(
-                MapStyleOptions.loadRawResourceStyle(
-                        getApplicationContext(), R.raw.style_json));
-
-        if (!success) {
-            Log.e("MainAct", "Style parsing failed.");
-        }
-        Log.e("ddddddd", "Style parsing failed.");
-
-
-        map.getUiSettings().setAllGesturesEnabled(true);
-        map.getUiSettings().setMapToolbarEnabled(true);
-
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(5.0f));
-        getSingleTripData();
-    }
 
     private void getSingleTripData() {
         final StringBuilder stringBuilder=new StringBuilder();
@@ -181,70 +167,25 @@ rating=v;
                         for (int i=0;i<jsonArray.length();i++) {
                             JSONObject childObjct = jsonArray.getJSONObject(i);
 
-                            LatLng origin = new LatLng(childObjct.getDouble("from_lat"), childObjct.getDouble("from_lng"));
-                            LatLng destination = new LatLng(childObjct.getDouble("to_lat"), childObjct.getDouble("to_lng"));
-                            ArrayList<Marker> mMarkerArray = new ArrayList<Marker>();
-                            MarkerOptions options = new MarkerOptions();
-                            // Setting the position of the marker
-                            options.position(origin);
+                            review_drivername.setText(""+childObjct.getString("fullname"));
+                            review_vehicle.setText(""+childObjct.getString("vehicle_name"));
+                            review_date.setText(""+childObjct.getString("datetime"));
+                            review_destination.setText(""+childObjct.getString("to_address"));
+                            review_pickup.setText(""+childObjct.getString("from_address"));
 
-                            BitmapDrawable bitmapdraw=(BitmapDrawable)getResources().getDrawable(R.drawable.location_green);
-                            Bitmap b=bitmapdraw.getBitmap();
-                            Bitmap firstMarker = Bitmap.createScaledBitmap(b, 70   , 70, false);
+                            if (review_price.getText().toString().equalsIgnoreCase("null"))
 
-                            Marker amarker1=    map.addMarker(options.icon(BitmapDescriptorFactory.fromBitmap(firstMarker)));
-                            MarkerOptions options2 = new MarkerOptions();
-                            BitmapDrawable bitmapdraw2=(BitmapDrawable)getResources().getDrawable(R.drawable.location_red);
-                            Bitmap b2=bitmapdraw2.getBitmap();
-                            Bitmap firstMarker2 = Bitmap.createScaledBitmap(b2, 70   , 70, false);
-
-                            // Setting the position of the marker
-                            options2.position(destination);
-                            Marker amarker2=    map.addMarker(options2.icon(BitmapDescriptorFactory.fromBitmap(firstMarker2)));
-
-                            mMarkerArray.add(amarker1);
-                            mMarkerArray.add(amarker2);
-
-
-                            LatLngBounds.Builder builder = new LatLngBounds.Builder();
-                            for (Marker marker : mMarkerArray) {
-                                builder.include(marker.getPosition());
+                            {
+                                review_price.setText("$ 0");
                             }
-                            LatLngBounds bounds = builder.build();
-                            int padding = 80; // offset from edges of the map in pixels
-                            CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
-                            map.moveCamera(cu);
-                            map.animateCamera(cu);
-                            SharedPreferences db= PreferenceManager.getDefaultSharedPreferences(ReviewActivity.this);
-
-                            Gson gson = new Gson();
-                            String arrayListString = db.getString("mylatlon", null);
-                           Type type = new TypeToken<ArrayList<List<HashMap<String,String>>>>() {}.getType();
-                            ArrayList<List<HashMap<String,String>>> arrayList = gson.fromJson(arrayListString, type);
-                           ArrayList points=new ArrayList();
-                            PolylineOptions lineOptions = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
-                            for (int j = 0; j < arrayList.size(); j++) {
-
-
-
-                                List<HashMap<String,String>> path = arrayList.get(j);
-
-                                for (int k = 0; k < path.size(); k++) {
-                                    HashMap<String,String> point = path.get(k);
-
-                                    double lat = Double.parseDouble(point.get("lat"));
-                                    double lng = Double.parseDouble(point.get("lng"));
-                                    LatLng position = new LatLng(lat, lng);
-
-                                    points.add(position);
-                                }
-
-                                lineOptions.addAll(points);
-                                lineOptions.width(10);
-                                lineOptions.color(Color.parseColor("#4885ed"));
-                                lineOptions.geodesic(true);
-                                map.addPolyline(lineOptions);
+                            else
+                            {
+                                review_price.setText("$ "+childObjct.getString("trip_price"));
                             }
+
+
+
+
                         }
 
                     }

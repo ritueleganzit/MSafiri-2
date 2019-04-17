@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
@@ -40,15 +41,18 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import dmax.dialog.SpotsDialog;
+import me.nereo.multi_image_selector.MultiImageSelector;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import retrofit.mime.TypedFile;
 
 import static com.eleganz.msafiri.utils.Constant.BASEURL;
 
@@ -67,7 +71,12 @@ public class RegistrationContinue extends AppCompatActivity {
     SharedPreferences sh_imagePreference;
     SharedPreferences.Editor imagePreference;
     String URLCHANGEPASSWORD = " http://itechgaints.com/M-safiri-API/userChangepassword";
-    private String TAG = "EditProfile";
+    private String TAG = "RegistrationContinue";
+
+    private static final int REQUEST_IMAGE = 2;
+    protected static final int REQUEST_STORAGE_READ_ACCESS_PERMISSION = 101;
+    private ArrayList<String> mSelectPath;
+
     SpotsDialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -325,9 +334,44 @@ emailtxt=hashMap.get(SessionManager.EMAIL);
         return true;
     }
     private void openImageChooser() {
-        Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(galleryIntent, GALLERY_CODE);
+        pickImage();
     }
+    private void pickImage() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN // Permission was added in API Level 16
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE,
+                    getString(R.string.mis_permission_rationale),
+                    REQUEST_STORAGE_READ_ACCESS_PERMISSION);
+        } else {
+
+            MultiImageSelector selector = MultiImageSelector.create(RegistrationContinue.this);
+            selector.single();
+            selector.showCamera(false);
+
+            selector.origin(mSelectPath);
+            selector.start(RegistrationContinue.this, REQUEST_IMAGE);
+        }
+    }
+
+    private void requestPermission(final String permission, String rationale, final int requestCode) {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
+            new android.support.v7.app.AlertDialog.Builder(this)
+                    .setTitle(R.string.mis_permission_dialog_title)
+                    .setMessage(rationale)
+                    .setPositiveButton(R.string.mis_permission_dialog_ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ActivityCompat.requestPermissions(RegistrationContinue.this, new String[]{permission}, requestCode);
+                        }
+                    })
+                    .setNegativeButton(R.string.mis_permission_dialog_cancel, null)
+                    .create().show();
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{permission}, requestCode);
+        }
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -335,26 +379,28 @@ emailtxt=hashMap.get(SessionManager.EMAIL);
         if (resultCode == RESULT_OK) {
             Log.d("file_size", "mediapath : " + "onactivityres" + " ---- " + "");
 
-            if (requestCode == GALLERY_CODE) {
-                Uri selectedImage = data.getData();
-                String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-                assert cursor != null;
-                cursor.moveToFirst();
-                int clumnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                mediapath = cursor.getString(clumnIndex);
-                file = new File(mediapath);
-                int file_size = Integer.parseInt(String.valueOf(file.length() / 1024));
-                Log.d("file_size", "" + file_size);
+            if (requestCode == REQUEST_IMAGE) {
+                if (resultCode == RESULT_OK) {
+                    mSelectPath = data.getStringArrayListExtra(MultiImageSelector.EXTRA_RESULT);
+                    StringBuilder sb = new StringBuilder();
+                    for (String p : mSelectPath) {
+                        sb.append(p);
+                        sb.append("\n");
+                    }
 
+                    mediapath = "" + sb.toString();
 
-                cursor.close();
-                Glide.with(RegistrationContinue.this).load(mediapath).apply(RequestOptions.circleCropTransform()).into(profile_pic);
+                    Glide.with(RegistrationContinue.this)
+                            .load("" + mediapath.trim())
+                            .apply(new RequestOptions().centerCrop())
 
-                Log.d("file_size", "mediapath : " + mediapath + " ---- " + file_size);
+                            .into(profile_pic);
+                    Log.d("sdadad", "" + mediapath);
+                }
 
 
             }
+
             if (requestCode == CAMERA_CODE) {
 
             }
@@ -366,14 +412,7 @@ emailtxt=hashMap.get(SessionManager.EMAIL);
     }
 
     private void editData(){
-       /* HashMap<String, String> map = new HashMap<>();
-        map.put("user_id", user_id);
-        map.put("mobile_number", phone.getText().toString());
-        map.put("gender", "");
-        map.put("fname", fname.getText().toString());
-        map.put("lname", lname.getText().toString());
-        map.put("country", "");
-        map.put("user_email", email.getText().toString());*/
+
 
         final StringBuilder stringBuilder=new StringBuilder();
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(BASEURL).build();
@@ -409,17 +448,7 @@ emailtxt=hashMap.get(SessionManager.EMAIL);
 
 
 
-                                    sessionManager.updateImage(jsonObject.getString("photo"));
-                                    HashMap<String, String> hashMap = sessionManager.getUserDetails();
-                                    image = hashMap.get(SessionManager.PHOTO);
 
-                                    Glide.with(getApplicationContext())
-                                            .load(image)
-
-                                            .apply(RequestOptions.circleCropTransform().placeholder(R.drawable.pr))
-
-
-                                            .into(profile_pic);
 
                                     startActivity(new Intent(RegistrationContinue.this,HomeActivity.class));
                                     overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
@@ -450,71 +479,79 @@ emailtxt=hashMap.get(SessionManager.EMAIL);
     private void editDataWithImage() {
 
 
-        HashMap<String, String> map = new HashMap<>();
-        map.put("user_id", user_id);
-        map.put("mobile_number", phone.getText().toString());
-        map.put("gender", "");
-        map.put("fname", fname.getText().toString());
-        map.put("lname", lname.getText().toString());
-        map.put("country", "");
-        map.put("user_email", email.getText().toString());
-        callAPiActivity.doPostWithFiles(this, map, "http://itechgaints.com/M-safiri-API/updateProfile", mediapath, "photo", new GetResponse() {
-            @Override
-            public void onSuccessResult(JSONObject result) throws JSONException {
-                String message = result.getString("message");
-                dialog.dismiss();
-                Log.d("messageimage", ""+result);
-                if (message.equalsIgnoreCase("success")) {
+        final StringBuilder stringBuilder=new StringBuilder();
+        RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(BASEURL).build();
+        final ApiInterface apiInterface = restAdapter.create(ApiInterface.class);
+        TypedFile typedFile=new TypedFile("multipart/form-data",new File(""+mediapath.trim()));
+        apiInterface.updateProfilewithImage(user_id, phone.getText().toString(), "", fname.getText().toString()
+                , lname.getText().toString(),  email.getText().toString(),typedFile, new Callback<Response>() {
+                    @Override
+                    public void success(Response response, Response response2) {
+                        dialog.dismiss();
+                        BufferedReader bufferedReader = null;
+                        try {
+                            bufferedReader = new BufferedReader(new InputStreamReader(response.getBody().in()));
+                            String line;
+                            while ((line = bufferedReader.readLine()) != null) {
+                                stringBuilder.append(line);
+                                if (stringBuilder != null || !(stringBuilder.toString().equalsIgnoreCase(""))) {
 
-                    JSONArray jsonArray = result.getJSONArray("data");
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        Log.d("mobile_number", ""+jsonObject.getString("mobile_number"));
+                                    Toast.makeText(RegistrationContinue.this, "Saved", Toast.LENGTH_SHORT).show();
+                                    JSONObject jsonObject = new JSONObject("" + stringBuilder);
+                                    if (jsonObject.getString("status").equalsIgnoreCase("1"))
+                                    {
+                                        JSONArray jsonArray = jsonObject.getJSONArray("data");
+                                        for (int i=0;i<jsonArray.length();i++)
 
-                        if (jsonObject.getString("mobile_number") != null && !jsonObject.getString("mobile_number").isEmpty())
+                                        {
+                                            JSONObject childObject = jsonArray.getJSONObject(i);
+                                            String strphone,email,fname,lname,imgurl;
+                                            strphone=childObject.getString("mobile_number");
+                                            imgurl=childObject.getString("photo");
+
+                                            if(strphone != null && !strphone.isEmpty()) {
+
+                                                phone.setText(jsonObject.getString("mobile_number"));
+                                            }
+                                            if (imgurl!=null && !imgurl.isEmpty())
+
+                                            {
+                                                Glide.with(getApplicationContext())
+                                                        .load(""+imgurl)
+
+                                                        .apply(RequestOptions.circleCropTransform().placeholder(R.drawable.pr))
+
+                                                        .into(profile_pic);
+
+                                                sessionManager.updateImage(""+imgurl);
+                                            }
+
+
+
+
+
+
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        Toast.makeText(RegistrationContinue.this, ""+jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            }
+                        }catch (Exception E)
                         {
-                            phone.setText(jsonObject.getString("mobile_number"));
+
                         }
-
-                        if (mediapath!=null) {
-
-                            Log.d("messageimage", ""+jsonObject.getString("photo"));
-
-                            sessionManager.updateImage(jsonObject.getString("photo"));
-                            HashMap<String, String> hashMap = sessionManager.getUserDetails();
-                            image = hashMap.get(SessionManager.PHOTO);
-
-                            Glide.with(getApplicationContext())
-                                    .load(image)
-
-                                    .apply(RequestOptions.circleCropTransform().placeholder(R.drawable.pr))
-
-                                    .into(profile_pic);
-                        }
-                        else {
-                            Glide.with(getApplicationContext())
-                                    .load(image)
-
-                                    .apply(RequestOptions.circleCropTransform().placeholder(R.drawable.pr))
-
-                                    .into(profile_pic);
-                        }
-
-                        startActivity(new Intent(RegistrationContinue.this,HomeActivity.class));
-                        overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
-                        finish();
                     }
-                }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        dialog.dismiss();                    }
+                });
 
 
-            }
-
-            @Override
-            public void onFailureResult(String message) throws JSONException {
-                Log.d("message failue", message);
-                dialog.dismiss();
-            }
-        });
 
 
     }

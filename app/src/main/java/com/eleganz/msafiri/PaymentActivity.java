@@ -15,7 +15,7 @@ import java.util.HashMap;
 
 public class PaymentActivity extends AppCompatActivity {
     SessionManager sessionManager;
-    String user_id,trip_id;
+    String user_id,trip_id,photoPath,joinid;
     CurrentTripSession currentTripSession;
     Button confirmbtn;
     @Override
@@ -27,6 +27,8 @@ public class PaymentActivity extends AppCompatActivity {
         currentTripSession=new CurrentTripSession(PaymentActivity.this);
         HashMap<String, String> tripData=currentTripSession.getTripDetails();
         trip_id=tripData.get(CurrentTripSession.TRIP_ID);
+        photoPath=getIntent().getStringExtra("photoPath");
+        joinid=getIntent().getStringExtra("joinid");
         sessionManager.checkLogin();
 
 
@@ -52,7 +54,14 @@ public class PaymentActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         dialog.dismiss();
-                        startActivity(new Intent(PaymentActivity.this,SuccessPayment.class));
+                        startActivity(new Intent(PaymentActivity.this,SuccessPayment.class)
+                                .putExtra("photoPath",photoPath)
+                                .putExtra("joinid",joinid)
+                                .putExtra("user_id",user_id)
+                                .putExtra("trip_id",trip_id)
+
+
+                        );
                         finish();
                     }
                 });
@@ -69,4 +78,8 @@ public class PaymentActivity extends AppCompatActivity {
         finish();
 
     }
+
+
+
+
 }

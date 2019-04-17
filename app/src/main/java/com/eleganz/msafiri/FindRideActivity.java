@@ -19,7 +19,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioGroup;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -78,7 +80,9 @@ public class FindRideActivity extends AppCompatActivity implements AAH_FabulousF
     private ArrayList<LatLng> latlngs = new ArrayList<>();
     SessionManager sessionManager;
     String user_id,from_title,to_title,get_date,seats;
-    MySampleFabFragment dialogFrag;
+    BottomSheetDialog dialogFrag;
+    String data="";
+
     ArrayList<DriverData> arrayList=new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,22 +116,81 @@ get_date=getIntent().getStringExtra("get_date");
         findridelist=findViewById(R.id.findridelist);
         txtno_data=findViewById(R.id.txtno_data);
         fab=findViewById(R.id.fab1);
-        dialogFrag  = MySampleFabFragment.newInstance();
-        dialogFrag.setParentFab(fab);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                dialogFrag.show(getSupportFragmentManager(), dialogFrag.getTag());
-               /* final Dialog dialog = new Dialog(FindRideActivity.this);
-                // Include dialog.xml file
-                dialog.setContentView(R.layout.filterdialog);
-                // Set dialog title
+                dialogFrag  = new BottomSheetDialog(FindRideActivity.this);
+                dialogFrag.setContentView(R.layout.layout_filter);
+                RadioGroup rg;
 
-                // set values for custom dialog components - text, image and button
+                rg=dialogFrag.findViewById(R.id.rg);
+                RelativeLayout rl_content = (RelativeLayout) dialogFrag.findViewById(R.id.rl_content);
+                LinearLayout ll_buttons = (LinearLayout) dialogFrag.findViewById(R.id.ll_buttons);
+                dialogFrag.findViewById(R.id.imgbtn_apply)
+                        .setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
 
+                                dialogFrag.dismiss();
+                                Log.d("answer",""+data);
 
-                dialog.show();*/
+                                if(data != null && !data.isEmpty()){
+                                    if (data.equalsIgnoreCase("high"))
+                                    {
+                                        price="high";
+                                        rating="";
+                                        if (arrayList.size()>0)
+                                        {
+                                            arrayList.clear();
+                                        }
+                                        getSortPriceTrip();
+                                    }  if (data.equalsIgnoreCase("low"))
+                                    {
+                                        price="low";
+                                        rating="";
+                                        if (arrayList.size()>0)
+                                        {
+                                            arrayList.clear();
+                                        }
+                                        getSortPriceTrip();        }
+
+                                    if (data.equalsIgnoreCase("rating"))
+                                    {
+                                        rating="yes";
+                                        price="";
+                                        if (arrayList.size()>0)
+                                        {
+                                            arrayList.clear();
+                                        }
+                                        getSortRatingTrip();
+                                    }
+                                }
+
+                            }
+                        });
+
+                rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(RadioGroup group, int checkedId) {
+                        if (R.id.rd_pricehigh==checkedId)
+                        {
+
+                            data="high";
+                        }if (R.id.rd_pricelow==checkedId)
+                        {
+
+                            data="low";
+                        }
+                        else if (R.id.rd_rating==checkedId)
+                        {
+                            data="Rating";
+
+                        }
+                    }
+                });
+                dialogFrag.show();
             }
         });
 
@@ -494,7 +557,16 @@ else {
             pickup_address.setText(driverData.getPickup());
             pickup_destination.setText(driverData.getDestination());
             vehicle_name.setText(driverData.getVehiclename());
-            trip_price.setText("$ "+driverData.getPrice());
+
+            if (driverData.getPrice().equalsIgnoreCase("null"))
+            {
+                trip_price.setText("$ 0");
+
+            }
+            else
+            {
+                trip_price.setText("$ "+driverData.getPrice());
+            }
 
 
             vehicle_name.setSelected(true);
@@ -554,10 +626,21 @@ dialog.show();
 
                         {
 
+                            String joinid="";
+
+                            JSONArray jsonArray=jsonObject.getJSONArray("data");
+
+                            for (int i=0;i<jsonArray.length();i++)
+                            {
+
+                                JSONObject jsonObject1=jsonArray.getJSONObject(i);
+                                joinid=jsonObject1.getString("id");
+
+                            }
+
                             CurrentTripSession currentTripSession=new CurrentTripSession(FindRideActivity.this);
                             currentTripSession.createTripSession(trip_id,driver_id,false);
-                            startActivity(new Intent(context,ConfirmationActivity.class));
-                            finish();
+                            startActivity(new Intent(context,ConfirmationActivity.class).putExtra("joinid",joinid));
 
                         }
 
@@ -605,14 +688,7 @@ dialog.show();
 
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        if (dialogFrag.isAdded()) {
-            dialogFrag.dismiss();
-            dialogFrag.show(getSupportFragmentManager(), dialogFrag.getTag());
-        }
-    }
+
 
     public void initbottomsheet()
     {

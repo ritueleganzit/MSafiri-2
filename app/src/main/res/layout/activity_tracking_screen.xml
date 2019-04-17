@@ -64,11 +64,12 @@
     </LinearLayout>
     <RelativeLayout
         android:visibility="gone"
+        android:layout_below="@+id/toolbar"
 
         android:id="@+id/layout_map"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar">
+       >
         <com.google.android.gms.maps.MapView
 
             android:layout_width="match_parent"
@@ -81,7 +82,7 @@
             android:id="@+id/temp"
             android:layout_alignParentBottom="true"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="220dp"
             >
 
         </RelativeLayout>
@@ -90,13 +91,13 @@
         <RelativeLayout
             android:id="@+id/cnfrel"
             android:layout_width="match_parent"
-            android:layout_height="275dp"
+            android:layout_height="295dp"
             android:layout_above="@+id/lin5"
             android:layout_gravity="bottom">
 
             <RelativeLayout android:id="@+id/layoutBottom"
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
+                android:layout_height="270dp"
                 android:layout_alignParentBottom="true"
                 android:background="@drawable/backgroundwhite"
                 xmlns:android="http://schemas.android.com/apk/res/android">
@@ -340,7 +341,7 @@
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"/>-->
-            <Button
+<!--            <Button
                 android:id="@+id/tellbtn"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
                 android:textColor="@android:color/white"
@@ -360,7 +361,7 @@
                 android:textAllCaps="false"
                 android:fontFamily="@font/roboto_regular"
                 android:textColor="@android:color/white"
-                android:background="#0D3A61"/>
+                android:background="#0D3A61"/>-->
         </LinearLayout>
 
     </RelativeLayout>
