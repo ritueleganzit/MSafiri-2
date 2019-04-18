@@ -14,6 +14,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -39,6 +40,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.eleganz.msafiri.fragment.MapFragment;
 import com.eleganz.msafiri.lib.RobotoMediumTextView;
@@ -53,6 +55,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.infideap.drawerbehavior.AdvanceDrawerLayout;
 
 import org.json.JSONArray;
@@ -86,7 +91,7 @@ public class HomeActivity extends AppCompatActivity
     SharedPreferences sh_imagePreference;
     SharedPreferences.Editor imagePreference;
     CurrentTripSession currentTripSession;
-    private GoogleApiClient mGoogleApiClient;
+  //  private GoogleApiClient mGoogleApiClient;
     private String user_trip_status,login_type;
 
     String noti_message="",type="",ntrip_id="";
@@ -97,6 +102,7 @@ public class HomeActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_main2);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
 
         setSupportActionBar(toolbar);
        /* ColorDrawable colorDrawable = new ColorDrawable();
@@ -201,16 +207,28 @@ noti_message=getIntent().getStringExtra("content");
 
     @Override
     protected void onStart() {
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+      /*  GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
-        mGoogleApiClient.connect();
+        mGoogleApiClient.connect();*/
         super.onStart();
     }
+   /* private void signOut() {
+        // Firebase sign out
+        mAuth.signOut();
 
+        // Google sign out
+        mGoogleSignInClient.signOut().addOnCompleteListener(this,
+                new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+
+                    }
+                });
+    }*/
     @Override
     protected void onPause() {
         LocalBroadcastManager.getInstance(HomeActivity.this)
@@ -272,7 +290,7 @@ noti_message=getIntent().getStringExtra("content");
                 .registerReceiver(mBroadcastReceiver, MyFirebaseMessagingService.BROADCAST_INTENT_FILTER);
         if (photo != null && !photo.isEmpty()) {
             // doSomething
-            Glide.with(getApplicationContext()).load(photo).apply(RequestOptions.circleCropTransform()).into(profile_image);
+            Glide.with(getApplicationContext()).load(photo).apply(RequestOptions.circleCropTransform().diskCacheStrategy(DiskCacheStrategy.ALL)).into(profile_image);
 
         }
         else
@@ -359,15 +377,7 @@ noti_message=getIntent().getStringExtra("content");
                         public void onClick(DialogInterface dialogInterface, int i) {
                             dialogInterface.dismiss();
                             sessionManager.logoutUser();
-                            LoginManager.getInstance().logOut();
-                            Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                                    new ResultCallback<Status>() {
-                                        @Override
-                                        public void onResult(Status status) {
-                                            // ...
-
-                                        }
-                                    });
+                            //signOut();
                         }
                     }).setNegativeButton("No", new DialogInterface.OnClickListener() {
                 @Override
@@ -384,14 +394,14 @@ noti_message=getIntent().getStringExtra("content");
 
 
         } else if (id == R.id.nav_legal) {
-           /* startActivity(new Intent(HomeActivity.this, LegalActivity.class));
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);*/
+            startActivity(new Intent(HomeActivity.this, LegalActivity.class));
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 
 
-            String uri = String.format(Locale.ENGLISH, "http://maps.google.com/maps?saddr=%f,%f(%s)&daddr=%f,%f (%s)", 23.0350, 72.5293, "Home Sweet Home", 22.9962, 72.5235, "Where the party is at");
+         /*   String uri = String.format(Locale.ENGLISH, "http://maps.google.com/maps?saddr=%f,%f(%s)&daddr=%f,%f (%s)", 23.0350, 72.5293, "Home Sweet Home", 22.9962, 72.5235, "Where the party is at");
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
             intent.setPackage("com.google.android.apps.maps");
-            startActivity(intent);
+            startActivity(intent);*/
 
 
         }

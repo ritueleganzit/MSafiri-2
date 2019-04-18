@@ -48,11 +48,18 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
@@ -108,9 +115,10 @@ public class MainActivity extends AppCompatActivity {
     String str_accessToken="",devicetoken="";
 ProgressDialog progressDialog;
 String user_id,fname;
-    public GoogleApiClient googleApiClient;
     private String social_name,social_profile_pic,social_email;
     private String social_lname;
+  /*  GoogleSignInOptions googleSignInOptions;
+    public static GoogleSignInClient mGoogleSignInClient;*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,6 +128,8 @@ String user_id,fname;
         FacebookSdk.sdkInitialize(this.getApplicationContext());
         AppEventsLogger.activateApp(this);
         setContentView(R.layout.activity_main);
+
+
         progressDialog=new ProgressDialog(MainActivity.this);
         progressDialog.setCancelable(false);
         progressDialog.setMessage("Please Wait");
@@ -193,24 +203,30 @@ String user_id,fname;
             }
         } catch (PackageManager.NameNotFoundException e) {    } catch (NoSuchAlgorithmException e) {    }*/
         bottom.startAnimation(flyin7);
-        GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+      /*   googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-        googleApiClient = new GoogleApiClient.Builder(MainActivity.this)
+        mGoogleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);*/
+
+        // [START initialize_auth]
+        // Initialize Firebase Auth
+
+        /*googleApiClient = new GoogleApiClient.Builder(MainActivity.this)
                 .enableAutoManage(MainActivity.this , new GoogleApiClient.OnConnectionFailedListener() {
                     @Override
                     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
                     }
-                } /* OnConnectionFailedListener */)
+                } *//* OnConnectionFailedListener *//*)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
-                .build();
+                .build();*/
         google_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
-                startActivityForResult(signInIntent,RC_SIGN_IN);
+                /*Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+
+                startActivityForResult(signInIntent,RC_SIGN_IN);*/
             }
         });
         signbtn.setOnClickListener(new View.OnClickListener() {
@@ -549,80 +565,175 @@ String user_id,fname;
 
 
     }
+   /* private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
+        // [START_EXCLUDE silent]
+        // [END_EXCLUDE]
+
+        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithCredential:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+
+                            updateUI(user);
+
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                        }
+
+                        // [START_EXCLUDE]
+                        // [END_EXCLUDE]
+                    }
+                });
+    }*/
+
+    private void updateUI(FirebaseUser user) {
+        if (user != null) {
+            String splitdata[]=user.getDisplayName().split(" ");
+            social_name=splitdata[0];
+            social_lname=splitdata[1];
+            final String idtoken=user.getUid();
+            social_profile_pic=String.valueOf(user.getPhotoUrl());
+            social_email=user.getEmail();
+           Log.d("csd",user.getEmail());
+           Log.d("csd",user.getUid());
+           Log.d("csd",social_name);
+           Log.d("csd",social_lname);
+           Log.d("csd", String.valueOf(user.getPhotoUrl()));
+
+
+
+            Thread t=new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    String Token= FirebaseInstanceId.getInstance().getToken();
+                    if (Token!=null)
+                    {
+
+                        Log.d("thisismytoken", Token);
+                        devicetoken=Token;
+                        StrictMode.ThreadPolicy threadPolicy = new StrictMode.ThreadPolicy.Builder().build();
+                        StrictMode.setThreadPolicy(threadPolicy);
+                        // getGoogleLogin(str_email,fname,lname,idtoken);
+
+                        socialLogin("glogin",social_email,social_name,social_lname,idtoken);
+
+                    }
+                    else
+                    {
+                        Log.d("thisismytoken", "No token"+Token);
+
+                    }
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });t.start();
+
+        } else {
+
+        }
+
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode    , data);
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_SIGN_IN) {
-            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            Log.d("tokenid","requestCode == RC_SIGN_IN");
-            Log.d("tokenid",""+data.getData());
-            Log.d("tokenid",""+result.getStatus()+"  "+result.isSuccess());
+       /* if (requestCode == RC_SIGN_IN) {
 
-            if (result.isSuccess()){
-                progressDialog.setMessage("Please wait");
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+
+            GoogleSignInAccount account = null;
+            try {
+                account = task.getResult(ApiException.class);
                 progressDialog.show();
-                GoogleSignInAccount googleSignInAccount = result.getSignInAccount();
+                firebaseAuthWithGoogle(account);
+                Log.d("tokenid","requestCode == RC_SIGN_IN");
+                Log.d("tokenid",""+data.getData());
 
-                Log.d("tokenid",""+googleSignInAccount.getId()+" "+googleSignInAccount.getDisplayName()+" "+googleSignInAccount.getFamilyName()+" "+googleSignInAccount.getGivenName());
-                social_email = googleSignInAccount.getEmail();
-                //str_password=googleSignInAccount.getId();
-                final String idtoken=googleSignInAccount.getId();
+               *//* if (result.isSuccess()){
+                    progressDialog.setMessage("Please wait");
+                    progressDialog.show();
+                    GoogleSignInAccount googleSignInAccount = result.getSignInAccount();
+
+                    Log.d("tokenid",""+googleSignInAccount.getId()+" "+googleSignInAccount.getDisplayName()+" "+googleSignInAccount.getFamilyName()+" "+googleSignInAccount.getGivenName());
+                    social_email = googleSignInAccount.getEmail();
+                    //str_password=googleSignInAccount.getId();
+                    final String idtoken=googleSignInAccount.getId();
 
 
-                social_name=googleSignInAccount.getGivenName();
-                social_lname=googleSignInAccount.getFamilyName();
-                 social_profile_pic=googleSignInAccount.getPhotoUrl().toString();
+                    social_name=googleSignInAccount.getGivenName();
+                    social_lname=googleSignInAccount.getFamilyName();
+                    social_profile_pic=googleSignInAccount.getPhotoUrl().toString();
 
 
-              //  editor.putString("profile_pic",profile_pic);
-                //tid=googleSignInAccount.getId();
+                    //  editor.putString("profile_pic",profile_pic);
+                    //tid=googleSignInAccount.getId();
 
-                Log.d("dataaaaaa: "," "+social_name+" "+social_lname+" "+social_profile_pic);
-                //FirebaseMessaging.getInstance().subscribeToTopic("test");
-                //FirebaseInstanceId.getInstance().getToken();
-                Thread t=new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        String Token= FirebaseInstanceId.getInstance().getToken();
-                        if (Token!=null)
-                        {
+                    Log.d("dataaaaaa: "," "+social_name+" "+social_lname+" "+social_profile_pic);
+                    //FirebaseMessaging.getInstance().subscribeToTopic("test");
+                    //FirebaseInstanceId.getInstance().getToken();
+                    Thread t=new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            String Token= FirebaseInstanceId.getInstance().getToken();
+                            if (Token!=null)
+                            {
 
-                            Log.d("thisismytoken", Token);
-                            devicetoken=Token;
-                            StrictMode.ThreadPolicy threadPolicy = new StrictMode.ThreadPolicy.Builder().build();
-                            StrictMode.setThreadPolicy(threadPolicy);
-                           // getGoogleLogin(str_email,fname,lname,idtoken);
-                            socialLogin("glogin",social_email,social_name,social_lname,idtoken);
+                                Log.d("thisismytoken", Token);
+                                devicetoken=Token;
+                                StrictMode.ThreadPolicy threadPolicy = new StrictMode.ThreadPolicy.Builder().build();
+                                StrictMode.setThreadPolicy(threadPolicy);
+                                // getGoogleLogin(str_email,fname,lname,idtoken);
+                                socialLogin("glogin",social_email,social_name,social_lname,idtoken);
 
+                            }
+                            else
+                            {
+                                Log.d("thisismytoken", "No token"+Token);
+
+                            }
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                         }
-                        else
-                        {
-                            Log.d("thisismytoken", "No token"+Token);
-
-                        }
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });t.start();
-                //FirebaseUserAuth(googleSignInAccount);
+                    });t.start();
+                    //FirebaseUserAuth(googleSignInAccount);
+                }
+                else
+                {
+                    Log.d("tokenid","else");
+                    Toast.makeText(this, "Please try again", Toast.LENGTH_SHORT).show();
+                }*//*
+            } catch (ApiException e) {
+                e.printStackTrace();
             }
-            else
-            {
-                Log.d("tokenid","else");
-                Toast.makeText(this, "Please try again", Toast.LENGTH_SHORT).show();
-            }
+
             //handleSignInResult(result);
         }
-
+*/
     }
 
     private void socialLogin(String login_type,String email,String fname,String lname,String token)
     {
+
+        Log.d("sociallogin","dsfsdfs");
         final StringBuilder stringBuilder=new StringBuilder();
         RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(BASEURL).build();
         final ApiInterface apiInterface = restAdapter.create(ApiInterface.class);
@@ -639,6 +750,9 @@ String user_id,fname;
                     while ((line = bufferedReader.readLine()) != null) {
                         stringBuilder.append(line);
                     }
+
+                    Log.d("sociallogin","success"+stringBuilder);
+
                     Log.d("stringBuilder", "" + stringBuilder);
                     if (stringBuilder != null || !stringBuilder.toString().equalsIgnoreCase("")) {
 
@@ -647,27 +761,26 @@ String user_id,fname;
                         if (status.equalsIgnoreCase("1")) {
 
 
+
                             JSONArray jsonArray=jsonObject.getJSONArray("data");
                             for (int i=0;i<jsonArray.length();i++)
 
                             {
                                 JSONObject childJson=jsonArray.getJSONObject(i);
                                 sessionManager.createLoginSession("social",social_email,social_lname,childJson.getString("user_id"), social_name, "", social_profile_pic);
-                                logo.startAnimation(flyout1);
-
-
-                                progressBar.setVisibility(View.GONE);
-                                progressBar.startAnimation(flyout2);
-
                                 Log.d(TAG, "" + childJson.getString("photo"));
                                 Log.d(TAG, "" + childJson.getString("fname"));
-                                progressDialog.dismiss();
-                                Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                                startActivity(intent);
-                                finish();
-                                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 
                             }
+                            progressDialog.dismiss();
+                            logo.startAnimation(flyout1);
+
+                            Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                            startActivity(intent);
+                            finish();
+                            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+
+
                         }
                         else
                         {
@@ -689,11 +802,12 @@ String user_id,fname;
             @Override
             public void failure(RetrofitError error) {
                 progressDialog.dismiss();
-                Log.d("stringBuilder", "" + error.getMessage());
+                Log.d("sociallogin", "" + error.getMessage());
             }
         });
 
     }
+
     private void getUserLogin() {
 
         final StringBuilder stringBuilder = new StringBuilder();

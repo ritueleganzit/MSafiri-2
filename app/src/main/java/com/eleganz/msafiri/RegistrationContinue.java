@@ -516,12 +516,12 @@ emailtxt=hashMap.get(SessionManager.EMAIL);
                                             if (imgurl!=null && !imgurl.isEmpty())
 
                                             {
-                                                Glide.with(getApplicationContext())
+                                               /* Glide.with(getApplicationContext())
                                                         .load(""+imgurl)
 
                                                         .apply(RequestOptions.circleCropTransform().placeholder(R.drawable.pr))
 
-                                                        .into(profile_pic);
+                                                        .into(profile_pic);*/
 
                                                 sessionManager.updateImage(""+imgurl);
                                             }

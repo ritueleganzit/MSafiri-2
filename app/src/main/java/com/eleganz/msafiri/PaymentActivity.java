@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import com.eleganz.msafiri.session.CurrentTripSession;
 import com.eleganz.msafiri.session.SessionManager;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class PaymentActivity extends AppCompatActivity {
@@ -18,6 +20,7 @@ public class PaymentActivity extends AppCompatActivity {
     String user_id,trip_id,photoPath,joinid;
     CurrentTripSession currentTripSession;
     Button confirmbtn;
+    ArrayList<String> mypassenger=new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +33,8 @@ public class PaymentActivity extends AppCompatActivity {
         photoPath=getIntent().getStringExtra("photoPath");
         joinid=getIntent().getStringExtra("joinid");
         sessionManager.checkLogin();
+        mypassenger=getIntent().getStringArrayListExtra("mypassenger");
+        Log.d("PaymentScr",""+mypassenger);
 
 
         HashMap<String, String> userData=sessionManager.getUserDetails();
@@ -59,6 +64,7 @@ public class PaymentActivity extends AppCompatActivity {
                                 .putExtra("joinid",joinid)
                                 .putExtra("user_id",user_id)
                                 .putExtra("trip_id",trip_id)
+                                .putStringArrayListExtra("mypassenger",mypassenger)
 
 
                         );

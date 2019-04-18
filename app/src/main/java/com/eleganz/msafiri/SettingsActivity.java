@@ -293,7 +293,6 @@ finish();
 
         getUserData();
         getAddress();
-
     }
     @Override
     protected void onResume() {

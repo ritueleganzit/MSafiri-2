@@ -640,7 +640,8 @@ dialog.show();
 
                             CurrentTripSession currentTripSession=new CurrentTripSession(FindRideActivity.this);
                             currentTripSession.createTripSession(trip_id,driver_id,false);
-                            startActivity(new Intent(context,ConfirmationActivity.class).putExtra("joinid",joinid));
+                            startActivity(new Intent(context,ConfirmationActivity.class).putExtra("joinid",joinid)
+                            .putExtra("seats",seats));
 
                         }
 

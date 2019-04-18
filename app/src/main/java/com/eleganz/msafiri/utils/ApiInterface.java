@@ -2,6 +2,8 @@ package com.eleganz.msafiri.utils;
 
 import android.telecom.Call;
 
+import java.util.ArrayList;
+
 import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.Field;
@@ -301,15 +303,20 @@ public interface ApiInterface {
     );
 
 
-  @FormUrlEncoded
+  @Multipart
     @POST("/confirmTrip")
     void confirmTrip(
-            @Field("trip_id") String trip_id,
-            @Field("user_id") String user_id,
-            @Field("id") String id,
 
-            @Field("status") String status,
-            Callback<Response> callback
+
+          @Part("user_id") String user_id,
+          @Part("trip_id") String trip_id,
+          @Part("id") String id,
+          @Part("passanger_name[]") ArrayList<String> passanger_name,
+          @Part("status") String status,
+
+          @Part("trip_screenshot")TypedFile photo,
+          Callback<Response> callback
+
 
     );
 
@@ -319,6 +326,22 @@ public interface ApiInterface {
     void cancelTrip(
             @Field("trip_id") String trip_id,
             @Field("user_id") String user_id,
+            @Field("cancel_reason") String cancel_reason,
+
+            Callback<Response> callback
+
+    );
+
+
+
+    @FormUrlEncoded
+    @POST("/confirmTrip")
+    void cancelTrips(
+            @Field("trip_id") String trip_id,
+            @Field("user_id") String user_id,
+            @Field("status") String cancel,
+            @Field("cancel_reason") String cancel_reason,
+            @Field("id") String id,
 
             Callback<Response> callback
 

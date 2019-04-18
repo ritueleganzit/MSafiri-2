@@ -81,7 +81,7 @@ public class ConfirmationActivity extends AppCompatActivity implements OnMapRead
     MapView mapView;
     RatingBar ratingBar;
     GoogleMap map;
-    String photoPath;
+    String photoPath,seats;
     SpotsDialog spotsDialog;
     Button cnf;
     CallAPiActivity callAPiActivity;
@@ -133,7 +133,7 @@ public class ConfirmationActivity extends AppCompatActivity implements OnMapRead
 
         HashMap<String, String> userData=sessionManager.getUserDetails();
         user_id=userData.get(SessionManager.USER_ID);
-
+        seats=getIntent().getStringExtra("seats");
         Log.d("Confirmationtrip",""+trip_id);
         Log.d("Confirmationdriver",""+driver_id);
 
@@ -195,52 +195,6 @@ dialog.show();
         finish();
     }
 
-    private void cancelTrip(String trip_id) {
-        RestAdapter restAdapter=new RestAdapter.Builder().setEndpoint(BASEURL).build();
-        ApiInterface apiInterface=restAdapter.create(ApiInterface.class);
-        apiInterface.confirmTrip(trip_id, user_id, "","cancel", new Callback<Response>() {
-            @Override
-            public void success(Response response, Response response2) {
-                try {
-                    final StringBuilder stringBuilder=new StringBuilder();
-
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(response.getBody().in()));
-                    String line;
-                    while ((line = bufferedReader.readLine()) != null) {
-                        stringBuilder.append(line);
-                    }
-                    Log.d("cancelTrip",""+stringBuilder);
-                    JSONObject jsonObject=new JSONObject(""+stringBuilder);
-                    if (jsonObject.getString("message").equalsIgnoreCase("success"))
-
-                    {
-                        currentTripSession.clearTripData();
-                        spotsDialog.dismiss();
-                         finish();
-                    }
-
-                    else
-                    {
-                        spotsDialog.dismiss();
-                     //   Toast.makeText(ConfirmationActivity.this, ""+jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
-
-                        Log.d("cancelTrip",""+jsonObject.getString("message"));
-
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                spotsDialog.dismiss();
-
-            }
-        });
-    }
 
 
     private void getSingleTripData() {
@@ -679,11 +633,12 @@ dialog.dismiss();
 //            confirmTrip(trip_id);
 
 
-            startActivity(new Intent(ConfirmationActivity.this,PaymentActivity.class)
+            startActivity(new Intent(ConfirmationActivity.this,AddPassenger.class)
             .putExtra("photoPath",photoPath)
             .putExtra("joinid",joinid)
             .putExtra("user_id",user_id)
             .putExtra("trip_id",trip_id)
+            .putExtra("seats",seats)
 
 
             );

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TuRyde-User</string>
+    <string name="app_name">TuRyde User</string>
     <string name="title_activity_forgot_password">ForgotPasswordActivity</string>
     <string name="alreadymember">Already member? <b>Sign In here</b></string>
     <string name="registerhere">Don\'t have account? <b><u>Register Here</u></b></string>
@@ -13,6 +13,8 @@
     <string name="hintcnfnewpassword"><font size="15">Confirm New Password</font></string>
     <string name="title_activity_main2">Main2Activity</string>
     <string name="facebook_app_id">321014721844485</string>
+    <string name="server_client_id">AIzaSyA5ZfN2HnhYwKIWUSmCvoHGEilZELTfZCI</string>
+
     <string name="fb_login_protocol_scheme">fb321014721844485</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

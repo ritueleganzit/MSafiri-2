@@ -17,6 +17,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.eleganz.msafiri.adapter.MyTripAdapter;
 import com.eleganz.msafiri.fragment.MySampleFabFragment;
@@ -239,7 +240,9 @@ public class YourTripsActivity extends AppCompatActivity  {
             @Override
             public void failure(RetrofitError error) {
 dialog.dismiss();
-                tv_no_data.setVisibility(View.GONE);
+
+             //   Toast.makeText(YourTripsActivity.this, "yjyjiy"+error.getMessage(), Toast.LENGTH_SHORT).show();
+                tv_no_data.setVisibility(View.VISIBLE);
             }
         });
 

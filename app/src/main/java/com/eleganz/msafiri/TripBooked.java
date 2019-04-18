@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
@@ -213,6 +214,9 @@ public class TripBooked extends AppCompatActivity implements OnMapReadyCallback 
         findViewById(R.id.cancelride).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final EditText input = new EditText(TripBooked.this);
+                input.setHint("Reason");
+
                 AlertDialog alertDialog=  new AlertDialog.Builder(TripBooked.this)
                         .setMessage("Are you sure you want to cancel trip?")
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -220,7 +224,7 @@ public class TripBooked extends AppCompatActivity implements OnMapReadyCallback 
                             public void onClick(DialogInterface d, int which) {
                                 spotsDialog.show();
 
-                                cancelTrip(historyData.getTrip_id());
+                                cancelTrip(historyData.getTrip_id(),""+input.getText().toString());
                             }
                         })
                         .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -228,7 +232,7 @@ public class TripBooked extends AppCompatActivity implements OnMapReadyCallback 
                             public void onClick(DialogInterface dialog, int which) {
 
                             }
-                        })
+                        }).setView(input)
                         .setCancelable(false)
                         .show();
                 TextView textView = (TextView) alertDialog.findViewById(android.R.id.message);
@@ -258,10 +262,10 @@ public class TripBooked extends AppCompatActivity implements OnMapReadyCallback 
         // trip_rate.setText(""+historyData.getTrip_price());
     }
 
-    private void cancelTrip(String trip_id) {
+    private void cancelTrip(String trip_id,String reason) {
         RestAdapter restAdapter=new RestAdapter.Builder().setEndpoint(BASEURL).build();
         ApiInterface apiInterface=restAdapter.create(ApiInterface.class);
-        apiInterface.cancelTrip(trip_id, user_id, new Callback<Response>() {
+        apiInterface.cancelTrips(trip_id, user_id,"cancel","",reason, new Callback<Response>() {
             @Override
             public void success(Response response, Response response2) {
                 try {

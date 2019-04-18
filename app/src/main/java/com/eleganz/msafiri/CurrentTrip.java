@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -68,6 +69,7 @@ public class CurrentTrip extends AppCompatActivity implements OnMapReadyCallback
     SessionManager sessionManager;
     String user_id,id,driver_id;
     GoogleMap map;
+    String idd;
     ImageView back;
     CircleImageView fab;
     SpotsDialog spotsDialog;
@@ -121,7 +123,7 @@ public class CurrentTrip extends AppCompatActivity implements OnMapReadyCallback
         dummyrel=findViewById(R.id.temp);
         currentTripSession=new CurrentTripSession(CurrentTrip.this);
         spotsDialog = new SpotsDialog(CurrentTrip.this);
-
+        idd=getIntent().getStringExtra("id");
         HashMap<String, String> userData = sessionManager.getUserDetails();
         user_id = userData.get(SessionManager.USER_ID);
         HashMap<String, String> tripData=currentTripSession.getTripDetails();
@@ -147,6 +149,8 @@ public class CurrentTrip extends AppCompatActivity implements OnMapReadyCallback
         cancelride.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                final EditText input = new EditText(CurrentTrip.this);
+                input.setHint("Reason");
 
                 AlertDialog alertDialog=  new AlertDialog.Builder(CurrentTrip.this)
                         .setMessage("Are you sure you want to cancel trip?")
@@ -155,7 +159,7 @@ public class CurrentTrip extends AppCompatActivity implements OnMapReadyCallback
                             public void onClick(DialogInterface d, int which) {
                                 spotsDialog.show();
 
-                                cancelTrip(id);
+                                cancelTrip(id,""+input.getText().toString());
                             }
                         })
                         .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -164,6 +168,7 @@ public class CurrentTrip extends AppCompatActivity implements OnMapReadyCallback
 
                             }
                         })
+                        .setView(input)
                         .setCancelable(false)
                         .show();
                 TextView textView = (TextView) alertDialog.findViewById(android.R.id.message);
@@ -418,10 +423,10 @@ public class CurrentTrip extends AppCompatActivity implements OnMapReadyCallback
 
 
     }
-    private void cancelTrip(String trip_id) {
+    private void cancelTrip(String trip_id,String cancel_reason) {
         RestAdapter restAdapter=new RestAdapter.Builder().setEndpoint(BASEURL).build();
         ApiInterface apiInterface=restAdapter.create(ApiInterface.class);
-        apiInterface.cancelTrip(trip_id, user_id, new Callback<Response>() {
+        apiInterface.cancelTrips(trip_id, user_id,"cancel",idd,cancel_reason, new Callback<Response>() {
             @Override
             public void success(Response response, Response response2) {
                 try {

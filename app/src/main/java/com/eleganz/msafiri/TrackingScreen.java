@@ -1,7 +1,7 @@
 package com.eleganz.msafiri;
 
 import android.Manifest;
-import android.app.AlertDialog;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -25,6 +25,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -51,7 +52,6 @@ import com.eleganz.msafiri.utils.HistoryData;
 import com.eleganz.msafiri.utils.MyFirebaseMessagingService;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -70,6 +70,13 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.DexterError;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.PermissionRequestErrorListener;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -87,10 +94,7 @@ import java.util.TimerTask;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import dmax.dialog.SpotsDialog;
-import io.nlopez.smartlocation.OnLocationUpdatedListener;
-import io.nlopez.smartlocation.SmartLocation;
-import io.nlopez.smartlocation.location.config.LocationAccuracy;
-import io.nlopez.smartlocation.location.config.LocationParams;
+
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -118,110 +122,22 @@ public class TrackingScreen extends AppCompatActivity implements OnMapReadyCallb
     Runnable runnable;
     RelativeLayout dummyrel, cnfrel;
     String noti_message = "", type = "", ntrip_id = "";
-    private Location currentLocation;
 
     RobotoMediumTextView cr_vehicle_name, cr_trip_price, cr_pickup, cr_pickupaddress, cr_dest, cr_destaddress, fullname, cr_calculate_time;
 
-    private LocationManager locationManager;
-    private String provider;
-    private Marker currentLocationMarker;
+    LocationManager locationmanager;
 
-    private boolean firstTimeFlag = true;
-    private FusedLocationProviderClient fusedLocationProviderClient;
 
     //
 
 
 
 
-    private final LocationCallback mLocationCallback = new LocationCallback() {
-
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-            super.onLocationResult(locationResult);
-            if (locationResult.getLastLocation() == null)
-                return;
-            currentLocation = locationResult.getLastLocation();
-
-            Log.d("gjuytbu7yt",""+currentLocation.getLongitude());
-            if (firstTimeFlag && map != null) {
-                animateCamera(currentLocation);
 
 
-                firstTimeFlag = false;
-            }
-            showMarker(currentLocation);
-        }
-    };
-    private int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION=5445;
-
-    private void startCurrentLocationUpdates() {
-        LocationRequest locationRequest = LocationRequest.create();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(3000);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(TrackingScreen.this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-                return;
-            }
-        }
-        fusedLocationProviderClient.requestLocationUpdates(locationRequest, mLocationCallback, Looper.myLooper());
-    }
-
-    private boolean isGooglePlayServicesAvailable() {
-        GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
-        int status = googleApiAvailability.isGooglePlayServicesAvailable(this);
-        if (ConnectionResult.SUCCESS == status)
-            return true;
-        else {
-            if (googleApiAvailability.isUserResolvableError(status))
-                Toast.makeText(this, "Please Install google play services to use this application", Toast.LENGTH_LONG).show();
-        }
-        return false;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {
-            if (grantResults[0] == PackageManager.PERMISSION_DENIED)
-                Toast.makeText(this, "Permission denied by uses", Toast.LENGTH_SHORT).show();
-            else if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                startCurrentLocationUpdates();
-        }
-    }
-
-
-
-    private void animateCamera(@NonNull Location location) {
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        map.animateCamera(CameraUpdateFactory.newCameraPosition(getCameraPositionWithBearing(latLng)));
-    }
-
-    @NonNull
-    private CameraPosition getCameraPositionWithBearing(LatLng latLng) {
-        return new CameraPosition.Builder().target(latLng).zoom(16).build();
-    }
-
-    private void showMarker(@NonNull Location currentLocation) {
-        LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-        if (currentLocationMarker == null)
-
-        {
-            BitmapDrawable bitmapdraw=(BitmapDrawable)getResources().getDrawable(R.drawable.locationarrow);
-            Bitmap b=bitmapdraw.getBitmap();
-            Bitmap firstMarker = Bitmap.createScaledBitmap(b, 74   , 74, false);
-            currentLocationMarker = map.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker()).position(latLng).icon(BitmapDescriptorFactory.fromBitmap(firstMarker)));
-        }
-
-        else
-            MarkerAnimation.animateMarkerToGB(currentLocationMarker, latLng, new LatLngInterpolator.Spherical());
-    }
     @Override
     public void onStop() {
-        SmartLocation.with(TrackingScreen.this).location().stop();
+        //SmartLocation.with(TrackingScreen.this).location().stop();
         super.onStop();
     }
 
@@ -231,10 +147,10 @@ public class TrackingScreen extends AppCompatActivity implements OnMapReadyCallb
         setContentView(R.layout.activity_tracking_screen);
 
 
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         initView();
 
+        locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         sessionManager = new SessionManager(TrackingScreen.this);
         layout_map = findViewById(R.id.layout_map);
@@ -252,86 +168,13 @@ public class TrackingScreen extends AppCompatActivity implements OnMapReadyCallb
                 onBackPressed();
             }
         });
-        /*tellbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(TrackingScreen.this, TellYourDriverActivity.class));
-            }
-        });*/
 
-
-        /*cancelride.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-              AlertDialog alertDialog=  new AlertDialog.Builder(TrackingScreen.this)
-                        .setMessage("Are you sure you want to cancel trip?")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface d, int which) {
-                                dialog.show();
-
-                                cancelTrip(trip_id);
-                            }
-                        })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        })
-                        .setCancelable(false)
-                        .show();
-                TextView textView = (TextView) alertDialog.findViewById(android.R.id.message);
-                Typeface face= Typeface.createFromAsset(getAssets(),"fonts/Roboto-Light.ttf");
-                textView.setTypeface(face);
-
-
-
-            }
-        });*/
-        /*btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(TrackingScreen.this,ChangePickupActivity.class));
-            }
-        });*/
         mapView.getMapAsync(this);
         if (mapView != null) {
             mapView.onCreate(null);
             mapView.onResume();
             mapView.getMapAsync(this);
         }
-    }
-
-    private void getLatLong() {
-        long mLocTrackingInterval = 1000 * 5; // 5 sec
-        float trackingDistance = 0;
-        LocationAccuracy trackingAccuracy = LocationAccuracy.HIGH;
-
-        LocationParams.Builder builder = new LocationParams.Builder()
-                .setAccuracy(trackingAccuracy)
-                .setDistance(trackingDistance)
-                .setInterval(mLocTrackingInterval);
-
-        SmartLocation.with(this)
-                .location()
-                .continuous()
-                .config(builder.build())
-                .start(new OnLocationUpdatedListener() {
-                    @Override
-                    public void onLocationUpdated(Location location) {
-
-
-                        LatLng latLng=new LatLng(location.getLatitude(),location.getLongitude());
-                        Marker marker=map.addMarker(new MarkerOptions().position(latLng));
-marker.setPosition(latLng);
-                        Toast.makeText(TrackingScreen.this, "ffsfs"+location.getLongitude(), Toast.LENGTH_SHORT).show();
-                     //   animateMarker(marker,latLng,false);
-                        Log.d("lllll",""+location.getLongitude());
-                        Log.d("lllll",""+location.getLatitude());
-                    }
-                });
     }
 
 
@@ -393,20 +236,7 @@ marker.setPosition(latLng);
     @Override
     protected void onResume() {
         super.onResume();
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        if (isGooglePlayServicesAvailable()) {
-            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-            startCurrentLocationUpdates();
-        }
+
 
         LocalBroadcastManager.getInstance(TrackingScreen.this)
                 .registerReceiver(mBroadcastReceiver, MyFirebaseMessagingService.BROADCAST_INTENT_FILTER);
@@ -437,7 +267,6 @@ marker.setPosition(latLng);
             public void success(Response response, Response response2) {
 
 
-                animateCamera(currentLocation);
 
 
                 try {
@@ -459,7 +288,7 @@ marker.setPosition(latLng);
                         {
                             JSONObject jsonObject1=jsonArray.getJSONObject(i);
 
-
+                            getLatLong();
                             Log.d("sdad",""+stringBuilder);
 
                             String user_trip_status=jsonObject1.getString("user_trip_status");
@@ -688,60 +517,172 @@ h.postDelayed(runnable, delay);
         cnfrel=findViewById(R.id.cnfrel);
     }
 
-    private void cancelTrip(String trip_id) {
-        RestAdapter restAdapter=new RestAdapter.Builder().setEndpoint(BASEURL).build();
-        ApiInterface apiInterface=restAdapter.create(ApiInterface.class);
-        apiInterface.confirmTrip(trip_id, user_id,"", "cancel", new Callback<Response>() {
-            @Override
-            public void success(Response response, Response response2) {
-                try {
-                    final StringBuilder stringBuilder=new StringBuilder();
 
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(response.getBody().in()));
-                    String line;
-                    while ((line = bufferedReader.readLine()) != null) {
-                        stringBuilder.append(line);
-                    }
-                    Log.d("cancelTrip",""+stringBuilder);
-                    JSONObject jsonObject=new JSONObject(""+stringBuilder);
-                    if (jsonObject.getString("message").equalsIgnoreCase("success"))
-
-                    {
-
-                        dialog.dismiss();
-                        startActivity(new Intent(TrackingScreen.this, CancelRideActivity.class));
-                        finish();
-                    }
-
-                    else
-                    {
-                        dialog.dismiss();
-
-                        Toast.makeText(TrackingScreen.this, ""+jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
-
-                        Log.d("cancelTrip",""+jsonObject.getString("message"));
-
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                dialog.dismiss();
-
-            }
-        });
-    }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         startActivity(new Intent(TrackingScreen.this, HomeActivity.class));
         finish();
+    }
+    public void getLatLong()
+    {
+        if (checkLocationPermission()) {
+            if (ContextCompat.checkSelfPermission(TrackingScreen.this,
+                    android.Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+
+
+                locationmanager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new LocationListener() {
+                    @Override
+                    public void onLocationChanged(Location location) {
+
+                        Log.e("lat", String.valueOf(location.getLatitude()));
+                        Log.e("lat", String.valueOf(location.getLongitude()));
+                    }
+
+                    @Override
+                    public void onStatusChanged(String s, int i, Bundle bundle) {
+
+                    }
+
+                    @Override
+                    public void onProviderEnabled(String s) {
+
+                    }
+
+                    @Override
+                    public void onProviderDisabled(String s) {
+
+                    }
+                });
+                getLastKnownLocation();
+                   /* if(location!=null)
+                    {
+                        onLocationChanged(location);
+                    }
+                    else{
+                        Toast.makeText(getApplicationContext(),"location not found",Toast.LENGTH_LONG ).show();
+                    }*/
+
+
+            }
+        }
+    }
+
+    private void getLastKnownLocation() {
+        List<String> providers = locationmanager.getProviders(true);
+        Location bestLocation = null;
+        for (String provider : providers) {
+            if (ActivityCompat.checkSelfPermission(TrackingScreen.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.
+                    checkSelfPermission(TrackingScreen.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return ;
+            }
+            Location l = locationmanager.getLastKnownLocation(provider);
+//            Log.e("last known location, provider: %s, location: %s", provider,
+//                    l);
+
+//            Toast.makeText(this, ""+l.getLatitude()+","+l.getLongitude(), Toast.LENGTH_SHORT).show();
+
+            if (l == null) {
+                continue;
+            }
+            if (bestLocation == null
+                    || l.getAccuracy() < bestLocation.getAccuracy()) {
+                //    ALog.d("found best last known location: %s", l);
+                bestLocation = l;
+
+
+                Log.d("mmmmmmmmmmmm",""+l.getLatitude());
+
+
+
+
+
+
+            }
+        }
+        if (bestLocation == null) {
+
+        }
+    }
+
+    public boolean checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(TrackingScreen.this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(TrackingScreen.this,
+                    android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                new AlertDialog.Builder(TrackingScreen.this)
+                        .setTitle("Location Permission")
+                        .setMessage("Allow app to use your current location")
+                        .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                //Prompt the user once explanation has been shown
+                                ActivityCompat.requestPermissions(TrackingScreen.this,
+                                        new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                                        1);
+                            }
+                        })
+                        .create()
+                        .show();
+
+
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(TrackingScreen.this,
+                        new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                        1);
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
+    private void requestStoragePermission(final int position) {
+
+        Dexter.withActivity(TrackingScreen.this)
+                .withPermissions(
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.ACCESS_FINE_LOCATION)
+                .withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport report) {
+                        // check if all permissions are granted
+                        if (report.areAllPermissionsGranted()) {
+
+                            getLatLong();
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                        token.continuePermissionRequest();
+                    }
+                }).
+                withErrorListener(new PermissionRequestErrorListener() {
+                    @Override
+                    public void onError(DexterError error) {
+                    }
+                })
+                .onSameThread()
+                .check();
     }
 
 
